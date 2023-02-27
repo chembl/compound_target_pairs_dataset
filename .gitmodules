@@ -1,0 +1,3 @@
+[submodule "compound_processes"]
+	path = compound_processes
+	url = git@github.com:chembl/compound_processes.git
