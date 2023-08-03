@@ -18,6 +18,10 @@ def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit
     :return: Pandas DataFrame with compound-target pairs with a pchembl value.
     :rtype: pd.DataFrame
     """
+    # NOTE: DO NOT USE DISTINCT
+    # This query does not capture act.activity_id. 
+    # There can be mulitple activities with different activity_ids but the same queries values. 
+    # For accurate mean, median, and max pchembl these additional rows are important.
     sql = '''
     SELECT act.pchembl_value, 
         md.molregno as parent_molregno, md.chembl_id as parent_chemblid, md.pref_name as parent_pref_name,
@@ -130,7 +134,7 @@ def get_aggregated_acticity_ct_pairs(chembl_con: sqlite3.Connection, limit_to_li
 
     - a subset of the initial dataset based on binding and functional assays (suffix '_BF') and 
     - a subset of the initial dataset set on only binding assays (suffix '_B'). 
-    
+
     Therefore, there are two columns for pchembl_value_mean, _max, _median, first_publication_cpd_target_pair and first_publication_cpd_target_pair_w_pchembl, 
     one with the suffix '_BF' based on binding + functional data and one with the suffix '_B' based on only binding data.
 
