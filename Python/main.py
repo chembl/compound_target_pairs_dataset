@@ -74,7 +74,6 @@ if __name__ == "__main__":
         args.chembl_version = chembl_downloader.latest()
 
     if args.sqlite_path == "":
-        chembl_downloader.download_extract_sqlite(version=args.chembl_version)
         with chembl_downloader.connect(version=args.chembl_version) as chembl_con:
             get_dataset.get_dataset(chembl_con,
                                     args.chembl_version,
