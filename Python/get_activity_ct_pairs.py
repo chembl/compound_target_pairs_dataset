@@ -1,18 +1,22 @@
 import numpy as np
 import pandas as pd
+import sqlite3
 
 ########### Get Initial Compound-Target Data From ChEMBL ###########
-def get_initial_dataset(chembl_con, limit_to_literature):
+def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit_to_literature: True) -> pd.DataFrame:
     """
-    Initial query for activities + related assay, mutation, target and docs information. 
-    Compound-target pairs are required to have a pchembl value.
+    Query ChEMBL activities and related assay for compound-target pairs with an associated pchembl value.  
+    Compound-target pairs are required to have a pchembl value.  
+    Salt forms of compounds are mapped to their parent form.  
+    If limit_to_literature is true, only literature sources will be considered. Otherwise, all sources are included.  
+    Includes information about targets, mutations and year of publication (based on docs).  
 
-    :param chembl_con: _description_
-    :type chembl_con: _type_
-    :param limit_to_literature: _description_
-    :type limit_to_literature: _type_
-    :return: _description_
-    :rtype: _type_
+    :param chembl_con: Sqlite3 connection to ChEMBL database.
+    :type chembl_con: sqlite3.Connection
+    :param limit_to_literature: Include only literature sources if True. Include all available sources otherwise.
+    :type limit_to_literature: True
+    :return: Pandas DataFrame with compound-target pairs with a pchembl value.
+    :rtype: pd.DataFrame
     """
     sql = '''
     SELECT act.pchembl_value, 
@@ -47,67 +51,97 @@ def get_initial_dataset(chembl_con, limit_to_literature):
         sql += '''    and docs.src_id = 1'''
 
     df_mols = pd.read_sql_query(sql, con=chembl_con)
+
+    # Set relevant combinations of columns for easier processing later
     # target_id_mutation
-    df_mols['tid_mutation'] = np.where(df_mols['mutation'].notnull(), 
-                                    df_mols['tid'].astype('str')+'_'+df_mols['mutation'], 
-                                    df_mols['tid'].astype('str'))
+    df_mols['tid_mutation'] = np.where(df_mols['mutation'].notnull(),
+                                       df_mols['tid'].astype(
+                                           'str')+'_'+df_mols['mutation'],
+                                       df_mols['tid'].astype('str'))
     # compound-target association
     df_mols['cpd_target_pair'] = df_mols.agg('{0[parent_molregno]}_{0[tid]}'.format, axis=1)
     df_mols['cpd_target_pair_mutation'] = df_mols.agg('{0[parent_molregno]}_{0[tid_mutation]}'.format, axis=1)
+
     # TODO: include this?
     # test_utils.add_dataset_sizes(df_mols, "init", all_lengths, all_lengths_pchembl)
+
     return df_mols
 
 
 
 ########### Calculate Mean, Median, and Max *pchembl* Values for Each Compound-Target Pair ###########
-def get_average_info(df, suffix):
+def get_average_info(df: pd.DataFrame, suffix: str) -> pd.DataFrame:
+    """
+    Aggregate the information about compound-target pairs for which there is more than one entry into one entry. 
+    Compound-target pairs are considered equal if parent_molregno (internal compound ID) and tid_mutation (target ID + mutation annotations) are equal.
+
+    The following values are aggregated:  
+
+    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+
+    | pchembl_value_mean                            | mean pchembl value for a compound-target pair                                                 |
+    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+
+    | pchembl_value_max                             | maximum pchembl value for a compound-target pair                                              |
+    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+
+    | pchembl_value_median                          | median pchembl value for a compound-target pair                                               |
+    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+
+    | first_publication_cpd_target_pair             | first publication in ChEMBL with this compound-target pair                                    |
+    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+
+    | first_publication_cpd_target_pair_w_pchembl   | first publication in ChEMBL with this compound-target pair and an associated pchembl value    |
+    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+
+
+    :param df: Pandas DataFrame with compound-target pairs for which the information should be aggregated.
+    :type df: pd.DataFrame
+    :param suffix: Suffix indicating the type of the given DataFrame, e.g., _B for binding assays, _BF for binding+functional assays.
+    :type suffix: str
+    :return: Pandas DataFrame with 'parent_molregno', 'tid_mutation', and the aggregated columns.
+    :rtype: pd.DataFrame
+    """
     # pchembl mean, max, median
     df['pchembl_value_mean_'+suffix] = df.groupby(['parent_molregno', 'tid_mutation'])['pchembl_value'].transform('mean')
     df['pchembl_value_max_'+suffix] = df.groupby(['parent_molregno', 'tid_mutation'])['pchembl_value'].transform('max')
     df['pchembl_value_median_'+suffix] = df.groupby(['parent_molregno', 'tid_mutation'])['pchembl_value'].transform('median')
-    
+
     # first publication of pair
     df['first_publication_cpd_target_pair_'+suffix] = df.groupby(['parent_molregno', 'tid_mutation'])['year'].transform('min')
-    
+
     # first publication of pair with pchembl value
     df_mols_all_first_publication_pchembl = df[df['pchembl_value'].notnull()] \
-            .groupby(['parent_molregno', 'tid_mutation'])['year'].min().reset_index() \
-            .rename(columns={'year': 'first_publication_cpd_target_pair_w_pchembl_'+suffix})
-    df = df.merge(df_mols_all_first_publication_pchembl, on=['parent_molregno', 'tid_mutation'], how = 'left')
-    
+        .groupby(['parent_molregno', 'tid_mutation'])['year'].min().reset_index() \
+        .rename(columns={'year': 'first_publication_cpd_target_pair_w_pchembl_'+suffix})
+    df = df.merge(df_mols_all_first_publication_pchembl, on=['parent_molregno', 'tid_mutation'], how='left')
+
     # return relevant summarised information without duplicates
-    df = df[['parent_molregno', 'tid_mutation', 
-            'pchembl_value_mean_'+suffix, 'pchembl_value_max_'+suffix, 'pchembl_value_median_'+suffix, 
-            'first_publication_cpd_target_pair_'+suffix, 'first_publication_cpd_target_pair_w_pchembl_'+suffix]].drop_duplicates()
+    df = df[['parent_molregno', 'tid_mutation',
+            'pchembl_value_mean_'+suffix, 'pchembl_value_max_' +
+             suffix, 'pchembl_value_median_'+suffix,
+             'first_publication_cpd_target_pair_'+suffix, 'first_publication_cpd_target_pair_w_pchembl_'+suffix]].drop_duplicates()
+    
     return df
 
 
 
-def get_aggregated_acticity_ct_pairs(chembl_con, limit_to_literature):
+########### Get Aggregated Compound-Target Pair Information ###########
+def get_aggregated_acticity_ct_pairs(chembl_con: sqlite3.Connection, limit_to_literature: bool) -> pd.DataFrame:
     """
-    The following values are set to summarise the information for compound-target pairs:  
+    Get dataset of compound target-pairs with an associated pchembl value 
+    with pchembl and publication dates aggregated into one entry per pair.
 
-    |||
-    | :----------- | :----------- |
-    | *pchembl_value_mean* | mean pchembl value for a compound-target pair|
-    | *pchembl_value_max*| maximum pchembl value for a compound-target pair|
-    | *pchembl_value_median*| median pchembl value for a compound-target pair|
-    | *first_publication_cpd_target_pair* | first publication in ChEMBL with this compound-target pair |
-    | *first_publication_cpd_target_pair_w_pchembl* | first publication in ChEMBL with this compound-target pair and an associated pchembl value |
+    Values are aggregated for 
 
-    The values are set for 
-    - a subset of the dataset based on binding and functional assays (suffix '_BF') and 
-    - a subset of the dataset set on only binding assays (suffix '_B'). 
+    - a subset of the initial dataset based on binding and functional assays (suffix '_BF') and 
+    - a subset of the initial dataset set on only binding assays (suffix '_B'). 
+    
+    Therefore, there are two columns for pchembl_value_mean, _max, _median, first_publication_cpd_target_pair and first_publication_cpd_target_pair_w_pchembl, 
+    one with the suffix '_BF' based on binding + functional data and one with the suffix '_B' based on only binding data.
 
-    Therefore, there are two columns for each of the values above, one with the suffix '_BF' based on binding + functional data and one with the suffix '_B' based on only binding data.
-
-    :param df_mols: _description_
-    :type df_mols: _type_
-    :return: _description_
-    :rtype: _type_
+    :param chembl_con: Sqlite3 connection to ChEMBL database.
+    :type chembl_con: sqlite3.Connection
+    :param limit_to_literature: Include only literature sources if True. Include all available sources otherwise.
+    :type limit_to_literature: bool
+    :return: Pandas Dataframe with compound-target pairs based on ChEMBL activity data aggregated into one entry per compound-target pair.
+    :rtype: pd.DataFrame
     """
-    df_mols = get_initial_dataset(chembl_con, limit_to_literature)
+    df_mols = get_compound_target_pairs_with_pchembl(chembl_con, limit_to_literature)
 
     # Summarise the information for binding and functional assays
     suffix = 'BF'
@@ -119,16 +153,17 @@ def get_aggregated_acticity_ct_pairs(chembl_con, limit_to_literature):
     df_mols_B = df_mols[df_mols['assay_type'] == 'B'].copy()
     df_mols_B = get_average_info(df_mols_B, suffix)
 
-    # Combine both into one table with two columns per value 
+    # Combine both into one table with two columns per value
     # (one with suffix '_BF' for binding+functional and one with suffix '_B' for binding).
     # df_mols_B is a subset of the compound-target pairs of df_mols_BF
-    df_combined = df_mols_BF.merge(df_mols_B, 
-                                    on=['parent_molregno', 'tid_mutation'], how = 'left')
+    df_combined = df_mols_BF.merge(df_mols_B,
+                                   on=['parent_molregno', 'tid_mutation'], how='left')
+    # Merge with other information from df_mols
     # left merge because df_mols may contain assays that are of other types than binding / functional
-    df_combined = df_combined.merge(df_mols.drop(columns=['pchembl_value', 'year', 'assay_type']).drop_duplicates(), 
-                                    on=['parent_molregno', 'tid_mutation'], how = 'left')
-    
+    df_combined = df_combined.merge(df_mols.drop(columns=['pchembl_value', 'year', 'assay_type']).drop_duplicates(),
+                                    on=['parent_molregno', 'tid_mutation'], how='left')
+
     # TODO: include this?
     # test_utils.add_dataset_sizes(df_combined, "pre dm table", all_lengths, all_lengths_pchembl)
-    return df_combined
 
+    return df_combined
