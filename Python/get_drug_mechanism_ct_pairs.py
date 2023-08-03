@@ -34,14 +34,19 @@ def get_related_tids(chembl_con):
     Query target_relations for related target ids to increase the number of target ids for which there is data in the drug_mechanisms table.
     The following mappings are considered:
 
-    ||||
-    |:------|:-----:|-----|
-    |protein family |-[superset of]->| single protein|
-    |protein complex |-[superset of]->| single protein|
-    |protein complex group |-[superset of]->| single protein|
-    |single protein |-[equivalent to]->| single protein|
-    |chimeric protein |-[superset of]->| single protein|
-    |protein-protein interaction |-[superset of]->| single protein|
+    +-------------------------------+-----------------------+---------------+
+    |protein family                 |-[superset of]->       | single protein|
+    +-------------------------------+-----------------------+---------------+
+    |protein complex                |-[superset of]->       | single protein|
+    +-------------------------------+-----------------------+---------------+
+    |protein complex group          |-[superset of]->       | single protein|
+    +-------------------------------+-----------------------+---------------+
+    |single protein                 |-[equivalent to]->     | single protein|
+    +-------------------------------+-----------------------+---------------+
+    |chimeric protein               |-[superset of]->       | single protein|
+    +-------------------------------+-----------------------+---------------+
+    |protein-protein interaction    |-[superset of]->       | single protein|
+    +-------------------------------+-----------------------+---------------+
 
     For example, for *protein family -[superset of]-> single protein* this means:  
     If there is a known relevant interaction between a compound and a protein family, interactions between the compound and single proteins of that protein family are considered to be known interactions as well.
@@ -51,6 +56,8 @@ def get_related_tids(chembl_con):
     :return: _description_
     :rtype: _type_
     """
+
+
     sql = '''
     SELECT tr.tid, tr.relationship, tr.related_tid, 
         td1.pref_name as pref_name_1, td1.target_type as target_type_1, td1.organism as organism_1, 

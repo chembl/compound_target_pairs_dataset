@@ -14,6 +14,9 @@ import get_subsets
 import sanity_checks_read_write
 import get_stats
 
+def print_df_combined_stats(df_combined):
+    print("df len:", len(df_combined))
+    print("#cols: ", len(df_combined.columns))
 
 ########### ###########
 def get_dataset(chembl_con,
@@ -35,44 +38,37 @@ def get_dataset(chembl_con,
     print("get_aggregated_acticity_ct_pairs")
     df_combined = get_activity_ct_pairs.get_aggregated_acticity_ct_pairs(
         chembl_con, limit_to_literature)
-    print("df len:", len(df_combined))
-    print("#cols: ", len(df_combined.columns))
+    print_df_combined_stats(df_combined)
 
     print("add_cti_from_drug_mechanisms")
     df_combined, dti_tids_set, DTIs_set = get_drug_mechanism_ct_pairs.add_cti_from_drug_mechanisms(
         chembl_con, df_combined)
-    print("df len:", len(df_combined))
-    print("#cols: ", len(df_combined.columns))
+    print_df_combined_stats(df_combined)
 
     print("add_cti_annotations")
     df_combined = add_cti_annotations.add_cti_annotations(
         df_combined, dti_tids_set, DTIs_set)
-    print("df len:", len(df_combined))
-    print("#cols: ", len(df_combined.columns))
+    print_df_combined_stats(df_combined)
 
     print("add_all_chembl_compound_properties")
     df_combined, df_cpd_props, atc_levels = add_chembl_compound_properties.add_all_chembl_compound_properties(
         df_combined, chembl_con, limit_to_literature)
-    print("df len:", len(df_combined))
-    print("#cols: ", len(df_combined.columns))
+    print_df_combined_stats(df_combined)
 
     print("add_chembl_target_class_annotations")
     df_combined, target_classes_level1, target_classes_level2 = add_chembl_target_class_annotations.add_chembl_target_class_annotations(
         df_combined, chembl_con)
-    print("df len:", len(df_combined))
-    print("#cols: ", len(df_combined.columns))
+    print_df_combined_stats(df_combined)
 
     print("add_rdkit_compound_descriptors")
     if calculate_RDKit:
         df_combined = add_rdkit_compound_descriptors.add_rdkit_compound_descriptors(
             df_combined)
-    print("df len:", len(df_combined))
-    print("#cols: ", len(df_combined.columns))
+    print_df_combined_stats(df_combined)
 
     print("clean_dataset")
     df_combined = clean_dataset.clean_dataset(df_combined, chembl_con, calculate_RDKit)
-    print("df len:", len(df_combined))
-    print("#cols: ", len(df_combined.columns))
+    print_df_combined_stats(df_combined)
 
     print("sanity_checks")
     sanity_checks.sanity_checks(df_combined, df_cpd_props, atc_levels, target_classes_level1, target_classes_level2, calculate_RDKit)

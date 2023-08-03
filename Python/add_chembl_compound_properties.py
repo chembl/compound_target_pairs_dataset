@@ -64,27 +64,34 @@ def add_chembl_properties_and_structures(df_combined, chembl_con):
     return df_combined, df_cpd_props
 
 
-
-
 def add_ligand_efficiency_metrics(df_combined):
     """
-    Calculate the ligand efficiency metrics for the compounds based on the mean pchembl values for a compound-target pair and the following ligand efficiency (LE) formulas:
+    Calculate the ligand efficiency metrics for the compounds based on the mean pchembl values for a compound-target pair and the following ligand efficiency (LE) formulas: 
 
-    $\text{LE} = \frac{\Delta\text{G}}{\text{HA}}$
-    where $ \Delta\text{G} = − RT \ln(K_d)$, $− RT\ln(K_i)$, or $− RT\ln(IC_{50})$
+    .. math::
+        LE &= \\frac{\\Delta G}{HA}
+            \\qquad \\qquad \\text{where } \\Delta G = - RT \\ln(K_d)
+            \\text{, } - RT\\ln(K_i)
+            \\text{,  or} - RT\\ln(IC_{50}) 
 
-    $\text{LE}=\frac{(2.303 \cdot 298 \cdot 0.00199 \cdot \text{pchembl\_value})} {\text{heavy\_atoms}}$
+        LE &= \\frac{2.303 \\cdot 298 \\cdot 0.00199 \\cdot pchembl \\_ value} {heavy \\_ atoms}
 
+        BEI &= \\frac{pchembl \\_ mean \cdot 1000}{mw \\_ freebase}
 
-    $\text{BEI}=\frac{\text{pchembl\_mean} \cdot 1000}{\text{mw\_freebase}}$
+        SEI &= \\frac{pchembl \\_ mean \cdot 100}{PSA}
 
-    $\text{SEI}=\frac{\text{pchembl\_mean} \cdot 100}{\text{PSA}}$
-
-    $\text{LLE}=\text{pchembl\_mean}-\text{ALOGP}$
-
+        LLE &= pchembl \\_ mean - ALOGP
+    
+    
     Since LE metrics are based on pchembl values, they are calculated twice.
     Once for the pchembl values based on binding + functional assays (BF) and once for the pchembl values based on binding assays only (B).
+    
+    :param df_combined: _description_
+    :type df_combined: _type_
+    :return: _description_
+    :rtype: _type_
     """
+
     for suffix in ['BF', 'B']:
         df_combined['LE_'+suffix] = df_combined['pchembl_value_mean_'+suffix]/df_combined['heavy_atoms']*(2.303*298*0.00199)
         # replace infinity values with None as they are not useful

@@ -10,16 +10,23 @@ def add_cti_annotations(df_combined, dti_tids_set, DTIs_set):
 
     The assigments are based on the following table:
 
-    |in drug_mechanisms table?|max_phase?|therapeutic target?|DTI annotation|explanation|
-    |:-----:|:-----:|:-----:|:-----:|:-----|
-    |yes|4|-|D_DT|drug - drug target|
-    |yes|3|-|C3_DT|clinical candidate in phase 3 - drug target|
-    |yes|2|-|C2_DT|clinical candidate in phase 2 - drug target|
-    |yes|1|-|C1_DT|clinical candidate in phase 1 - drug target|
-    |yes|<1|-|C0_DT|compound in unknown clinical phase\[1\] - drug target|
-    |no|-|yes|DT|drug target|
-    |no|-|no|NDT|not drug target|
-
+    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
+    |in drug_mechanisms table?  |max_phase? |therapeutic target?    |DTI annotation |explanation                                            |
+    +===========================+===========+=======================+===============+=======================================================+
+    |yes                        |4          |--                     |D_DT           |drug - drug target                                     |
+    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
+    |yes                        |3          |--                     |C3_DT          |clinical candidate in phase 3 - drug target            |
+    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
+    |yes                        |2          |--                     |C2_DT          |clinical candidate in phase 2 - drug target            |
+    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
+    |yes                        |1          |--                     |C1_DT          |clinical candidate in phase 1 - drug target            |
+    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
+    |yes                        |<1         |--                     |C0_DT          |compound in unknown clinical phase\[1\] - drug target  |
+    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
+    |no                         |--         |yes                    |DT             |drug target                                            |
+    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
+    |no                         |--         |no                     |NDT            |not drug target                                        |
+    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
 
     \[1\] There are three possible annotations in ChEMBL with max_phase not between 1 and 4:
     - 0.5 = early phase 1 clinical trials  
