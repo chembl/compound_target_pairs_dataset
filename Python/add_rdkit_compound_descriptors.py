@@ -4,10 +4,16 @@ from rdkit.Chem import Descriptors
 from rdkit.Chem import PandasTools
 from tqdm import tqdm
 
-def add_built_in_descriptors(df_combined):
-    # Built-in Compound Descriptors
-    # Add relevant compound descriptors using built-in RDKit methods. 
 
+def add_built_in_descriptors(df_combined: pd.DataFrame) -> pd.DataFrame:
+    """
+    Add RDKit built-in compound descriptors. 
+
+    :param df_combined: Pandas DataFrame with compound-target pairs
+    :type df_combined: pd.DataFrame
+    :return: Pandas DataFrame with added built-in RDKit compound descriptors
+    :rtype: pd.DataFrame
+    """
     # add a column with RDKit molecules, used to calculate the descriptors
     PandasTools.AddMoleculeColumnToFrame(df_combined, 'canonical_smiles', 'mol', includeFingerprints=False)
 
@@ -36,7 +42,21 @@ def add_built_in_descriptors(df_combined):
     
     return df_combined
 
-def calculate_aromatic_atoms(smiles_set):
+
+def calculate_aromatic_atoms(smiles_set: set[str]) -> (dict[str, int], dict[str, int], dict[str, int], dict[str, int]):
+    """
+    Get dictionaries with number of aromatic atoms for each smiles.
+
+    :param smiles_set: Set of smiles to calculate the number of aromatic atoms for
+    :type smiles_set: set[str]
+    :return: Dictionaries with: 
+
+        - SMILES -> # aromatics atoms 
+        - SMILES -> # aromatic carbon atoms 
+        - SMILES -> # aromatic nitrogen atoms 
+        - SMILES -> # aromatic hetero atoms 
+    :rtype: (dict[str, int], dict[str, int], dict[str, int], dict[str, int])
+    """
     aromatic_atoms_dict = dict()
     aromatic_c_dict = dict()
     aromatic_n_dict = dict()
@@ -51,7 +71,21 @@ def calculate_aromatic_atoms(smiles_set):
         
     return aromatic_atoms_dict, aromatic_c_dict, aromatic_n_dict, aromatic_hetero_dict
 
-def add_aromaticity_descriptors(df_combined):
+
+def add_aromaticity_descriptors(df_combined: pd.DataFrame) -> pd.DataFrame:
+    """
+    Add number of aromatic atoms in a compounds, specifically:
+
+    - total # aromatics atoms (aromatic_atoms)
+    - # aromatic carbon atoms (aromatic_c)
+    - # aromatic nitrogen atoms (aromatic_n)
+    - # aromatic hetero atoms (aromatic_hetero)
+
+    :param df_combined: Pandas DataFrame with compound-target pairs
+    :type df_combined: pd.DataFrame
+    :return: Pandas DataFrame with added counts of aromatic atoms
+    :rtype: pd.DataFrame
+    """
     # use df_combined_w_smiles to exclude null values
     smiles_set = set(df_combined["canonical_smiles"])
     aromatic_atoms_dict, aromatic_c_dict, aromatic_n_dict, aromatic_hetero_dict = calculate_aromatic_atoms(smiles_set)
@@ -64,7 +98,15 @@ def add_aromaticity_descriptors(df_combined):
     return df_combined
 
 
-def add_rdkit_compound_descriptors(df_combined):
+def add_rdkit_compound_descriptors(df_combined: pd.DataFrame) -> pd.DataFrame:
+    """
+    Add RDKit-based compound descriptors (built-in and numbers of aromatic atoms).
+
+    :param df_combined: Pandas DataFrame with compound-target pairs
+    :type df_combined: pd.DataFrame
+    :return: Pandas DataFrame with added built-in RDKit compound descriptors and numbers of aromatic atoms
+    :rtype: pd.DataFrame
+    """
     df_combined = add_built_in_descriptors(df_combined)
     df_combined = add_aromaticity_descriptors(df_combined)
 
