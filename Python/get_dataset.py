@@ -57,7 +57,7 @@ def get_dataset(chembl_con,
 
     print("add_chembl_target_class_annotations")
     df_combined, target_classes_level1, target_classes_level2 = add_chembl_target_class_annotations.add_chembl_target_class_annotations(
-        df_combined, chembl_con)
+        df_combined, chembl_con, output_path, write_to_csv, write_to_excel, delimiter)
     print_df_combined_stats(df_combined)
 
     print("add_rdkit_compound_descriptors")

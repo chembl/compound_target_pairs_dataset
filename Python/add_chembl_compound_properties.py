@@ -3,18 +3,17 @@ import pandas as pd
 import sqlite3
 
 ########### Add Compound Properties Based on ChEMBL Data ###########
-def add_first_publication_date(df_combined: pd.DataFrame, chembl_con: sqlite3.Connection, limit_to_literature: bool) -> pd.DataFrame:
+def add_first_publication_date(df_combined: pd.DataFrame, chembl_con: sqlite3.Connection, limit_to_literature: bool) -> pd.DataFrame:        
     """
     Query and calculate the first publication of a compound based on ChEMBL data (column name: first_publication_cpd).
-    If limit_to_literature is True, this corresponds to the first appearance of the compound in the literature according to ChEMBL.
-    Otherwise this is the first appearance in any source in ChEMBL.
+    If limit_to_literature is True, this corresponds to the first appearance of the compound in the literature according to ChEMBL. 
+    Otherwise this is the first appearance in any source in ChEMBL. 
 
     :param df_combined: Pandas DataFrame with compound-target pairs
     :type df_combined: pd.DataFrame
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
     :param limit_to_literature: Base first_publication_cpd on literature sources only if True. 
-    Base it on all available sources otherwise.
     :type limit_to_literature: bool
     :return: Pandas DataFrame with added first_publication_cpd.
     :rtype: pd.DataFrame
@@ -51,7 +50,7 @@ def add_chembl_properties_and_structures(df_combined: pd.DataFrame, chembl_con: 
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
     :return: - Pandas DataFrame with added compound properties and structures. \\
-    - Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL.
+        - Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL.
     :rtype: (pd.DataFrame, pd.DataFrame)
     """
     sql = '''
@@ -141,7 +140,7 @@ def add_atc_classification(df_combined: pd.DataFrame, chembl_con: sqlite3.Connec
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
     :return: - Pandas DataFrame with added ATC classifications \\
-    - Pandas DataFrame with ATC annotations in ChEMBL
+        - Pandas DataFrame with ATC annotations in ChEMBL
     :rtype: (pd.DataFrame, pd.DataFrame)
     """
     sql = '''
@@ -184,8 +183,8 @@ def add_all_chembl_compound_properties(df_combined: pd.DataFrame, chembl_con: sq
     :param limit_to_literature: Base first_publication_cpd on literature sources only if True. Base it on all available sources otherwise.
     :type limit_to_literature: bool
     :return: - Pandas DataFrame with added compound properties \\
-    - Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL \\
-    - Pandas DataFrame with ATC annotations in ChEMBL
+        - Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL \\
+        - Pandas DataFrame with ATC annotations in ChEMBL
     :rtype: (pd.DataFrame, pd.DataFrame, pd.DataFrame)
     """
     df_combined = add_first_publication_date(df_combined, chembl_con, limit_to_literature)

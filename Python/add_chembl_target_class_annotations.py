@@ -69,7 +69,7 @@ def get_target_class_table(chembl_con: sqlite3.Connection, current_tids: set) ->
 
 
 def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: sqlite3.Connection, 
-                                        path_results: str, write_to_csv: bool, write_to_excel: bool, delimiter: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
+                                        output_path: str, write_to_csv: bool, write_to_excel: bool, delimiter: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
     Add level 1 and 2 target class annotations. 
     Assignments for target IDs with more than one target class assignment per level 
@@ -82,8 +82,8 @@ def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: s
     :type df_combined: pd.DataFrame
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
-    :param path_results: Path to write the targets with more than one target class assignment to
-    :type path_results: str
+    :param output_path: Path to write the targets with more than one target class assignment to
+    :type output_path: str
     :param write_to_csv: True if output should be written to csv
     :type write_to_csv: bool
     :param write_to_excel: True if output should be written to excel
@@ -91,8 +91,8 @@ def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: s
     :param delimiter: Delimiter in csv-output
     :type delimiter: str
     :return: - Pandas DataFrame with added target class annotations \\
-    - Pandas DataFrame with mapping from target id to level 1 target class \\
-    - Pandas DataFrame with mapping from target id to level 2 target class
+        - Pandas DataFrame with mapping from target id to level 1 target class \\
+        - Pandas DataFrame with mapping from target id to level 2 target class
     :rtype: (pd.DataFrame, pd.DataFrame, pd.DataFrame)
     """
     current_tids = set(df_combined['tid'])
@@ -129,12 +129,12 @@ def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: s
 
     # Output targets have more than one level 1 target class
     more_than_one_level_1 = df_combined[(df_combined['target_class_l1'].notnull()) & (df_combined['target_class_l1'].str.contains('|', regex=False))][['tid', 'target_pref_name', 'target_type', 'target_class_l1', 'target_class_l2']].drop_duplicates()
-    name_more_than_one_level_1 = os.path.join(path_results, "targets_w_more_than_one_level_1_tclass")
+    name_more_than_one_level_1 = os.path.join(output_path, "targets_w_more_than_one_level_1_tclass")
     get_subsets.write_output(more_than_one_level_1, name_more_than_one_level_1, write_to_csv, write_to_excel, delimiter)
 
     # Output targets have more than one level 1 target class
     more_than_one_level_2 = df_combined[(df_combined['target_class_l2'].notnull()) & (df_combined['target_class_l2'].str.contains('|', regex=False))][['tid', 'target_pref_name', 'target_type', 'target_class_l1', 'target_class_l2']].drop_duplicates()
-    name_more_than_one_level_2 = os.path.join(path_results, "targets_w_more_than_one_level_2_tclass")
+    name_more_than_one_level_2 = os.path.join(output_path, "targets_w_more_than_one_level_2_tclass")
     get_subsets.write_output(more_than_one_level_2, name_more_than_one_level_2, write_to_csv, write_to_excel, delimiter)
 
     return df_combined, target_classes_level1, target_classes_level2
