@@ -185,7 +185,6 @@ def reorder_columns(df_combined, calculate_RDKit):
     return df_combined
 
 def clean_dataset(df_combined, chembl_con, calculate_RDKit):
-    df_combined = remove_irrelevant_compounds(df_combined, chembl_con)
     df_combined = clean_none_values(df_combined)
     df_combined = set_types(df_combined, calculate_RDKit)
     df_combined = round_floats(df_combined, decimal_places = 4)
