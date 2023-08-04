@@ -161,7 +161,7 @@ def add_annotations_to_drug_mechanisms_cti(chembl_con: sqlite3.Connection, cpd_t
     return cpd_target_pairs
 
 
-def get_cti_from_drug_mechanisms(chembl_con: sqlite3.Connection) -> pd.DataFrame:
+def get_drug_mechanism_ct_pairs(chembl_con: sqlite3.Connection) -> pd.DataFrame:
     """
     Get compound-target pairs from the drug_mechanism table 
     with all the columns that are present in the compound-target pairs based on activities.
@@ -193,7 +193,7 @@ def get_cti_from_drug_mechanisms(chembl_con: sqlite3.Connection) -> pd.DataFrame
 
 
 ########### Add Compounds From the drug_mechanism Table to the Dataset ###########
-def add_cti_from_drug_mechanisms(chembl_con: sqlite3.Connection, df_combined: pd.DataFrame) -> (pd.DataFrame, set, set):
+def add_drug_mechanism_ct_pairs(chembl_con: sqlite3.Connection, df_combined: pd.DataFrame) -> (pd.DataFrame, set, set):
     """
     Add compound-target pairs from the drug_mechanism table that are not in the dataset based on the initial ChEMBL query.
     These are compound-target pairs for which there is no associated pchembl value data.
@@ -208,7 +208,7 @@ def add_cti_from_drug_mechanisms(chembl_con: sqlite3.Connection, df_combined: pd
         - set of targets in the drug_mechanism table
     :rtype: (pd.DataFrame, set, set)
     """
-    cpd_target_pairs = get_cti_from_drug_mechanisms(chembl_con)
+    cpd_target_pairs = get_drug_mechanism_ct_pairs(chembl_con)
     drug_mechanism_pairs_set = set(cpd_target_pairs.agg('{0[parent_molregno]}_{0[tid]}'.format, axis=1))
     drug_mechanism_targets_set = set(cpd_target_pairs['tid'])
 

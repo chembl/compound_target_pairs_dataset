@@ -4,7 +4,7 @@ import pandas as pd
 # import test_utils.add_dataset_sizes
 import get_activity_ct_pairs
 import get_drug_mechanism_ct_pairs
-import add_cti_annotations
+import add_dti_annotations
 import add_chembl_compound_properties
 import add_chembl_target_class_annotations
 import add_rdkit_compound_descriptors
@@ -41,12 +41,12 @@ def get_dataset(chembl_con,
     print_df_combined_stats(df_combined)
 
     print("add_cti_from_drug_mechanisms")
-    df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set = get_drug_mechanism_ct_pairs.add_cti_from_drug_mechanisms(
+    df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set = get_drug_mechanism_ct_pairs.add_drug_mechanism_ct_pairs(
         chembl_con, df_combined)
     print_df_combined_stats(df_combined)
 
     print("add_cti_annotations")
-    df_combined = add_cti_annotations.add_cti_annotations(
+    df_combined = add_dti_annotations.add_dti_annotations(
         df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set)
     print_df_combined_stats(df_combined)
 

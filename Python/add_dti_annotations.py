@@ -1,9 +1,12 @@
+import pandas as pd
+
 ########### CTI (Compound-Target Interaction) Annotations ###########
-def add_cti_annotations(df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set):
+def add_dti_annotations(df_combined: pd.DataFrame, drug_mechanism_pairs_set: set, drug_mechanism_targets_set: set) -> pd.DataFrame:
     """
     Every compound-target pair is assigned a DTI (drug target interaction) annotation.  
 
     The assignement is based on three questions:
+
     - Is the compound-target pair in the drug_mechanisms table? = Is it a known relevant compound-target interaction?
     - What is the max_phase of the compound? = Is it a drug / clinical compound?
     - Is the target in the drug_mechanisms table = Is it a therapeutic target?
@@ -13,36 +16,47 @@ def add_cti_annotations(df_combined, drug_mechanism_pairs_set, drug_mechanism_ta
     +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
     |in drug_mechanisms table?  |max_phase? |therapeutic target?    |DTI annotation |explanation                                            |
     +===========================+===========+=======================+===============+=======================================================+
-    |yes                        |4          |--                     |D_DT           |drug - drug target                                     |
+    | yes                       | 4         | --                    | D_DT \[1\]    | drug - drug target                                    |
     +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
-    |yes                        |3          |--                     |C3_DT          |clinical candidate in phase 3 - drug target            |
+    | yes                       | 3         | --                    | C3_DT         | clinical candidate in phase 3 - drug target           |
     +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
-    |yes                        |2          |--                     |C2_DT          |clinical candidate in phase 2 - drug target            |
+    | yes                       | 2         | --                    | C2_DT         | clinical candidate in phase 2 - drug target           |
     +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
-    |yes                        |1          |--                     |C1_DT          |clinical candidate in phase 1 - drug target            |
+    | yes                       | 1         | --                    | C1_DT         | clinical candidate in phase 1 - drug target           |
     +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
-    |yes                        |<1         |--                     |C0_DT          |compound in unknown clinical phase\[1\] - drug target  |
+    | yes                       | <1        | --                    | C0_DT         | compound in unknown clinical phase \[2\] - drug target|
     +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
-    |no                         |--         |yes                    |DT             |drug target                                            |
+    | no                        | --        | yes                   | DT            | drug target                                           |
     +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
-    |no                         |--         |no                     |NDT            |not drug target                                        |
+    | no                        | --        | no                    | NDT           | not drug target                                       |
     +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+
 
-    \[1\] There are three possible annotations in ChEMBL with max_phase not between 1 and 4:
+    \[1\] The annotation D_DT instead of C4_DT was chosen to be consistent with the annotations in a previous version of the dataset. \\
+    For the same reason the column is named DTI (drug-target interaction) instead of CTI (compound-target interaction) 
+    despite having specific annotations for clinical canidates. 
+
+    \[2\] Since ChEMBL32 there are three possible annotations in ChEMBL with a max_phase value not between 1 and 4:
+
     - 0.5 = early phase 1 clinical trials  
     - -1 = clinical phase unknown for drug or clinical candidate drug, i.e., where ChEMBL cannot assign a clinical phase
     - NULL = preclinical compounds with bioactivity data
 
     All three are grouped together into the annotation C0_DT.
 
-    :param df_combined: _description_
-    :type df_combined: _type_
-    :param dti_tids_set: _description_
-    :type dti_tids_set: _type_
-    :param DTIs_set: _description_
-    :type DTIs_set: _type_
+    Compound-target pairs that were annotated with NDT, 
+    i.e., compound-target pairs that are not in the drug_mechanisms table 
+    and for which the target was also not in the drug_mechanisms table (not a comparator compound), are discarded.
+
+    :param df_combined: Pandas DataFrame with compound-target pairs based on activities AND drug_mechanism table
+    :type df_combined: pd.DataFrame
+    :param drug_mechanism_pairs_set: set of compound-target pairs in the drug_mechanism table
+    :type drug_mechanism_pairs_set: set
+    :param drug_mechanism_targets_set: set of targets in the drug_mechanism table
+    :type drug_mechanism_targets_set: set
+    :return: Pandas DataFrame with all compound-target pairs and their DTI annotations.
+    :rtype: pd.DataFrame
     """
-    # Add a new column *therapeutic_target* which is set to True if target is in the drug_mechanism table
+    # Add a new column *therapeutic_target* which is set to True if the target is in the drug_mechanism table
     df_combined['therapeutic_target'] = df_combined['tid'].isin(drug_mechanism_targets_set)
 
     # Assign the annotations based on the table.
@@ -55,7 +69,7 @@ def add_cti_annotations(df_combined, drug_mechanism_pairs_set, drug_mechanism_ta
     df_combined.loc[(df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set) & 
                     (~df_combined['max_phase'].isin([1, 2, 3, 4]))), 'DTI'] = "C0_DT"
 
-    # Target from the drug mechanism table
+    # Target is in the drug mechanism table
     df_combined.loc[((~df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set)) 
                     & (df_combined['therapeutic_target'] == True)), 'DTI'] = "DT"
 
@@ -69,9 +83,7 @@ def add_cti_annotations(df_combined, drug_mechanism_pairs_set, drug_mechanism_ta
     # ############### TESTING: before discarding NDT rows ###############
     # add_dataset_sizes(df_combined, "pre DTI")
 
-    # Discard rows that were annotated with NDT, 
-    # i.e., compound-target pairs that are not in the drug_mechanisms table 
-    # and for which the target was also not in the drug_mechanisms table (not a comparator compound).
+    # Discard NDT rows
     df_combined = df_combined[(df_combined['DTI'].isin(['D_DT', 'C3_DT', 'C2_DT', 'C1_DT', 'C0_DT', 'DT']))]
 
     # # TODO: include?

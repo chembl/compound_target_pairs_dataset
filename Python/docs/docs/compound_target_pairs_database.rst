@@ -6,7 +6,7 @@ Python
 
    add_chembl_compound_properties
    add_chembl_target_class_annotations
-   add_cti_annotations
+   add_dti_annotations
    add_rdkit_compound_descriptors
    clean_dataset
    get_activity_ct_pairs

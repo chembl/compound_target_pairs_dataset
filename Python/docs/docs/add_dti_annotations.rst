@@ -1,7 +1,7 @@
-add\_cti\_annotations module
+add\_dti\_annotations module
 ============================
 
-.. automodule:: add_cti_annotations
+.. automodule:: add_dti_annotations
    :members:
    :undoc-members:
    :show-inheritance:
