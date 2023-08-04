@@ -3,7 +3,7 @@ import pandas as pd
 import sqlite3
 
 ########### Get Initial Compound-Target Data From ChEMBL ###########
-def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit_to_literature: True) -> pd.DataFrame:
+def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit_to_literature: bool) -> pd.DataFrame:
     """
     Query ChEMBL activities and related assay for compound-target pairs with an associated pchembl value.  
     Compound-target pairs are required to have a pchembl value.  
@@ -14,7 +14,7 @@ def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
     :param limit_to_literature: Include only literature sources if True. Include all available sources otherwise.
-    :type limit_to_literature: True
+    :type limit_to_literature: bool
     :return: Pandas DataFrame with compound-target pairs with a pchembl value.
     :rtype: pd.DataFrame
     """
