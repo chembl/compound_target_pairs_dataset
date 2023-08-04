@@ -5,14 +5,14 @@ import sqlite3
 import get_subsets
 
 ########### Add Target Class Annotations Based on ChEMBL Data ###########
-def get_target_class_table(chembl_con: sqlite3.Connection, current_tids: set) -> pd.DataFrame:
+def get_target_class_table(chembl_con: sqlite3.Connection, current_tids: set[int]) -> pd.DataFrame:
     """
     Get level 1 and level 2 target class annotations in ChEMBL.
 
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
     :param current_tids: Set of target ids to take into account
-    :type current_tids: set
+    :type current_tids: set[int]
     :return: Pandas DataFrame with target class information
     :rtype: pd.DataFrame
     """
