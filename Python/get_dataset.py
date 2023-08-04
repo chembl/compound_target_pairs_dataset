@@ -41,13 +41,13 @@ def get_dataset(chembl_con,
     print_df_combined_stats(df_combined)
 
     print("add_cti_from_drug_mechanisms")
-    df_combined, dti_tids_set, DTIs_set = get_drug_mechanism_ct_pairs.add_cti_from_drug_mechanisms(
+    df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set = get_drug_mechanism_ct_pairs.add_cti_from_drug_mechanisms(
         chembl_con, df_combined)
     print_df_combined_stats(df_combined)
 
     print("add_cti_annotations")
     df_combined = add_cti_annotations.add_cti_annotations(
-        df_combined, dti_tids_set, DTIs_set)
+        df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set)
     print_df_combined_stats(df_combined)
 
     print("add_all_chembl_compound_properties")
