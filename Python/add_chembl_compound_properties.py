@@ -183,7 +183,7 @@ def add_all_chembl_compound_properties(df_combined: pd.DataFrame, chembl_con: sq
     :type chembl_con: sqlite3.Connection
     :param limit_to_literature: Base first_publication_cpd on literature sources only if True. Base it on all available sources otherwise.
     :type limit_to_literature: bool
-    :return: - Pandas DataFrame with added ATC classifications \\
+    :return: - Pandas DataFrame with added compound properties \\
     - Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL \\
     - Pandas DataFrame with ATC annotations in ChEMBL
     :rtype: (pd.DataFrame, pd.DataFrame, pd.DataFrame)
