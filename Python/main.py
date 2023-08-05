@@ -75,21 +75,23 @@ if __name__ == "__main__":
 
     if args.sqlite_path == "":
         with chembl_downloader.connect(version=args.chembl_version) as chembl_con:
-            get_dataset.get_dataset(chembl_con,
-                                    args.chembl_version,
-                                    args.output_path,
-                                    args.limit_to_literature,
-                                    args.calculate_RDKit,
-                                    args.write_to_csv, args.delimiter,
-                                    args.write_to_excel,
-                                    args.write_full_dataset, args.write_BF, args.write_B)
+            get_dataset.get_ct_pair_dataset(chembl_con,
+                                            args.chembl_version,
+                                            args.output_path,
+                                            args.limit_to_literature,
+                                            args.calculate_RDKit,
+                                            args.write_to_csv,
+                                            args.write_to_excel,
+                                            args.delimiter,
+                                            args.write_full_dataset, args.write_BF, args.write_B)
     else:
         with sqlite3.connect(args.sqlite_path) as chembl_con:
-            get_dataset.get_dataset(chembl_con,
-                                    args.chembl_version,
-                                    args.output_path,
-                                    args.limit_to_literature,
-                                    args.calculate_RDKit,
-                                    args.write_to_csv, args.delimiter,
-                                    args.write_to_excel,
-                                    args.write_full_dataset, args.write_BF, args.write_B)
+            get_dataset.get_ct_pair_dataset(chembl_con,
+                                            args.chembl_version,
+                                            args.output_path,
+                                            args.limit_to_literature,
+                                            args.calculate_RDKit,
+                                            args.write_to_csv,
+                                            args.write_to_excel,
+                                            args.delimiter,
+                                            args.write_full_dataset, args.write_BF, args.write_B)
