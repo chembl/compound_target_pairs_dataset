@@ -156,3 +156,93 @@ def sanity_checks(df_combined: pd.DataFrame,
     if calculate_RDKit:
         check_rdkit_props(df_combined)
 
+
+
+########### Sanity checks for writing and reading a dataset ###########
+def test_equality(current_df: pd.DataFrame, read_file_name: str, assay_type: str, file_type_list: list[str], calculate_RDKit: bool):
+    """
+    Check that the file that was written to <read_file_name> 
+    is identical to the DataFrame <current_df> it was based on.
+
+    :param current_df: Pandas DataFrame that was written to read_file_name
+    :type current_df: pd.DataFrame
+    :param read_file_name: Name of the file current_df was written to
+    :type read_file_name: str
+    :param assay_type: Types of assays current_df contains information about. \
+        Options: "BF" (binding+functional), "B" (binding), "all" (contains both BF and B information)
+    :type assay_type: str
+    :param file_type_list: List of file extensions used with read_file_name. Options: csv, xlsx
+    :type file_type_list: list[str]
+    :param calculate_RDKit: If True, current_df contains RDKit-based columns
+    :type calculate_RDKit: bool
+    """
+    current_df_copy = current_df.copy().reset_index(drop=True)
+
+    for file_type in file_type_list:
+        if file_type == 'csv':
+            try:
+                read_file = pd.read_csv(read_file_name+".csv", sep=";",
+                                        dtype={'mutation': 'str',
+                                               'tid_mutation': 'str',
+                                               'atc_level1': 'str',
+                                               'target_class_l2': 'str',
+                                               'ro3_pass': 'str',
+                                               'molecular_species': 'str',
+                                               'full_molformula': 'str',
+                                               'standard_inchi': 'str',
+                                               'standard_inchi_key': 'str',
+                                               'canonical_smiles': 'str',
+                                               'scaffold_w_stereo': 'str',
+                                               'scaffold_wo_stereo': 'str',
+                                               })
+            except FileNotFoundError:
+                print("{read_file_name}.{file_type} not found")
+                continue
+        elif file_type == 'xlsx':
+            try:
+                read_file = pd.read_excel(read_file_name+".xlsx")
+            except FileNotFoundError:
+                print("{read_file_name}.{file_type} not found")
+                continue
+
+        if assay_type == 'BF' or assay_type == 'all':
+            read_file = read_file.astype({'first_publication_cpd_target_pair_BF': 'Int64',
+                                          'first_publication_cpd_target_pair_w_pchembl_BF': 'Int64',
+                                          })
+        if assay_type == 'B' or assay_type == 'all':
+            read_file = read_file.astype({'first_publication_cpd_target_pair_B': 'Int64',
+                                          'first_publication_cpd_target_pair_w_pchembl_B': 'Int64',
+                                          })
+        read_file = read_file.astype({'first_approval': 'Int64',
+                                      'usan_year': 'Int64',
+                                      'first_publication_cpd': 'Int64',
+                                      'hba': 'Int64',
+                                      'hbd': 'Int64',
+                                      'rtb': 'Int64',
+                                      'num_ro5_violations': 'Int64',
+                                      'aromatic_rings': 'Int64',
+                                      'heavy_atoms': 'Int64',
+                                      'hba_lipinski': 'Int64',
+                                      'hbd_lipinski': 'Int64',
+                                      'num_lipinski_ro5_violations': 'Int64',
+                                      })
+        if calculate_RDKit:
+            read_file = read_file.astype({'num_aliphatic_carbocycles': 'Int64',
+                                          'num_aliphatic_heterocycles': 'Int64',
+                                          'num_aliphatic_rings': 'Int64',
+                                          'num_aromatic_carbocycles': 'Int64',
+                                          'num_aromatic_heterocycles': 'Int64',
+                                          'num_aromatic_rings': 'Int64',
+                                          'num_heteroatoms': 'Int64',
+                                          'num_saturated_carbocycles': 'Int64',
+                                          'num_saturated_heterocycles': 'Int64',
+                                          'num_saturated_rings': 'Int64',
+                                          'ring_count': 'Int64',
+                                          'num_stereocentres': 'Int64',
+                                          'aromatic_atoms': 'Int64',
+                                          'aromatic_c': 'Int64',
+                                          'aromatic_n': 'Int64',
+                                          'aromatic_hetero': 'Int64',
+                                          })
+        
+        assert(read_file.equals(current_df_copy)), f"File {read_file_name}.{file_type} is not equal to the dataset it was based on."

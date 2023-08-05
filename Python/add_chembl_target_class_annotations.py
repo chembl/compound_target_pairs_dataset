@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import sqlite3
 
-import get_subsets
+import write_subsets
 
 ########### Add Target Class Annotations Based on ChEMBL Data ###########
 def get_target_class_table(chembl_con: sqlite3.Connection, current_tids: set[int]) -> pd.DataFrame:
@@ -130,11 +130,11 @@ def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: s
     # Output targets have more than one level 1 target class
     more_than_one_level_1 = df_combined[(df_combined['target_class_l1'].notnull()) & (df_combined['target_class_l1'].str.contains('|', regex=False))][['tid', 'target_pref_name', 'target_type', 'target_class_l1', 'target_class_l2']].drop_duplicates()
     name_more_than_one_level_1 = os.path.join(output_path, "targets_w_more_than_one_level_1_tclass")
-    get_subsets.write_output(more_than_one_level_1, name_more_than_one_level_1, write_to_csv, write_to_excel, delimiter)
+    write_subsets.write_output(more_than_one_level_1, name_more_than_one_level_1, write_to_csv, write_to_excel, delimiter)
 
     # Output targets have more than one level 1 target class
     more_than_one_level_2 = df_combined[(df_combined['target_class_l2'].notnull()) & (df_combined['target_class_l2'].str.contains('|', regex=False))][['tid', 'target_pref_name', 'target_type', 'target_class_l1', 'target_class_l2']].drop_duplicates()
     name_more_than_one_level_2 = os.path.join(output_path, "targets_w_more_than_one_level_2_tclass")
-    get_subsets.write_output(more_than_one_level_2, name_more_than_one_level_2, write_to_csv, write_to_excel, delimiter)
+    write_subsets.write_output(more_than_one_level_2, name_more_than_one_level_2, write_to_csv, write_to_excel, delimiter)
 
     return df_combined, target_classes_level1, target_classes_level2

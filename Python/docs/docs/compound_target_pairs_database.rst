@@ -13,8 +13,7 @@ Python
    get_dataset
    get_drug_mechanism_ct_pairs
    get_stats
-   get_subsets
    main
    sanity_checks
-   sanity_checks_read_write
    test_utils
+   write_subsets
