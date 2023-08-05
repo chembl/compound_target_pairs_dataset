@@ -42,7 +42,7 @@ def get_dataset(chembl_con,
 
     print("add_cti_from_drug_mechanisms")
     df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set = get_drug_mechanism_ct_pairs.add_drug_mechanism_ct_pairs(
-        chembl_con, df_combined)
+        df_combined, chembl_con)
     print_df_combined_stats(df_combined)
 
     print("add_cti_annotations")
@@ -56,7 +56,7 @@ def get_dataset(chembl_con,
     print_df_combined_stats(df_combined)
 
     print("remove_irrelevant_compounds")
-    df_combined = clean_dataset.remove_irrelevant_compounds(df_combined, chembl_con)
+    df_combined = clean_dataset.remove_compounds_without_smiles_and_mixtures(df_combined, chembl_con)
     print_df_combined_stats(df_combined)
 
     print("add_chembl_target_class_annotations")
@@ -71,7 +71,7 @@ def get_dataset(chembl_con,
     print_df_combined_stats(df_combined)
 
     print("clean_dataset")
-    df_combined = clean_dataset.clean_dataset(df_combined, chembl_con, calculate_RDKit)
+    df_combined = clean_dataset.clean_dataset(df_combined, calculate_RDKit)
     print_df_combined_stats(df_combined)
 
     print("sanity_checks")

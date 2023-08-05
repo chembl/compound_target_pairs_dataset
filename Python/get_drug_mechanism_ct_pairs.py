@@ -193,16 +193,16 @@ def get_drug_mechanism_ct_pairs(chembl_con: sqlite3.Connection) -> pd.DataFrame:
 
 
 ########### Add Compounds From the drug_mechanism Table to the Dataset ###########
-def add_drug_mechanism_ct_pairs(chembl_con: sqlite3.Connection, df_combined: pd.DataFrame) -> (pd.DataFrame, set, set):
+def add_drug_mechanism_ct_pairs(df_combined: pd.DataFrame, chembl_con: sqlite3.Connection) -> (pd.DataFrame, set, set):
     """
     Add compound-target pairs from the drug_mechanism table that are not in the dataset based on the initial ChEMBL query.
     These are compound-target pairs for which there is no associated pchembl value data.
     Since the pairs are known interactions, they are added to the dataset despite not having a pchembl value.
 
-    :param chembl_con: Sqlite3 connection to ChEMBL database.
-    :type chembl_con: sqlite3.Connection
     :param df_combined: Pandas Dataframe with compound-target pairs based on ChEMBL activity data
     :type df_combined: pd.DataFrame
+    :param chembl_con: Sqlite3 connection to ChEMBL database.
+    :type chembl_con: sqlite3.Connection
     :return: - Pandas DataFrame with compound-target pairs based on activities AND drug_mechanism table \\
         - set of compound-target pairs in the drug_mechanism table \\
         - set of targets in the drug_mechanism table
