@@ -14,11 +14,14 @@ import get_subsets
 import sanity_checks_read_write
 import get_stats
 
+
 def print_df_combined_stats(df_combined):
     print("df len:", len(df_combined))
     print("#cols: ", len(df_combined.columns))
 
 ########### ###########
+
+
 def get_dataset(chembl_con,
                 chembl_version,
                 output_path,
@@ -36,8 +39,7 @@ def get_dataset(chembl_con,
     # all_lengths_pchembl = []
 
     print("get_aggregated_acticity_ct_pairs")
-    df_combined = get_activity_ct_pairs.get_aggregated_acticity_ct_pairs(
-        chembl_con, limit_to_literature)
+    df_combined = get_activity_ct_pairs.get_aggregated_acticity_ct_pairs(chembl_con, limit_to_literature)
     print_df_combined_stats(df_combined)
 
     print("add_cti_from_drug_mechanisms")
@@ -75,7 +77,8 @@ def get_dataset(chembl_con,
     print_df_combined_stats(df_combined)
 
     print("sanity_checks")
-    sanity_checks.sanity_checks(df_combined, df_cpd_props, atc_levels, target_classes_level1, target_classes_level2, calculate_RDKit)
+    sanity_checks.sanity_checks(df_combined, df_cpd_props, atc_levels,
+                                target_classes_level1, target_classes_level2, calculate_RDKit)
 
     print("write_BF")
     min_nof_cpds_BF = 100
