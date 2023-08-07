@@ -1,6 +1,9 @@
+import logging
 import os
 import pandas as pd
 import sanity_checks
+
+import test_utils
 
 
 def write_output(df: pd.DataFrame, filename: str, write_to_csv: bool, write_to_excel: bool, delimiter: str) -> list[str]:
@@ -125,7 +128,8 @@ def get_data_subsets(data: pd.DataFrame, min_nof_cpds: int, desc: str) -> (pd.Da
 def write_BF_to_file(df_combined: pd.DataFrame, 
                      chembl_version: str, min_nof_cpds_BF: int,
                      output_path: str, write_BF: bool, write_to_csv: bool, write_to_excel: bool, delimiter: str,
-                     calculate_RDKit: bool) -> pd.DataFrame:
+                     calculate_RDKit: bool, 
+                     df_sizes: list[list[int], list[int]]) -> pd.DataFrame:
     """
     Calculate relevant subsets for the portion of df_combined that is based on binding+functional data. 
     If write_BF the subsets are written to output_path.
@@ -149,6 +153,8 @@ def write_BF_to_file(df_combined: pd.DataFrame,
     :type delimiter: str
     :param calculate_RDKit: Does df_combined include RDKit-based columns? 
     :type calculate_RDKit: bool
+    :param df_sizes: List of intermediate sized of the dataset used for debugging.
+    :type df_sizes: list[list[int], list[int]]
     :return: Pandas DataFrame with additional filtering columns for BF subsets
     :rtype: pd.Dataframe
     """
@@ -198,21 +204,22 @@ def write_BF_to_file(df_combined: pd.DataFrame,
             output_path, "ChEMBL"+chembl_version+"_CTI_BF_" + str(min_nof_cpds_BF) + "_d_dt")
         write_and_check_output(df_combined_BF_d_dt, name_BF_100_d_dt,
                                write_to_csv, write_to_excel, delimiter, desc, calculate_RDKit)
+        
+    if logging.DEBUG >= logging.root.level:
+        test_utils.add_dataset_sizes(df_combined_BF, "binding + functional", df_sizes)
+        test_utils.add_dataset_sizes(df_combined_BF_enough_cpds, "BF, >= 100", df_sizes)
+        test_utils.add_dataset_sizes(df_combined_BF_c_dt_d_dt, "BF, >= 100, c_dt and d_dt", df_sizes)
+        test_utils.add_dataset_sizes(df_combined_BF_d_dt, "BF, >= 100, d_dt", df_sizes)
+        
 
     return df_combined_annotated
-
-    # # TODO: include?
-    # ############### TESTING: binding and functional assays ###############
-    # add_dataset_sizes(df_combined_BF, "all assays")
-    # add_dataset_sizes(df_combined_BF_enough_cpds, "all, >= 100")
-    # add_dataset_sizes(df_combined_BF_c_dt_d_dt, "all, >= 100, c_dt and d_dt")
-    # add_dataset_sizes(df_combined_BF_d_dt, "all, >= 100, d_dt")
 
 
 def write_B_to_file(df_combined: pd.DataFrame, df_combined_annotated: pd.DataFrame,
                     chembl_version: str, min_nof_cpds_B: int,
                     output_path: str, write_B: bool, write_to_csv: bool, write_to_excel: bool, delimiter: str,
-                    calculate_RDKit: bool) -> pd.DataFrame:
+                    calculate_RDKit: bool, 
+                    df_sizes: list[list[int], list[int]]) -> pd.DataFrame:
     """
     Calculate relevant subsets for the portion of df_combined that is based on binding data. 
     If write_B the subsets are written to output_path.
@@ -238,6 +245,8 @@ def write_B_to_file(df_combined: pd.DataFrame, df_combined_annotated: pd.DataFra
     :type delimiter: str
     :param calculate_RDKit: Does df_combined include RDKit-based columns? 
     :type calculate_RDKit: bool
+    :param df_sizes: List of intermediate sized of the dataset used for debugging.
+    :type df_sizes: list[list[int], list[int]]
     :return: Pandas DataFrame with additional filtering columns for B subsets
     :rtype: pd.Dataframe
     """
@@ -282,14 +291,13 @@ def write_B_to_file(df_combined: pd.DataFrame, df_combined_annotated: pd.DataFra
         write_and_check_output(df_combined_B_d_dt, name_B_100_d_dt,
                                write_to_csv, write_to_excel, delimiter, desc, calculate_RDKit)
 
-    return df_combined_annotated
+    if logging.DEBUG >= logging.root.level:
+        test_utils.add_dataset_sizes(df_combined_B, "binding", df_sizes)
+        test_utils.add_dataset_sizes(df_combined_B_enough_cpds, "B, >= 100", df_sizes)
+        test_utils.add_dataset_sizes(df_combined_B_c_dt_d_dt, "B, >= 100, c_dt and d_dt", df_sizes)
+        test_utils.add_dataset_sizes(df_combined_B_d_dt, "B, >= 100, d_dt", df_sizes)
 
-    # # TODO: include?
-    # ############### TESTING: binding assays ###############
-    # add_dataset_sizes(df_combined_B, "binding")
-    # add_dataset_sizes(df_combined_B_enough_cpds, "b, >= 100")
-    # add_dataset_sizes(df_combined_B_c_dt_d_dt, "b, >= 100, c_dt and d_dt")
-    # add_dataset_sizes(df_combined_B_d_dt, "b, >= 100, d_dt")
+    return df_combined_annotated
 
 
 def write_full_dataset_to_file(df_combined: pd.DataFrame, 

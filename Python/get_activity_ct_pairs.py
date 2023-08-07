@@ -1,9 +1,12 @@
+import logging
 import numpy as np
 import pandas as pd
 import sqlite3
 
+import test_utils
+
 ########### Get Initial Compound-Target Data From ChEMBL ###########
-def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit_to_literature: bool) -> pd.DataFrame:
+def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit_to_literature: bool, df_sizes: list[list[int], list[int]]) -> pd.DataFrame:
     """
     Query ChEMBL activities and related assay for compound-target pairs with an associated pchembl value.  
     Compound-target pairs are required to have a pchembl value.  
@@ -15,6 +18,8 @@ def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit
     :type chembl_con: sqlite3.Connection
     :param limit_to_literature: Include only literature sources if True. Include all available sources otherwise.
     :type limit_to_literature: bool
+    :param df_sizes: List of intermediate sized of the dataset used for debugging.
+    :type df_sizes: list[list[int], list[int]]
     :return: Pandas DataFrame with compound-target pairs with a pchembl value.
     :rtype: pd.DataFrame
     """
@@ -66,8 +71,8 @@ def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit
     df_mols['cpd_target_pair'] = df_mols.agg('{0[parent_molregno]}_{0[tid]}'.format, axis=1)
     df_mols['cpd_target_pair_mutation'] = df_mols.agg('{0[parent_molregno]}_{0[tid_mutation]}'.format, axis=1)
 
-    # TODO: include this?
-    # test_utils.add_dataset_sizes(df_mols, "init", all_lengths, all_lengths_pchembl)
+    if logging.DEBUG >= logging.root.level:
+        test_utils.add_dataset_sizes(df_mols,  "initial query", df_sizes)
 
     return df_mols
 
@@ -125,7 +130,7 @@ def get_average_info(df: pd.DataFrame, suffix: str) -> pd.DataFrame:
 
 
 ########### Get Aggregated Compound-Target Pair Information ###########
-def get_aggregated_acticity_ct_pairs(chembl_con: sqlite3.Connection, limit_to_literature: bool) -> pd.DataFrame:
+def get_aggregated_acticity_ct_pairs(chembl_con: sqlite3.Connection, limit_to_literature: bool, df_sizes: list[list[int], list[int]]) -> pd.DataFrame:
     """
     Get dataset of compound target-pairs with an associated pchembl value 
     with pchembl and publication dates aggregated into one entry per pair.
@@ -142,10 +147,12 @@ def get_aggregated_acticity_ct_pairs(chembl_con: sqlite3.Connection, limit_to_li
     :type chembl_con: sqlite3.Connection
     :param limit_to_literature: Include only literature sources if True. Include all available sources otherwise.
     :type limit_to_literature: bool
+    :param df_sizes: List of intermediate sized of the dataset used for debugging.
+    :type df_sizes: list[list[int], list[int]]
     :return: Pandas Dataframe with compound-target pairs based on ChEMBL activity data aggregated into one entry per compound-target pair.
     :rtype: pd.DataFrame
     """
-    df_mols = get_compound_target_pairs_with_pchembl(chembl_con, limit_to_literature)
+    df_mols = get_compound_target_pairs_with_pchembl(chembl_con, limit_to_literature, df_sizes)
 
     # Summarise the information for binding and functional assays
     suffix = 'BF'
@@ -166,8 +173,5 @@ def get_aggregated_acticity_ct_pairs(chembl_con: sqlite3.Connection, limit_to_li
     # left merge because df_mols may contain assays that are of other types than binding / functional
     df_combined = df_combined.merge(df_mols.drop(columns=['pchembl_value', 'year', 'assay_type']).drop_duplicates(),
                                     on=['parent_molregno', 'tid_mutation'], how='left')
-
-    # TODO: include this?
-    # test_utils.add_dataset_sizes(df_combined, "pre dm table", all_lengths, all_lengths_pchembl)
 
     return df_combined

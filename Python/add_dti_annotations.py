@@ -79,16 +79,8 @@ def add_dti_annotations(df_combined: pd.DataFrame, drug_mechanism_pairs_set: set
     df_combined.loc[((~df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set)) 
                     & (df_combined['therapeutic_target'] == False)), 'DTI'] = "NDT"
 
-    # TODO: include?
-    # ############### TESTING: before discarding NDT rows ###############
-    # add_dataset_sizes(df_combined, "pre DTI")
-
     # Discard NDT rows
     df_combined = df_combined[(df_combined['DTI'].isin(['D_DT', 'C3_DT', 'C2_DT', 'C1_DT', 'C0_DT', 'DT']))]
-
-    # # TODO: include?
-    # ############### TESTING: after discarding NDT rows ###############
-    # add_dataset_sizes(df_combined, "post DTI")
     
     return df_combined
 

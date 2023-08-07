@@ -71,10 +71,6 @@ def add_chembl_properties_and_structures(df_combined: pd.DataFrame, chembl_con: 
 
     df_combined = df_combined.merge(df_cpd_props, on = 'parent_molregno', how = 'left')
 
-    # # TODO: include?
-    # ############### TESTING: compound props ###############
-    # add_dataset_sizes(df_combined, "cpd props")
-
     return df_combined, df_cpd_props
 
 

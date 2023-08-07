@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import sqlite3
 
@@ -224,9 +225,7 @@ def add_drug_mechanism_ct_pairs(df_combined: pd.DataFrame, chembl_con: sqlite3.C
     cpd_target_pairs = cpd_target_pairs[~(cpd_target_pairs['cpd_target_pair_mutation'].isin(
         set(df_combined['cpd_target_pair_mutation'])))].copy()
     
-    # # TODO: log this information
-    # print("#Pairs not yet present based on binding or functional assays:",
-    #       len(cpd_target_pairs))
+    logging.debug(f"#Pairs not yet present based on binding or functional assays: {len(cpd_target_pairs)}")
 
     # Combined data of existing query with new compound-target pairs.
     df_combined = pd.concat([df_combined, cpd_target_pairs])

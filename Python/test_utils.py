@@ -1,36 +1,55 @@
+import pandas as pd
+
 def calculate_dataset_sizes(data):
     now_mols = len(set(data["parent_molregno"]))
     now_targets = len(set(data["tid"]))
     now_targets_mutation = len(set(data["tid_mutation"]))
     now_pairs = len(set(data['cpd_target_pair']))
     now_pairs_mutation = len(set(data['cpd_target_pair_mutation']))
-    
+
     if 'DTI' in data.columns:
-        # drugs = compounds of a compound-target pair with a known interaction  
+        # drugs = compounds of a compound-target pair with a known interaction
         data_drugs = data[data["DTI"] == "D_DT"]
-    else: 
+    else:
         data_drugs = data[data["max_phase"] == 4]
-        
+
     now_drugs = len(set(data_drugs["parent_molregno"]))
     now_drug_targets = len(set(data_drugs["tid"]))
     now_drug_targets_mutation = len(set(data_drugs["tid_mutation"]))
     now_drug_pairs = len(set(data_drugs['cpd_target_pair']))
     now_drug_pairs_mutation = len(set(data_drugs['cpd_target_pair_mutation']))
 
-    return [now_mols, now_drugs, 
+    return [now_mols, now_drugs,
             now_targets, now_drug_targets,
             now_targets_mutation, now_drug_targets_mutation,
             now_pairs, now_drug_pairs,
             now_pairs_mutation, now_drug_pairs_mutation]
 
 
-def add_dataset_sizes(data, label, 
-                      all_lengths, all_lengths_pchembl):
-    data_test = data.copy()
-    all_lengths.append([label] + calculate_dataset_sizes(data_test))
-    
+# df_all_sizes, df_pchembl_sizes = add_dataset_sizes(df, label)
+def add_dataset_sizes(df, label, df_sizes):
+    df_copy = df.copy()
+    df_sizes[0].append([label] + calculate_dataset_sizes(df_copy))
+
     # restrict to data with any pchembl value (any data with a pchembl, even if it is based on only functional data)
     # these statistics are purely based on removing compound-target pairs without pchembl information
-    # i.e., the subset of the dataset is determined by the given data parameter and not recalculated
-    data_pchembl = data_test.dropna(subset=[x for x in data_test.columns if x.startswith('pchembl_value')], how = 'all')
-    all_lengths_pchembl.append([label] + calculate_dataset_sizes(data_pchembl))
+    # i.e., the subset of the dataset is determined by the given df and not recalculated
+    df_pchembl = df_copy.dropna(
+        subset=[x for x in df_copy.columns if x.startswith('pchembl_value')], how='all')
+    df_sizes[1].append([label] + calculate_dataset_sizes(df_pchembl))
+
+
+def print_debug_sizes(df_sizes):
+    column_names = ['type',
+                    '#mols', '#drugs',
+                    '#targets', '#drug_ targets',
+                    '#targets_ mutation', '#drug_ targets_mutation',
+                    '#cpd_tid_ pairs', '#drug_tid_ pairs',
+                    '#cpd_ tid_mutation_ pairs', '#drug_ tid_mutation_ pairs']
+    # TODO: get this to output files
+    print("Size of full dataset at different points.")
+    print(pd.DataFrame(df_sizes[0], columns=column_names))
+
+    print("Size of dataset with any pchembl values at different points.")
+    print("This includes data for which we only have pchembl data for functional assays but not for binding assays.")
+    print(pd.DataFrame(df_sizes[1], columns=column_names))

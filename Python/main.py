@@ -1,13 +1,11 @@
 import argparse
 import chembl_downloader
+import logging
 import sqlite3
 
 import get_dataset
 
 if __name__ == "__main__":
-    # TODO: remove
-    print("Started!")
-
     parser = argparse.ArgumentParser(
         description='Extract the compound-target dataset from ChEMBL.')
     parser.add_argument('--chembl_version', '-v',
@@ -68,12 +66,22 @@ if __name__ == "__main__":
                         type=bool,
                         default=False,
                         help='write binding data subsets')
+    parser.add_argument('--log_level', 
+                        metavar='<log_level>',
+                        type=str,
+                        default="INFO",
+                        help='Level of detail of output. INFO: basic progress information; DEBUG: debugging information')
     args = parser.parse_args()
+
+    numeric_log_level = getattr(logging, args.log_level.upper(), None)
+    assert(isinstance(numeric_log_level, int)), f"Invalid log level: %{args.log_level}"
+    logging.basicConfig(level=numeric_log_level)
 
     if args.chembl_version == "":
         args.chembl_version = chembl_downloader.latest()
 
     if args.sqlite_path == "":
+        logging.info("Using chembl_downloader to connect to ChEMBL.")
         with chembl_downloader.connect(version=args.chembl_version) as chembl_con:
             get_dataset.get_ct_pair_dataset(chembl_con,
                                             args.chembl_version,
@@ -85,6 +93,7 @@ if __name__ == "__main__":
                                             args.delimiter,
                                             args.write_full_dataset, args.write_BF, args.write_B)
     else:
+        logging.info("Using provided sqlite3 path ({args.sqlite_path}) to connect to ChEMBL.")
         with sqlite3.connect(args.sqlite_path) as chembl_con:
             get_dataset.get_ct_pair_dataset(chembl_con,
                                             args.chembl_version,

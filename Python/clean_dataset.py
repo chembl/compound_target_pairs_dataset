@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import sqlite3
 
@@ -61,9 +62,10 @@ def remove_compounds_without_smiles_and_mixtures(df_combined: pd.DataFrame, chem
                 the smiles for the compound in ChEMBL ({parent_smiles_in_chembl})."
 
     # Remove rows that contain a SMILES with a dot or that don't have a SMILES.
-    # # TODO log this information in debugging mode
-    # len_missing_smiles = len(df_combined[df_combined['canonical_smiles'].isnull()])
-    # len_smiles_w_dot = len(df_combined[df_combined['parent_molregno'].isin(set(smiles_with_dot['parent_molregno']))])
+    len_missing_smiles = len(df_combined[df_combined['canonical_smiles'].isnull()])
+    len_smiles_w_dot = len(df_combined[df_combined['parent_molregno'].isin(set(smiles_with_dot['parent_molregno']))])
+    logging.debug(f"#Compounds without a SMILES: {len_missing_smiles}")
+    logging.debug(f"#SMILES with a dot: {len_smiles_w_dot}")
 
     df_combined = df_combined[(df_combined['canonical_smiles'].notnull()) & ~(
         df_combined['parent_molregno'].isin(set(smiles_with_dot['parent_molregno'])))]
