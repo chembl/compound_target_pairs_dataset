@@ -73,6 +73,14 @@ if __name__ == "__main__":
                         help='Level of detail of output. INFO: basic progress information; DEBUG: debugging information')
     args = parser.parse_args()
 
+    assert(args.write_to_csv or args.write_to_excel), \
+        "Please set either write_to_csv or write_to_excel to True. \
+        Otherwise the results will not be saved."
+    
+    assert(args.write_full_dataset or args.write_BF or args.write_B), \
+        "Please set either write_full_dataset, write_BF or write_B to True. \
+        Otherwise the results will not be saved."
+
     numeric_log_level = getattr(logging, args.log_level.upper(), None)
     assert(isinstance(numeric_log_level, int)), f"Invalid log level: %{args.log_level}"
     logging.basicConfig(level=numeric_log_level)
