@@ -58,7 +58,7 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
     df_combined = get_activity_ct_pairs.get_aggregated_acticity_ct_pairs(chembl_con, limit_to_literature, df_sizes)
     if logging.DEBUG >= logging.root.level:
         test_utils.add_dataset_sizes(df_combined, "activity ct-pairs", df_sizes)
-
+    
     logging.info("add_cti_from_drug_mechanisms")
     df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set = get_drug_mechanism_ct_pairs.add_drug_mechanism_ct_pairs(
         df_combined, chembl_con)
@@ -126,8 +126,8 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
                                              output_path, write_full_dataset, write_to_csv, write_to_excel, delimiter,
                                              calculate_RDKit)
 
-    logging.info("print_stats")
-    get_stats.print_stats(df_combined_annotated)
+    logging.info("output_stats")
+    get_stats.output_stats(df_combined_annotated, output_path, write_to_csv, write_to_excel, delimiter)
 
     if logging.DEBUG >= logging.root.level:
         test_utils.print_debug_sizes(df_sizes)
