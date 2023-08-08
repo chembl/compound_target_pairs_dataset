@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import sanity_checks
 
-import test_utils
+import get_stats
 
 
 def write_output(df: pd.DataFrame, filename: str, write_to_csv: bool, write_to_excel: bool, delimiter: str) -> list[str]:
@@ -206,10 +206,10 @@ def write_BF_to_file(df_combined: pd.DataFrame,
                                write_to_csv, write_to_excel, delimiter, desc, calculate_RDKit)
         
     if logging.DEBUG >= logging.root.level:
-        test_utils.add_dataset_sizes(df_combined_BF, "binding + functional", df_sizes)
-        test_utils.add_dataset_sizes(df_combined_BF_enough_cpds, "BF, >= 100", df_sizes)
-        test_utils.add_dataset_sizes(df_combined_BF_c_dt_d_dt, "BF, >= 100, c_dt and d_dt", df_sizes)
-        test_utils.add_dataset_sizes(df_combined_BF_d_dt, "BF, >= 100, d_dt", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_BF, "binding + functional", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_BF_enough_cpds, "BF, >= 100", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_BF_c_dt_d_dt, "BF, >= 100, c_dt and d_dt", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_BF_d_dt, "BF, >= 100, d_dt", df_sizes)
         
 
     return df_combined_annotated
@@ -292,10 +292,10 @@ def write_B_to_file(df_combined: pd.DataFrame, df_combined_annotated: pd.DataFra
                                write_to_csv, write_to_excel, delimiter, desc, calculate_RDKit)
 
     if logging.DEBUG >= logging.root.level:
-        test_utils.add_dataset_sizes(df_combined_B, "binding", df_sizes)
-        test_utils.add_dataset_sizes(df_combined_B_enough_cpds, "B, >= 100", df_sizes)
-        test_utils.add_dataset_sizes(df_combined_B_c_dt_d_dt, "B, >= 100, c_dt and d_dt", df_sizes)
-        test_utils.add_dataset_sizes(df_combined_B_d_dt, "B, >= 100, d_dt", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_B, "binding", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_B_enough_cpds, "B, >= 100", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_B_c_dt_d_dt, "B, >= 100, c_dt and d_dt", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_B_d_dt, "B, >= 100, d_dt", df_sizes)
 
     return df_combined_annotated
 

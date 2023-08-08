@@ -15,5 +15,4 @@ Python
    get_stats
    main
    sanity_checks
-   test_utils
    write_subsets

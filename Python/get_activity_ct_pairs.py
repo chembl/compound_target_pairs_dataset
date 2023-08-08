@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import sqlite3
 
-import test_utils
+import get_stats
 
 ########### Get Initial Compound-Target Data From ChEMBL ###########
 def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit_to_literature: bool, df_sizes: list[list[int], list[int]]) -> pd.DataFrame:
@@ -72,7 +72,7 @@ def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit
     df_mols['cpd_target_pair_mutation'] = df_mols.agg('{0[parent_molregno]}_{0[tid_mutation]}'.format, axis=1)
 
     if logging.DEBUG >= logging.root.level:
-        test_utils.add_dataset_sizes(df_mols,  "initial query", df_sizes)
+        get_stats.add_dataset_sizes(df_mols,  "initial query", df_sizes)
 
     return df_mols
 

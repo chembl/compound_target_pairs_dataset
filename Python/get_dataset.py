@@ -11,7 +11,6 @@ import add_rdkit_compound_descriptors
 import sanity_checks
 import write_subsets
 import get_stats
-import test_utils
 
 
 def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
@@ -57,48 +56,48 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
     logging.info("get_aggregated_acticity_ct_pairs")
     df_combined = get_activity_ct_pairs.get_aggregated_acticity_ct_pairs(chembl_con, limit_to_literature, df_sizes)
     if logging.DEBUG >= logging.root.level:
-        test_utils.add_dataset_sizes(df_combined, "activity ct-pairs", df_sizes)
+        get_stats.add_dataset_sizes(df_combined, "activity ct-pairs", df_sizes)
     
     logging.info("add_cti_from_drug_mechanisms")
     df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set = get_drug_mechanism_ct_pairs.add_drug_mechanism_ct_pairs(
         df_combined, chembl_con)
     if logging.DEBUG >= logging.root.level:
-        test_utils.add_dataset_sizes(df_combined, "dm ct-pairs", df_sizes)
+        get_stats.add_dataset_sizes(df_combined, "dm ct-pairs", df_sizes)
 
     logging.info("add_cti_annotations")
     df_combined = add_dti_annotations.add_dti_annotations(
         df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set)
     if logging.DEBUG >= logging.root.level:
-        test_utils.add_dataset_sizes(df_combined, "DTI annotations", df_sizes)
+        get_stats.add_dataset_sizes(df_combined, "DTI annotations", df_sizes)
 
     logging.info("add_all_chembl_compound_properties")
     df_combined, df_cpd_props, atc_levels = add_chembl_compound_properties.add_all_chembl_compound_properties(
         df_combined, chembl_con, limit_to_literature)
     if logging.DEBUG >= logging.root.level:
-        test_utils.add_dataset_sizes(df_combined, "ChEMBL props", df_sizes)
+        get_stats.add_dataset_sizes(df_combined, "ChEMBL props", df_sizes)
 
     logging.info("remove_compounds_without_smiles_and_mixtures")
     df_combined = clean_dataset.remove_compounds_without_smiles_and_mixtures(df_combined, chembl_con)
     if logging.DEBUG >= logging.root.level:
-        test_utils.add_dataset_sizes(df_combined, "removed smiles", df_sizes)
+        get_stats.add_dataset_sizes(df_combined, "removed smiles", df_sizes)
 
     logging.info("add_chembl_target_class_annotations")
     df_combined, target_classes_level1, target_classes_level2 = add_chembl_target_class_annotations.add_chembl_target_class_annotations(
         df_combined, chembl_con, output_path, write_to_csv, write_to_excel, delimiter)
     if logging.DEBUG >= logging.root.level:
-        test_utils.add_dataset_sizes(df_combined, "tclass annotations", df_sizes)
+        get_stats.add_dataset_sizes(df_combined, "tclass annotations", df_sizes)
 
     logging.info("add_rdkit_compound_descriptors")
     if calculate_RDKit:
         df_combined = add_rdkit_compound_descriptors.add_rdkit_compound_descriptors(
             df_combined)
         if logging.DEBUG >= logging.root.level:
-            test_utils.add_dataset_sizes(df_combined, "RDKit props", df_sizes)
+            get_stats.add_dataset_sizes(df_combined, "RDKit props", df_sizes)
 
     logging.info("clean_dataset")
     df_combined = clean_dataset.clean_dataset(df_combined, calculate_RDKit)
     if logging.DEBUG >= logging.root.level:
-        test_utils.add_dataset_sizes(df_combined, "clean df", df_sizes)
+        get_stats.add_dataset_sizes(df_combined, "clean df", df_sizes)
 
     logging.info("sanity_checks")
     sanity_checks.sanity_checks(df_combined, df_cpd_props, atc_levels,
@@ -130,4 +129,6 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
     get_stats.output_stats(df_combined_annotated, output_path, write_to_csv, write_to_excel, delimiter)
 
     if logging.DEBUG >= logging.root.level:
-        test_utils.print_debug_sizes(df_sizes)
+        get_stats.output_debug_sizes(df_sizes, output_path, write_to_csv, write_to_excel, delimiter)
+
+
