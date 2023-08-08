@@ -5,7 +5,7 @@ def add_dti_annotations(df_combined: pd.DataFrame, drug_mechanism_pairs_set: set
     """
     Every compound-target pair is assigned a DTI (drug target interaction) annotation.  
 
-    The assignement is based on three questions:
+    The assignment is based on three questions:
 
     - Is the compound-target pair in the drug_mechanisms table? = Is it a known relevant compound-target interaction?
     - What is the max_phase of the compound? = Is it a drug / clinical compound?
