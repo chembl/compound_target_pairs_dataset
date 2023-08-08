@@ -140,7 +140,7 @@ def add_atc_classification(df_combined: pd.DataFrame, chembl_con: sqlite3.Connec
     :rtype: (pd.DataFrame, pd.DataFrame)
     """
     sql = '''
-    SELECT DISTINCT mh.parent_molregno, atc.level1, level1_description
+    SELECT DISTINCT mh.parent_molregno, atc.level1, atc.level1_description
     FROM atc_classification atc
     INNER JOIN molecule_atc_classification matc
         ON atc.level5 = matc.level5
