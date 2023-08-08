@@ -103,23 +103,23 @@ def add_ligand_efficiency_metrics(df_combined: pd.DataFrame) -> pd.DataFrame:
     :rtype: pd.DataFrame
     """
     for suffix in ['BF', 'B']:
-        df_combined['LE_'+suffix] = df_combined['pchembl_value_mean_'+suffix]/df_combined['heavy_atoms']*(2.303*298*0.00199)
+        df_combined[f"LE_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]/df_combined['heavy_atoms']*(2.303*298*0.00199)
         # replace infinity values with None as they are not useful
-        df_combined['LE_'+suffix] = df_combined['LE_'+suffix].replace(np.inf, None)
+        df_combined[f"LE_{suffix}"] = df_combined[f"LE_{suffix}"].replace(np.inf, None)
         
-        df_combined['BEI_'+suffix] = df_combined['pchembl_value_mean_'+suffix]*1000/df_combined["mw_freebase"]
-        df_combined['BEI_'+suffix] = df_combined['BEI_'+suffix].replace(np.inf, None)
+        df_combined[f"BEI_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]*1000/df_combined["mw_freebase"]
+        df_combined[f"BEI_{suffix}"] = df_combined[f"BEI_{suffix}"].replace(np.inf, None)
         
-        df_combined['SEI_'+suffix] = df_combined['pchembl_value_mean_'+suffix]*100/df_combined["psa"]
-        df_combined['SEI_'+suffix] = df_combined['SEI_'+suffix].replace(np.inf, None)
+        df_combined[f"SEI_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]*100/df_combined["psa"]
+        df_combined[f"SEI_{suffix}"] = df_combined[f"SEI_{suffix}"].replace(np.inf, None)
         
-        df_combined['LLE_'+suffix] = df_combined['pchembl_value_mean_'+suffix]-df_combined["alogp"]
+        df_combined[f"LLE_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]-df_combined["alogp"]
         
         df_combined = df_combined.astype({
-        'LE_'+suffix: 'float64',
-        'BEI_'+suffix: 'float64',
-        'SEI_'+suffix: 'float64',
-        'LLE_'+suffix: 'float64'
+        f"LE_{suffix}": 'float64',
+        f"BEI_{suffix}": 'float64',
+        f"SEI_{suffix}": 'float64',
+        f"LLE_{suffix}": 'float64'
         })
 
     return df_combined

@@ -103,12 +103,16 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
     sanity_checks.sanity_checks(df_combined, df_cpd_props, atc_levels,
                                 target_classes_level1, target_classes_level2, calculate_RDKit)
 
+    if limit_to_literature: 
+        limited_flag = "literature_only"
+    else:
+        limited_flag = "all_sources"
     logging.info("write_BF_to_file")
     min_nof_cpds_BF = 100
     df_combined_annotated = write_subsets.write_BF_to_file(df_combined, 
                                                            chembl_version, min_nof_cpds_BF,
                                                            output_path, write_BF, write_to_csv, write_to_excel, delimiter,
-                                                           calculate_RDKit, 
+                                                           limited_flag, calculate_RDKit, 
                                                            df_sizes)
 
     logging.info("write_B_to_file")
@@ -116,14 +120,14 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
     df_combined_annotated = write_subsets.write_B_to_file(df_combined, df_combined_annotated,
                                                           chembl_version, min_nof_cpds_B,
                                                           output_path, write_B, write_to_csv, write_to_excel, delimiter,
-                                                          calculate_RDKit, 
+                                                          limited_flag, calculate_RDKit, 
                                                           df_sizes)
 
     logging.info("write_full_dataset_to_file")
     write_subsets.write_full_dataset_to_file(df_combined_annotated, 
                                              chembl_version,
                                              output_path, write_full_dataset, write_to_csv, write_to_excel, delimiter,
-                                             calculate_RDKit)
+                                             limited_flag, calculate_RDKit)
 
     logging.info("output_stats")
     get_stats.output_stats(df_combined_annotated, output_path, write_to_csv, write_to_excel, delimiter)

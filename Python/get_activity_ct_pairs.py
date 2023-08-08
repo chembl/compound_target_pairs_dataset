@@ -106,24 +106,23 @@ def get_average_info(df: pd.DataFrame, suffix: str) -> pd.DataFrame:
     :rtype: pd.DataFrame
     """
     # pchembl mean, max, median
-    df['pchembl_value_mean_'+suffix] = df.groupby(['parent_molregno', 'tid_mutation'])['pchembl_value'].transform('mean')
-    df['pchembl_value_max_'+suffix] = df.groupby(['parent_molregno', 'tid_mutation'])['pchembl_value'].transform('max')
-    df['pchembl_value_median_'+suffix] = df.groupby(['parent_molregno', 'tid_mutation'])['pchembl_value'].transform('median')
+    df[f"pchembl_value_mean_{suffix}"] = df.groupby(['parent_molregno', 'tid_mutation'])['pchembl_value'].transform('mean')
+    df[f"pchembl_value_max_{suffix}"] = df.groupby(['parent_molregno', 'tid_mutation'])['pchembl_value'].transform('max')
+    df[f"pchembl_value_median_{suffix}"] = df.groupby(['parent_molregno', 'tid_mutation'])['pchembl_value'].transform('median')
 
     # first publication of pair
-    df['first_publication_cpd_target_pair_'+suffix] = df.groupby(['parent_molregno', 'tid_mutation'])['year'].transform('min')
+    df[f"first_publication_cpd_target_pair_{suffix}"] = df.groupby(['parent_molregno', 'tid_mutation'])['year'].transform('min')
 
     # first publication of pair with pchembl value
     df_mols_all_first_publication_pchembl = df[df['pchembl_value'].notnull()] \
         .groupby(['parent_molregno', 'tid_mutation'])['year'].min().reset_index() \
-        .rename(columns={'year': 'first_publication_cpd_target_pair_w_pchembl_'+suffix})
+        .rename(columns={'year': f"first_publication_cpd_target_pair_w_pchembl_{suffix}"})
     df = df.merge(df_mols_all_first_publication_pchembl, on=['parent_molregno', 'tid_mutation'], how='left')
 
     # return relevant summarised information without duplicates
     df = df[['parent_molregno', 'tid_mutation',
-            'pchembl_value_mean_'+suffix, 'pchembl_value_max_' +
-             suffix, 'pchembl_value_median_'+suffix,
-             'first_publication_cpd_target_pair_'+suffix, 'first_publication_cpd_target_pair_w_pchembl_'+suffix]].drop_duplicates()
+            f"pchembl_value_mean_{suffix}", f"pchembl_value_max_{suffix}", f"pchembl_value_median_{suffix}",
+            f"first_publication_cpd_target_pair_{suffix}", f"first_publication_cpd_target_pair_w_pchembl_{suffix}"]].drop_duplicates()
     
     return df
 

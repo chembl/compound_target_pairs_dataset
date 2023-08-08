@@ -44,23 +44,23 @@ def check_ligand_efficiency_metrics(df_combined: pd.DataFrame):
     Ligand efficiency metrics are only null when at least one of the values used to calculate them is null.
     """
     for suffix in ['BF', 'B']:
-        assert (df_combined[(df_combined['LE_'+suffix].isnull())].equals(
-            df_combined[(df_combined['pchembl_value_mean_'+suffix].isnull())
+        assert (df_combined[(df_combined[f"LE_{suffix}"].isnull())].equals(
+            df_combined[(df_combined[f"pchembl_value_mean_{suffix}"].isnull())
                         | (df_combined['heavy_atoms'].isnull())
                         | (df_combined['heavy_atoms'] == 0)])), f"Missing LE value in LE_{suffix}"
 
-        assert (df_combined[(df_combined['BEI_'+suffix].isnull())].equals(
-            df_combined[(df_combined['pchembl_value_mean_'+suffix].isnull())
+        assert (df_combined[(df_combined[f"BEI_{suffix}"].isnull())].equals(
+            df_combined[(df_combined[f"pchembl_value_mean_{suffix}"].isnull())
                         | (df_combined['mw_freebase'].isnull())
                         | (df_combined['mw_freebase'] == 0)])), f"Missing BEI value in BEI_{suffix}"
 
-        assert (df_combined[(df_combined['SEI_'+suffix].isnull())].equals(
-            df_combined[(df_combined['pchembl_value_mean_'+suffix].isnull())
+        assert (df_combined[(df_combined[f"SEI_{suffix}"].isnull())].equals(
+            df_combined[(df_combined[f"pchembl_value_mean_{suffix}"].isnull())
                         | (df_combined['psa'].isnull())
                         | (df_combined['psa'] == 0)])), f"Missing SEI value in SEI_{suffix}"
 
-        assert (df_combined[(df_combined['LLE_'+suffix].isnull())].equals(
-            df_combined[(df_combined['pchembl_value_mean_'+suffix].isnull())
+        assert (df_combined[(df_combined[f"LLE_{suffix}"].isnull())].equals(
+            df_combined[(df_combined[f"pchembl_value_mean_{suffix}"].isnull())
                         | (df_combined['alogp'].isnull())])), f"Missing LLE value in LLE_{suffix}"
 
 
