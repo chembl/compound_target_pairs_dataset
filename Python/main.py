@@ -25,19 +25,19 @@ if __name__ == "__main__":
                         help='Path to write output file(s) to.')
     parser.add_argument('--limit_to_literature', '-l',
                         metavar='<limit_to_literature>',
-                        type=bool,
+                        action=argparse.BooleanOptionalAction,
                         default=True,
                         help='Limit dataset to literature data. Note that average pchembl_values, ligand efficiencies,\
                             first_publication_cpd_target_pair, first_publication_cpd_target_pair_w_pchembl and first_publication_cpd \
                             will be based on literature data only if this is set to True.')
     parser.add_argument('--calculate_RDKit', '-r',
                         metavar='<calculate_RDKit>',
-                        type=bool,
+                        action=argparse.BooleanOptionalAction,
                         default=True,
                         help='calculate RDKit-based compound properties')
     parser.add_argument('--write_to_csv', '-c',
                         metavar='<write_to_csv>',
-                        type=bool,
+                        action=argparse.BooleanOptionalAction,
                         default=True,
                         help='write results to csv')
     parser.add_argument('--delimiter', '-d',
@@ -45,25 +45,24 @@ if __name__ == "__main__":
                         type=str,
                         default=";",
                         help='Delimiter in output csv-files.')
-    # TODO: make this not fail even if the output is too large
     parser.add_argument('--write_to_excel', '-e',
                         metavar='<write_to_excel>',
-                        type=bool,
+                        action=argparse.BooleanOptionalAction,
                         default=False,
                         help='Write results to excel. Note: this may fail if the output is too large.')
     parser.add_argument('--write_full_dataset',
                         metavar='<write_full_dataset>',
-                        type=bool,
+                        action=argparse.BooleanOptionalAction,
                         default=True,
                         help='write full dataset plus filtering columns for binding vs. binding+functional data')
     parser.add_argument('--write_BF',
                         metavar='<write_BF>',
-                        type=bool,
+                        action=argparse.BooleanOptionalAction,
                         default=False,
                         help='write binding+functional data subsets')
     parser.add_argument('--write_B',
                         metavar='<write_B>',
-                        type=bool,
+                        action=argparse.BooleanOptionalAction,
                         default=False,
                         help='write binding data subsets')
     parser.add_argument('--log_level', 
@@ -74,11 +73,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     assert(args.write_to_csv or args.write_to_excel), \
-        "Please set either write_to_csv or write_to_excel to True. \
+        "Please use either --write_to_csv or --write_to_excel. \
         Otherwise the results will not be saved."
     
     assert(args.write_full_dataset or args.write_BF or args.write_B), \
-        "Please set either write_full_dataset, write_BF or write_B to True. \
+        "Please set either --write_full_dataset, --write_BF or --write_B. \
         Otherwise the results will not be saved."
 
     numeric_log_level = getattr(logging, args.log_level.upper(), None)
