@@ -52,7 +52,7 @@ def get_compound_target_pairs_with_pchembl(chembl_con: sqlite3.Connection, limit
     WHERE act.pchembl_value is not null
         and act.potential_duplicate = 0
         and act.standard_relation = '='
-        and data_validity_comment is null
+        and act.data_validity_comment is null
         and td.tid <>22226                    -- exclude unchecked targets
         and td.target_type like '%PROTEIN%'
     '''
