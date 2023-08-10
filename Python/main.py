@@ -7,107 +7,93 @@ import get_dataset
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='Extract the compound-target dataset from ChEMBL.')
-    parser.add_argument('--chembl_version', '-v',
-                        metavar='<chembl_version>',
+        description='Extract the compound-target pairs dataset from ChEMBL. \
+            The full dataset plus filtering columns for binding vs. binding+functional data will always be written to csv. \
+            Additional outputs and output types can be chosen with the parameters below.')
+
+    parser.add_argument('--chembl', '-v',
+                        metavar='<version>',
                         type=str,
-                        default="",
-                        help='ChEMBL version. Latest version if empty.')
-    parser.add_argument('--sqlite_path', '-s',
-                        metavar='<sqlite_path>',
+                        default=None,
+                        help='ChEMBL version. Version 21 is the oldest version that is available as an SQLite database \
+                            and therefore currently the oldest version for which the dataset can be calculated. \
+                            Latest version if None. (default: None)')
+    parser.add_argument('--sqlite', '-s',
+                        metavar='<path>',
                         type=str,
-                        default="",
-                        help='Path to sqlite database. Downloaded and handled by chembl_downloader if empty.')
-    parser.add_argument('--output_path', '-o',
-                        metavar='<output_path>',
+                        default=None,
+                        help='Path to SQLite database. \
+                            ChEMBL is downloaded as an SQLite database and handled by chembl_downloader if None. (default: None)')
+    parser.add_argument('--output', '-o',
+                        metavar='<path>',
                         type=str,
                         required=True,
-                        help='Path to write output file(s) to.')
-    parser.add_argument('--limit_to_literature', '-l',
-                        metavar='<limit_to_literature>',
-                        action=argparse.BooleanOptionalAction,
-                        default=True,
-                        help='Limit dataset to literature data. Note that average pchembl_values, ligand efficiencies,\
-                            first_publication_cpd_target_pair, first_publication_cpd_target_pair_w_pchembl and first_publication_cpd \
-                            will be based on literature data only if this is set to True.')
-    parser.add_argument('--calculate_RDKit', '-r',
-                        metavar='<calculate_RDKit>',
-                        action=argparse.BooleanOptionalAction,
-                        default=True,
-                        help='calculate RDKit-based compound properties')
-    parser.add_argument('--write_to_csv', '-c',
-                        metavar='<write_to_csv>',
-                        action=argparse.BooleanOptionalAction,
-                        default=True,
-                        help='write results to csv')
+                        help='Path to write the output file(s) to. (required)')
+    parser.add_argument('--all_sources', 
+                        action='store_true',
+                        help='If this is set, the dataset is calculated based on all sources in ChEMBL. \
+                            This includes data from BindingDB which may skew the results. \
+                            Default (not set): the dataset is calculated based on only literature data.')
+    parser.add_argument('--rdkit', 
+                        action='store_true',
+                        help='Calculate RDKit-based compound properties.')
     parser.add_argument('--delimiter', '-d',
                         metavar='<delimiter>',
                         type=str,
                         default=";",
-                        help='Delimiter in output csv-files.')
-    parser.add_argument('--write_to_excel', '-e',
-                        metavar='<write_to_excel>',
-                        action=argparse.BooleanOptionalAction,
-                        default=False,
-                        help='Write results to excel. Note: this may fail if the output is too large.')
-    parser.add_argument('--write_full_dataset',
-                        metavar='<write_full_dataset>',
-                        action=argparse.BooleanOptionalAction,
-                        default=True,
-                        help='write full dataset plus filtering columns for binding vs. binding+functional data')
-    parser.add_argument('--write_BF',
-                        metavar='<write_BF>',
-                        action=argparse.BooleanOptionalAction,
-                        default=False,
-                        help='write binding+functional data subsets')
-    parser.add_argument('--write_B',
-                        metavar='<write_B>',
-                        action=argparse.BooleanOptionalAction,
-                        default=False,
-                        help='write binding data subsets')
-    parser.add_argument('--log_level', 
-                        metavar='<log_level>',
-                        type=str,
-                        default="INFO",
-                        help='Level of detail of output. INFO: basic progress information; DEBUG: debugging information')
+                        help='Delimiter in output csv-files.  (default: ;)')
+    parser.add_argument('--excel', 
+                        action='store_true',
+                        help='Write the results to excel. Note: this may fail if the output is too large.')
+    parser.add_argument('--BF',
+                        action='store_true',
+                        help='Write binding+functional data subsets.')
+    parser.add_argument('--B',
+                        action='store_true',
+                        help='Write binding data subsets.')
+    parser.add_argument('--debug', 
+                        action='store_true',
+                        help='Log additional debugging information.')
     args = parser.parse_args()
 
-    assert(args.write_to_csv or args.write_to_excel), \
-        "Please use either --write_to_csv or --write_to_excel. \
-        Otherwise the results will not be saved."
-    
-    assert(args.write_full_dataset or args.write_BF or args.write_B), \
-        "Please set either --write_full_dataset, --write_BF or --write_B. \
-        Otherwise the results will not be saved."
+    # Set arguments that are always true. 
+    # Write the results to csv.
+    csv = True
+    # Write the full dataset plus filtering columns for binding vs. binding+functional data.
+    full_df = True
 
-    numeric_log_level = getattr(logging, args.log_level.upper(), None)
+    if args.debug:
+        log_level = "DEBUG"
+    else:
+        log_level = "INFO"
+    numeric_log_level = getattr(logging, log_level, None)
     assert(isinstance(numeric_log_level, int)), f"Invalid log level: %{args.log_level}"
     logging.basicConfig(level=numeric_log_level)
 
-    if args.chembl_version == "":
-        args.chembl_version = chembl_downloader.latest()
+    if args.chembl is None:
+        args.chembl = chembl_downloader.latest()
 
-    if args.sqlite_path == "":
+    if args.sqlite is None:
         logging.info("Using chembl_downloader to connect to ChEMBL.")
-        with chembl_downloader.connect(version=args.chembl_version) as chembl_con:
+        with chembl_downloader.connect(version=args.chembl) as chembl_con:
             get_dataset.get_ct_pair_dataset(chembl_con,
-                                            args.chembl_version,
-                                            args.output_path,
-                                            args.limit_to_literature,
-                                            args.calculate_RDKit,
-                                            args.write_to_csv,
-                                            args.write_to_excel,
+                                            args.chembl,
+                                            args.output,
+                                            not args.all_sources,
+                                            args.rdkit,
+                                            csv,
+                                            args.excel,
                                             args.delimiter,
-                                            args.write_full_dataset, args.write_BF, args.write_B)
+                                            full_df, args.BF, args.B)
     else:
-        logging.info("Using provided sqlite3 path ({args.sqlite_path}) to connect to ChEMBL.")
-        with sqlite3.connect(args.sqlite_path) as chembl_con:
+        logging.info(f"Using provided sqlite3 path ({args.sqlite}) to connect to ChEMBL.")
+        with sqlite3.connect(args.sqlite) as chembl_con:
             get_dataset.get_ct_pair_dataset(chembl_con,
-                                            args.chembl_version,
-                                            args.output_path,
-                                            args.limit_to_literature,
-                                            args.calculate_RDKit,
-                                            args.write_to_csv,
-                                            args.write_to_excel,
+                                            args.chembl,
+                                            args.output,
+                                            not args.all_sources,
+                                            args.rdkit,
+                                            csv,
+                                            args.excel,
                                             args.delimiter,
-                                            args.write_full_dataset, args.write_BF, args.write_B)
+                                            full_df, args.BF, args.B)
