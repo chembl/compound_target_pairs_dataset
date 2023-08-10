@@ -1,3 +1,4 @@
+import logging
 import os
 import pandas as pd
 import sqlite3
@@ -127,14 +128,15 @@ def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: s
 
     df_combined = df_combined.merge(target_classes_level2, on='tid', how='left')
 
-    # Output targets have more than one level 1 target class
+    # Output targets have more than one target class assignment
     more_than_one_level_1 = df_combined[(df_combined['target_class_l1'].notnull()) & (df_combined['target_class_l1'].str.contains('|', regex=False))][['tid', 'target_pref_name', 'target_type', 'target_class_l1', 'target_class_l2']].drop_duplicates()
-    name_more_than_one_level_1 = os.path.join(output_path, "targets_w_more_than_one_level_1_tclass")
-    write_subsets.write_output(more_than_one_level_1, name_more_than_one_level_1, write_to_csv, write_to_excel, delimiter)
-
-    # Output targets have more than one level 1 target class
+    logging.debug(f"Targets with more than one level 1 target class assignment: {len(more_than_one_level_1)}")
     more_than_one_level_2 = df_combined[(df_combined['target_class_l2'].notnull()) & (df_combined['target_class_l2'].str.contains('|', regex=False))][['tid', 'target_pref_name', 'target_type', 'target_class_l1', 'target_class_l2']].drop_duplicates()
-    name_more_than_one_level_2 = os.path.join(output_path, "targets_w_more_than_one_level_2_tclass")
-    write_subsets.write_output(more_than_one_level_2, name_more_than_one_level_2, write_to_csv, write_to_excel, delimiter)
+    logging.debug(f"Targets with more than one level 2 target class assignment: {len(more_than_one_level_2)}")
+    more_than_one_tclass = pd.concat([more_than_one_level_1, more_than_one_level_2]).drop_duplicates()
+    logging.debug(f"Targets with more than one target class assignment: {len(more_than_one_tclass)}")
+    
+    name_more_than_one_tclass = os.path.join(output_path, "targets_w_more_than_one_tclass")
+    write_subsets.write_output(more_than_one_tclass, name_more_than_one_tclass, write_to_csv, write_to_excel, delimiter)
 
     return df_combined, target_classes_level1, target_classes_level2
