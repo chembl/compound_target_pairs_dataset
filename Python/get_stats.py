@@ -100,7 +100,7 @@ def output_debug_sizes(df_sizes: list[list[int], list[int]], output_path: str, w
 
 
 ##### Logging Stats ##### 
-def get_stats_for_column(df: pd.DataFrame, column: str) -> list[list[str, str, int]]:
+def get_stats_for_column(df: pd.DataFrame, column: str, columns_desc: str) -> list[list[str, str, int]]:
     """
     Calculate the number of unique values in df[column] and various subsets of df.
 
@@ -108,18 +108,20 @@ def get_stats_for_column(df: pd.DataFrame, column: str) -> list[list[str, str, i
     :type df: pd.DataFrame
     :param column: Column of df that the values should be calculated for 
     :type column: str
+    :param columns_desc: Description of the column
+    :type columns_desc: str
     :return: List of results in the format [column_name, subset_type, size]
     :rtype: list[list[str, str, int]]
     """
     return [
-    [column, "all", df[column].nunique()], 
-    [column, "comparators", df[df['DTI'].isin(['DT'])][column].nunique()], 
-    [column, "drugs", df[df['DTI'] == 'D_DT'][column].nunique()], 
-    [column, "candidates", df[df['DTI'].isin(['C0_DT', 'C1_DT', 'C2_DT', 'C3_DT'])][column].nunique()], 
-    [column, "candidates_phase_3", df[df['DTI'] == 'C3_DT'][column].nunique()],
-    [column, "candidates_phase_2", df[df['DTI'] == 'C2_DT'][column].nunique()],
-    [column, "candidates_phase_1", df[df['DTI'] == 'C1_DT'][column].nunique()],
-    [column, "candidates_phase_0", df[df['DTI'] == 'C0_DT'][column].nunique()]]
+    [column, columns_desc, "all", df[column].nunique()], 
+    [column, columns_desc, "comparators", df[df['DTI'].isin(['DT'])][column].nunique()], 
+    [column, columns_desc, "drugs", df[df['DTI'] == 'D_DT'][column].nunique()], 
+    [column, columns_desc, "candidates", df[df['DTI'].isin(['C0_DT', 'C1_DT', 'C2_DT', 'C3_DT'])][column].nunique()], 
+    [column, columns_desc, "candidates_phase_3", df[df['DTI'] == 'C3_DT'][column].nunique()],
+    [column, columns_desc, "candidates_phase_2", df[df['DTI'] == 'C2_DT'][column].nunique()],
+    [column, columns_desc, "candidates_phase_1", df[df['DTI'] == 'C1_DT'][column].nunique()],
+    [column, columns_desc, "candidates_phase_0", df[df['DTI'] == 'C0_DT'][column].nunique()]]
 
 
 def output_stats(df: pd.DataFrame, output_path: str, write_to_csv: bool, write_to_excel: bool, delimiter: str):
@@ -144,15 +146,16 @@ def output_stats(df: pd.DataFrame, output_path: str, write_to_csv: bool, write_t
     :type delimiter: str
     """
     columns = ["parent_molregno", "tid", "tid_mutation", "cpd_target_pair", "cpd_target_pair_mutation"]
+    columns_descs = ["compound ID", "target ID", "target ID with mutation annotations", "compound-target pair", "compound-target pair with mutation annotations"]
     stats = []
-    for column in columns:
+    for column, columns_desc in zip(columns, columns_descs):
         logging.debug(f"Stats for column {column}:")
-        column_stats = get_stats_for_column(df, column)
+        column_stats = get_stats_for_column(df, column, columns_desc)
         stats += column_stats
         for colum_stat in column_stats:
             logging.debug(f"{colum_stat[1] : <40} {colum_stat[2]}")
 
-    df_stats = pd.DataFrame(stats, columns=["column", "subset_type", "size"])
+    df_stats = pd.DataFrame(stats, columns=["column", "column_description", "subset_type", "counts"])
     name_state = os.path.join(output_path, "full_dataset_stats")
     write_subsets.write_output(df_stats, name_state, write_to_csv, write_to_excel, delimiter)
 
