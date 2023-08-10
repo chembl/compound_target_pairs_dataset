@@ -1,4 +1,5 @@
 import logging
+import os
 import sqlite3
 
 import get_activity_ct_pairs
@@ -130,7 +131,10 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
                                              limited_flag, calculate_RDKit)
 
     logging.info("output_stats")
-    get_stats.output_stats(df_combined_annotated, output_path, write_to_csv, write_to_excel, delimiter)
+    output_file = os.path.join(output_path, "full_dataset_stats")
+    get_stats.output_stats(df_combined_annotated, output_file, write_to_csv, write_to_excel, delimiter)
+    output_file = os.path.join(output_path, "df_BF_100_c_dt_d_dt_literature_only_stats")
+    get_stats.output_stats(df_combined_annotated[df_combined_annotated["BF_100_c_dt_d_dt"]], output_file, write_to_csv, write_to_excel, delimiter)
 
     if logging.DEBUG >= logging.root.level:
         get_stats.output_debug_sizes(df_sizes, output_path, write_to_csv, write_to_excel, delimiter)

@@ -124,7 +124,7 @@ def get_stats_for_column(df: pd.DataFrame, column: str, columns_desc: str) -> li
     [column, columns_desc, "candidates_phase_0", df[df['DTI'] == 'C0_DT'][column].nunique()]]
 
 
-def output_stats(df: pd.DataFrame, output_path: str, write_to_csv: bool, write_to_excel: bool, delimiter: str):
+def output_stats(df: pd.DataFrame, output_file: str, write_to_csv: bool, write_to_excel: bool, delimiter: str):
     """
     Summarise and output the number of unique values in the following columns:
 
@@ -136,8 +136,8 @@ def output_stats(df: pd.DataFrame, output_path: str, write_to_csv: bool, write_t
 
     :param df: Pandas Dataframe for which the stats should be calculated
     :type df: pd.DataFrame
-    :param output_path: Path to write the dataset stats to
-    :type output_path: str
+    :param output_file: Path and filename to write the dataset stats to
+    :type output_file: str
     :param write_to_csv: True if stats should be written to csv
     :type write_to_csv: bool
     :param write_to_excel: True if stats should be written to excel
@@ -145,17 +145,18 @@ def output_stats(df: pd.DataFrame, output_path: str, write_to_csv: bool, write_t
     :param delimiter: Delimiter in csv-output
     :type delimiter: str
     """
-    columns = ["parent_molregno", "tid", "tid_mutation", "cpd_target_pair", "cpd_target_pair_mutation"]
+    df_columns = ["parent_molregno", "tid", "tid_mutation", "cpd_target_pair", "cpd_target_pair_mutation"]
     columns_descs = ["compound ID", "target ID", "target ID with mutation annotations", "compound-target pair", "compound-target pair with mutation annotations"]
+    
+    logging.debug(f"Stats for {output_file}")
     stats = []
-    for column, columns_desc in zip(columns, columns_descs):
+    for column, columns_desc in zip(df_columns, columns_descs):
         logging.debug(f"Stats for column {column}:")
         column_stats = get_stats_for_column(df, column, columns_desc)
         stats += column_stats
         for colum_stat in column_stats:
-            logging.debug(f"{colum_stat[1] : <40} {colum_stat[2]}")
+            logging.debug(f"{colum_stat[1] : <40} {colum_stat[3]}")
 
     df_stats = pd.DataFrame(stats, columns=["column", "column_description", "subset_type", "counts"])
-    name_state = os.path.join(output_path, "full_dataset_stats")
-    write_subsets.write_output(df_stats, name_state, write_to_csv, write_to_excel, delimiter)
+    write_subsets.write_output(df_stats, output_file, write_to_csv, write_to_excel, delimiter)
 
