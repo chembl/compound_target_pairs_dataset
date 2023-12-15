@@ -10,6 +10,7 @@ Welcome to compound_target_pairs_dataset's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   columns_docs
    modules
 
 

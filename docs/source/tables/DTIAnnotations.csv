@@ -1,0 +1,3 @@
+﻿Column Name,Type,Cpd or Target info?,Based on ChEMBL / RDKit / …,Description / Notes
+therapeutic_target,Bool,Target,ChEMBL: drug_mechanism table,is the target in the drug mechanism table?
+DTI,String,Compound-Target Pair,Assigned as below,drug target interaction annotation

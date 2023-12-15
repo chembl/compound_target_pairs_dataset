@@ -1,0 +1,9 @@
+﻿Column Name,Type,Cpd or Target info?,Description / Notes
+in_dm_table,Bool,Compound-Target Pair,Is the compound-target pair (taking mutation annotation into account) in the drug mechanism table?
+keep_for_binding,Bool,Compound-Target Pair,"Rows to keep if interested in information based only on binding assays + the drug_mechanism table. True if pchembl_value_mean_B (based on binding assays) exists or if in_dm_table == True, i.e., the pair is in the drug mechanism table."
+BF_100,Bool,Compound-Target Pair,binding + functional data; at least 100 comparator compounds* per target
+BF_100_c_dt_d_dt,Bool,Compound-Target Pair,"binding + functional data; at least 100 comparator compounds* per target; at least one compound with an annotation of D_DT or C<p>_DT (C0_DT, C1_DT, C2_DT, C3_DT) per target"
+BF_100_d_dt,Bool,Compound-Target Pair,binding + functional data; at least 100 comparator compounds* per target; at least one compound with an annotation of D_DT per target
+B_100,Bool,Compound-Target Pair,binding data only; at least 100 comparator compounds* per target
+B_100_c_dt_d_dt,Bool,Compound-Target Pair,"binding data only; at least 100 comparator compounds* per target; at least one compound with an annotation of D_DT or C<p>_DT (C0_DT, C1_DT, C2_DT, C3_DT)  per target"
+B_100_d_dt,Bool,Compound-Target Pair,binding data only; at least 100 comparator compounds* per target; at least one compound with an annotation of D_DT per target

@@ -1,0 +1,30 @@
+﻿Column Name,Type,Cpd or Target info?,Based on ChEMBL / RDKit / …,Description / Notes
+first_publication_cpd,Int,Compound,ChEMBL: docs,first appearance of the compound in the literature
+mw_freebase,Float,Compound,ChEMBL: compound_properties,
+alogp,Float,Compound,"""",
+hba,Int,Compound,"""",
+hbd,Int,Compound,"""",
+psa,Float,Compound,"""",
+rtb,Int,Compound,"""",
+ro3_pass,String,Compound,"""",
+num_ro5_violations,Int,Compound,"""",
+cx_most_apka,Float,Compound,"""",
+cx_most_bpka,Float,Compound,"""",
+cx_logp,Float,Compound,"""",
+cx_logd,Float,Compound,"""",
+molecular_species,String,Compound,"""",
+full_mwt,Float,Compound,"""",
+aromatic_rings,Int,Compound,"""",
+heavy_atoms,Int,Compound,"""",
+qed_weighted,Float,Compound,"""",
+mw_monoisotopic,Float,Compound,"""",
+full_molformula,String,Compound,"""",
+hba_lipinski,Int,Compound,"""",
+hbd_lipinski,Int,Compound,"""",
+num_lipinski_ro5_violations,Int,Compound,"""",
+standard_inchi,String,Compound,ChEMBL: compound_structures,
+standard_inchi_key,String,Compound,"""",
+canonical_smiles,String,Compound,"""",
+atc_level1,String,Compound,"ChEMBL: atc_classification, molecule_atc_classification","Anatomical Therapeutic Chemical (ATC) classification, level 1"
+target_class_l1,String,Target,"ChEMBL: protein_classification, protein_family_classification","Target class, level 1 (more general)"
+target_class_l2,String,Target,"""","Target class, level 2 (more detailed)"

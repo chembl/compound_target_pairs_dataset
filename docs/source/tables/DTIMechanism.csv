@@ -1,0 +1,8 @@
+﻿in drug_mechanisms table?,max_phase?,therapeutic target?,DTI annotation,Explanation
+Yes,4,–  ,D_DT,drug - drug target
+Yes,3,–  ,C3_DT,clinical candidate in phase 3 - drug target
+Yes,2,–  ,C2_DT,clinical candidate in phase 2 - drug target
+Yes,1,–  ,C1_DT,clinical candidate in phase 1 - drug target
+Yes,< 1,–  ,C0_DT,compound in unknown clinical phase[1] - drug target
+No,–,Yes,DT,drug target
+No,–,No,NDT,not drug target
