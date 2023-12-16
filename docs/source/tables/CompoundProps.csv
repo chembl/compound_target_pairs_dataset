@@ -1,30 +1,30 @@
-﻿Column Name,Type,Cpd or Target info?,Based on ChEMBL / RDKit / …,Description / Notes
-first_publication_cpd,Int,Compound,ChEMBL: docs,first appearance of the compound in the literature
-mw_freebase,Float,Compound,ChEMBL: compound_properties,
-alogp,Float,Compound,"""",
-hba,Int,Compound,"""",
-hbd,Int,Compound,"""",
-psa,Float,Compound,"""",
-rtb,Int,Compound,"""",
-ro3_pass,String,Compound,"""",
-num_ro5_violations,Int,Compound,"""",
-cx_most_apka,Float,Compound,"""",
-cx_most_bpka,Float,Compound,"""",
-cx_logp,Float,Compound,"""",
-cx_logd,Float,Compound,"""",
-molecular_species,String,Compound,"""",
-full_mwt,Float,Compound,"""",
-aromatic_rings,Int,Compound,"""",
-heavy_atoms,Int,Compound,"""",
-qed_weighted,Float,Compound,"""",
-mw_monoisotopic,Float,Compound,"""",
-full_molformula,String,Compound,"""",
-hba_lipinski,Int,Compound,"""",
-hbd_lipinski,Int,Compound,"""",
-num_lipinski_ro5_violations,Int,Compound,"""",
-standard_inchi,String,Compound,ChEMBL: compound_structures,
-standard_inchi_key,String,Compound,"""",
-canonical_smiles,String,Compound,"""",
-atc_level1,String,Compound,"ChEMBL: atc_classification, molecule_atc_classification","Anatomical Therapeutic Chemical (ATC) classification, level 1"
-target_class_l1,String,Target,"ChEMBL: protein_classification, protein_family_classification","Target class, level 1 (more general)"
+﻿Column Name,Type,Info Re.,Based On,Description / Notes
+first_publication_cpd,Int,Compound,ChEMBL: docs,First appearance of the compound in the literature
+mw_freebase,Float,Compound,ChEMBL: compound_properties,Molecular weight of parent compound
+alogp,Float,Compound,"""",Calculated ALogP
+hba,Int,Compound,"""",Number hydrogen bond acceptors
+hbd,Int,Compound,"""",Number hydrogen bond donors
+psa,Float,Compound,"""",Polar surface area
+rtb,Int,Compound,"""",Number rotatable bonds
+ro3_pass,String,Compound,"""","Indicates whether the compound passes the rule-of-three (mw < 300, logP < 3 etc)"
+num_ro5_violations,Int,Compound,"""","Number of violations of Lipinski's rule-of-five, using HBA and HBD definitions"
+cx_most_apka,Float,Compound,"""",The most acidic pKa calculated using ChemAxon
+cx_most_bpka,Float,Compound,"""",The most basic pKa calculated using ChemAxon
+cx_logp,Float,Compound,"""",The calculated octanol/water partition coefficient using ChemAxon
+cx_logd,Float,Compound,"""",The calculated octanol/water distribution coefficient at pH7.4 using ChemAxon
+molecular_species,String,Compound,"""",Indicates whether the compound is an acid/base/neutral
+full_mwt,Float,Compound,"""",Molecular weight of the full compound including any salts
+aromatic_rings,Int,Compound,"""",Number of aromatic rings
+heavy_atoms,Int,Compound,"""",Number of heavy (non-hydrogen) atoms
+qed_weighted,Float,Compound,"""","Weighted quantitative estimate of drug likeness (as defined by Bickerton et al., Nature Chem 2012)"
+mw_monoisotopic,Float,Compound,"""",Monoisotopic parent molecular weight
+full_molformula,String,Compound,"""",Molecular formula for the full compound (including any salt)
+hba_lipinski,Int,Compound,"""","Number of hydrogen bond acceptors calculated according to Lipinski's original rules (i.e., N + O count))"
+hbd_lipinski,Int,Compound,"""","Number of hydrogen bond donors calculated according to Lipinski's original rules (i.e., NH + OH count)"
+num_lipinski\_ ro5_violations,Int,Compound,"""",Number of violations of Lipinski's rule of five using HBA_LIPINSKI and HBD_LIPINSKI counts
+standard_inchi,String,Compound,ChEMBL: compound_structures,IUPAC standard InChI for the compound
+standard_inchi_key,String,Compound,"""",IUPAC standard InChI key for the compound
+canonical_smiles,String,Compound,"""","Canonical smiles, generated using RDKit"
+atc_level1,String,Compound,"ChEMBL: atc_classification, molecule_atc\_ classification","Anatomical Therapeutic Chemical (ATC) classification, level 1"
+target_class_l1,String,Target,"ChEMBL: protein_classification, protein_family\_ classification","Target class, level 1 (more general)"
 target_class_l2,String,Target,"""","Target class, level 2 (more detailed)"

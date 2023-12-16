@@ -1,6 +1,6 @@
-﻿Column Name,Type,Cpd or Target info?,Description / Notes
+﻿Column Name,Type,Info Re.,Description / Notes
 pchembl_value_mean_BF / _B,Float,Compound-Target Pair,Mean pchemb_value for the compound-target pair
 pchembl_value_max_BF / _B,Float,Compound-Target Pair,Maximum pchemb_value for the compound-target pair
 pchembl_value_median_BF / _B,Float,Compound-Target Pair,Median pchemb_value for the compound-target pair
-first_publication_cpd_target_pair_BF /_B,Int,Compound-Target Pair,first publication in ChEMBL with this compound-target pair
-first_publication_cpd_target_pair_w_pchembl_BF / _B,Int,Compound-Target Pair,first publication in ChEMBL with this compound-target pair and an associated pchembl value
+first_publication\_ cpd_target_pair_BF /_B,Int,Compound-Target Pair,First publication in ChEMBL with this compound-target pair
+first_publication\_ cpd_target_pair\_ w_pchembl_BF / _B,Int,Compound-Target Pair,First publication in ChEMBL with this compound-target pair and an associated pchembl value

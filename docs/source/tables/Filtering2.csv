@@ -1,0 +1,7 @@
+﻿Column Name,Type,Info Re.,Assays,#Comparators [#]_,Other
+BF_100,Bool,Compound-Target Pair,binding + functional,>= 100,
+BF_100_c_dt_d_dt,Bool,Compound-Target Pair,binding + functional,>= 100,"at least one compound with an annotation of D_DT or C<p>_DT (C0_DT, C1_DT, C2_DT, C3_DT) per target"
+BF_100_d_dt,Bool,Compound-Target Pair,binding + functional,>= 100,at least one compound with an annotation of D_DT per target
+B_100,Bool,Compound-Target Pair,binding,>= 100,
+B_100_c_dt_d_dt,Bool,Compound-Target Pair,binding,>= 100,"at least one compound with an annotation of D_DT or C<p>_DT (C0_DT, C1_DT, C2_DT, C3_DT) per target"
+B_100_d_dt,Bool,Compound-Target Pair,binding,>= 100,at least one compound with an annotation of D_DT per target

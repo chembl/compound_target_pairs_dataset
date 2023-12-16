@@ -1,22 +1,22 @@
-﻿Column Name,Type,Cpd or Target info?,Based on ChEMBL / RDKit / …,Description / Notes
-pchembl_value,Float,Compound-Target Pair,ChEMBL: intial query (activities),"pchembl_value is later aggregated into mean, max and median per compound-target pair and dropped"
-parent_molregno,Int,Compound,ChEMBL: initial query (molecule_dictionary),
-parent_chemblid,String,Compound,"""",
-parent_pref_name,String,Compound,"""",
-max_phase,Float,Compound,"""",
-first_approval,Int,Compound,"""",
-usan_year,Int,Compound,"""",
-black_box_warning,Int,Compound,"""",
-prodrug,Int,Compound,"""",
-oral,Int,Compound,"""",
-parenteral,Int,Compound,"""",
-topical,Int,Compound,"""",
-tid,Int,Target,ChEMBL: initial query (assays),
-mutation,String,Target,ChEMBL: initial query (variant_sequences),
-target_chembl_id,String,Target,ChEMBL: initial query (target_dictionary),
-target_pref_name,String,Target,"""",
-target_type,String,Target,"""",
-organism,String,Target,"""",
-tid_mutation,String,Target,tid + '_' + mutation,
-cpd_target_pair,String,Compound-Target Pair,parent_molregno + '_' +  tid,Please note that this is used for the assignment of 'DTI' and does not include the mutation information.
-cpd_target_pair_mutation,String,Compound-Target Pair,parent_molregno + '_' +  tid_mutation,
+﻿Column Name,Type,Info Re.,Based On,Description / Notes
+pchembl_value,Float,Compound-Target Pair,ChEMBL: activities,"Negative log of selected concentration-response activity values (IC50 / EC50 / XC50 / AC50 / Ki / Kd / Potency). pchembl_value is later aggregated into mean, max and median per compound-target pair and dropped"
+parent_molregno,Int,Compound,ChEMBL: molecule_dictionary,Internal Primary Key for the molecule
+parent_chemblid,String,Compound,"""",ChEMBL identifier for this compound (for use on web interface etc)
+parent_pref_name,String,Compound,"""",Preferred name for the molecule
+max_phase,Float,Compound,"""",Maximum phase of development reached for the compound across all indications [#]_
+first_approval,Int,Compound,"""",Earliest known approval year for the drug (NULL is the default value)
+usan_year,Int,Compound,"""",The year in which the application for a USAN/INN name was granted. (NULL is the default value)
+black_box_warning,Int,Compound,"""","Indicates that the drug has a black box warning (1 = yes, 0 = default value)"
+prodrug,Int,Compound,"""","Indicates that the drug is a pro-drug (1 = yes, 0 = no, -1 = preclinical compound ie not a drug)"
+oral,Int,Compound,"""","Indicates whether the drug is known to be administered orally (1 = yes, 0 = default value)"
+parenteral,Int,Compound,"""","Indicates whether the drug is known to be administered parenterally (1 = yes, 0 = default value)"
+topical,Int,Compound,"""","Indicates whether the drug is known to be administered topically (1 = yes, 0 = default value)"
+tid,Int,Target,ChEMBL: assays,Unique ID for the target
+mutation,String,Target,ChEMBL: variant_sequences,"Details of variant(s) used, with residue positions adjusted to match provided sequence."
+target_chembl_id,String,Target,ChEMBL: target_dictionary,ChEMBL identifier for this target (for use on web interface etc)
+target_pref_name,String,Target,"""",Preferred target name: manually curated
+target_type,String,Target,"""","Describes whether target is a protein, an organism, a tissue etc."
+organism,String,Target,"""","Source organism of molecuar target or tissue, or the target organism if compound activity is reported in an organism rather than a protein or tissue"
+tid_mutation,String,Target,tid + '_' + mutation,Helper column
+cpd_target_pair,String,Compound-Target Pair,parent_molregno + '_' +  tid,Helper column
+cpd_target_pair\_ mutation,String,Compound-Target Pair,parent_molregno + '_' +  tid_mutation,Helper column
