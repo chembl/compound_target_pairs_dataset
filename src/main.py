@@ -29,6 +29,11 @@ if __name__ == "__main__":
                         type=str,
                         required=True,
                         help='Path to write the output file(s) to. (required)')
+    parser.add_argument('--delimiter', '-d',
+                        metavar='<delimiter>',
+                        type=str,
+                        default=";",
+                        help='Delimiter in output csv-files.  (default: ;)')
     parser.add_argument('--all_sources', 
                         action='store_true',
                         help='If this is set, the dataset is calculated based on all sources in ChEMBL. \
@@ -37,11 +42,6 @@ if __name__ == "__main__":
     parser.add_argument('--rdkit', 
                         action='store_true',
                         help='Calculate RDKit-based compound properties.')
-    parser.add_argument('--delimiter', '-d',
-                        metavar='<delimiter>',
-                        type=str,
-                        default=";",
-                        help='Delimiter in output csv-files.  (default: ;)')
     parser.add_argument('--excel', 
                         action='store_true',
                         help='Write the results to excel. Note: this may fail if the output is too large.')
