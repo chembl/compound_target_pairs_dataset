@@ -1,5 +1,4 @@
 ﻿Column Name,Type,Info Re.,Based On,Description / Notes
-first_publication_cpd,Int,Compound,ChEMBL: docs,First appearance of the compound in the literature
 mw_freebase,Float,Compound,ChEMBL: compound_properties,Molecular weight of parent compound
 alogp,Float,Compound,"""",Calculated ALogP
 hba,Int,Compound,"""",Number hydrogen bond acceptors
@@ -22,9 +21,3 @@ full_molformula,String,Compound,"""",Molecular formula for the full compound (in
 hba_lipinski,Int,Compound,"""","Number of hydrogen bond acceptors calculated according to Lipinski's original rules (i.e., N + O count))"
 hbd_lipinski,Int,Compound,"""","Number of hydrogen bond donors calculated according to Lipinski's original rules (i.e., NH + OH count)"
 num_lipinski\_ ro5_violations,Int,Compound,"""",Number of violations of Lipinski's rule of five using HBA_LIPINSKI and HBD_LIPINSKI counts
-standard_inchi,String,Compound,ChEMBL: compound_structures,IUPAC standard InChI for the compound
-standard_inchi_key,String,Compound,"""",IUPAC standard InChI key for the compound
-canonical_smiles,String,Compound,"""","Canonical smiles, generated using RDKit"
-atc_level1,String,Compound,"ChEMBL: atc_classification, molecule_atc\_ classification","Anatomical Therapeutic Chemical (ATC) classification, level 1"
-target_class_l1,String,Target,"ChEMBL: protein_classification, protein_family\_ classification","Target class, level 1 (more general)"
-target_class_l2,String,Target,"""","Target class, level 2 (more detailed)"

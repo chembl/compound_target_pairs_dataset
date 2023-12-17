@@ -1,0 +1,7 @@
+﻿Column Name,Type,Info Re.,Based On,Description / Notes
+aromatic_atoms,Int,Compound,canonical_smiles + RDKit-based methods,Number of aromatic atoms
+aromatic_c,Int,Compound,"""",Number of aromatic C
+aromatic_n,Int,Compound,"""",Number of aromatic N
+aromatic_hetero,Int,Compound,"""",Number of aromatic hetero atoms
+scaffold\_ w_stereo,String,Compound,"""","Scaffold SMILES, including stereochemistry information"
+scaffold\_ wo_stereo,String,Compound,"""",Scaffold SMILES of the molecule after removing stereochemistry information

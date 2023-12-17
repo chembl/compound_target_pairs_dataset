@@ -1,0 +1,4 @@
+﻿Column Name,Type,Info Re.,Based On,Description / Notes
+tid_mutation,String,Target,tid + '_' + mutation,Helper column
+cpd_target_pair,String,Compound-Target Pair,parent_molregno + '_' +  tid,Helper column
+cpd_target_pair\_ mutation,String,Compound-Target Pair,parent_molregno + '_' +  tid_mutation,Helper column

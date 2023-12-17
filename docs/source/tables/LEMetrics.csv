@@ -1,5 +1,5 @@
 ﻿Column Name,Type,Info Re.,Description / Notes
-LE_BF  / LE_B,Float,Compound,Ligand efficiency [#]_
-BEI_BF / BEI_B,Float,Compound,Binding efficiency index [#]_
-SEI_BF / SEI_B,Float,Compound,Surface efficiency index [#]_
-LLE_BF / LLE_B,Float,Compound,Lipophilic ligand efficiency [#]_
+LE_BF  / LE_B,Float,Compound,Ligand efficiency
+BEI_BF / BEI_B,Float,Compound,Binding efficiency index
+SEI_BF / SEI_B,Float,Compound,Surface efficiency index
+LLE_BF / LLE_B,Float,Compound,Lipophilic ligand efficiency

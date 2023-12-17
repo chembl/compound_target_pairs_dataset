@@ -1,0 +1,2 @@
+﻿Column Name,Type,Info Re.,Based On,Description / Notes
+pchembl_value,Float,Compound-Target Pair,ChEMBL: activities,Negative log of selected concentration-response activity values (IC50 / EC50 / XC50 / AC50 / Ki / Kd / Potency).

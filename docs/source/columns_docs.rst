@@ -11,14 +11,42 @@ The information on this page mostly corresponds to the `ChEMBL 32 schema documen
 
 Initial Query
 *************
+Pchembl Values
+---------------
+The pchembl_value is later aggregated into mean, max and median per compound-target pair and dropped.
+
 .. csv-table:: 
-   :file: tables/InitialQuery.csv
-   :widths: 10, 10, 10, 10, 30
+   :file: tables/InitialQuery1.csv
+   :widths: 20, 10, 15, 20, 35
+   :header-rows: 1
+
+Compound Information
+--------------------
+.. csv-table:: 
+   :file: tables/InitialQuery2.csv
+   :widths: 20, 10, 15, 20, 35
    :header-rows: 1
 
 .. [#] There have been changes to the max_phase field in ChEMBL with `version 32`_. See `Maximum Phase in ChEMBL`_.
 
 .. _version 32: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_32/chembl_32_release_notes.txt
+
+
+Target Information
+------------------
+.. csv-table:: 
+   :file: tables/InitialQuery3.csv
+   :widths: 20, 10, 15, 20, 35
+   :header-rows: 1
+
+Helper Columns
+--------------
+These columns are combination of other columns, used for easier processing of the dataset. 
+
+.. csv-table:: 
+   :file: tables/InitialQuery4.csv
+   :widths: 20, 10, 15, 20, 35
+   :header-rows: 1
 
 
 
@@ -28,7 +56,7 @@ Aggregated per compound-target pair using parent_molregno and tid_mutation.
 
 .. csv-table:: 
    :file: tables/AggregatedValues.csv
-   :widths: 20, 10, 10, 60
+   :widths: 30, 10, 15, 45
    :header-rows: 1
 
 Naming Convention: B vs. BF
@@ -47,7 +75,7 @@ Based on cpd_target_pair, does not include mutation information.
 
 .. csv-table:: 
    :file: tables/DTIAnnotations.csv
-   :widths: 10, 10, 10, 10, 40
+   :widths: 20, 10, 15, 20, 35
    :header-rows: 1
 
 
@@ -55,7 +83,7 @@ Mechanism to Assign DTI
 -----------------------
 .. csv-table:: 
    :file: tables/DTIMechanism.csv
-   :widths: 10, 10, 10, 10, 60
+   :widths: 15, 15, 15, 10, 45
    :header-rows: 1
 
 .. [#] Is the compound-target pair in the drug_mechanisms table? = Is it a known relevant compound-target interaction?
@@ -82,9 +110,35 @@ Before ChEMBL 32, compounds with a max_phase not between 1 and 4 were assigned a
 
 Compound and Target Properties Based on ChEMBL Data
 ***************************************************
+First publication
+-----------------
+In contrast to the aggregated time-related fields, 
+this field takes all of ChEMBL and not just the time-related data within the dataset into account. 
+
 .. csv-table:: 
-   :file: tables/CompoundProps.csv
-   :widths: 10, 10, 10, 10, 60
+   :file: tables/CompoundProps1.csv
+   :widths: 20, 10, 15, 20, 35
+   :header-rows: 1
+
+Compound Properties
+-------------------
+.. csv-table:: 
+   :file: tables/CompoundProps2.csv
+   :widths: 20, 10, 15, 20, 35
+   :header-rows: 1
+
+Compound Structures
+-------------------
+.. csv-table:: 
+   :file: tables/CompoundProps3.csv
+   :widths: 20, 10, 15, 20, 35
+   :header-rows: 1
+
+ATC and Target Class
+--------------------
+.. csv-table:: 
+   :file: tables/CompoundProps4.csv
+   :widths: 20, 10, 15, 20, 35
    :header-rows: 1
 
 
@@ -93,35 +147,50 @@ Ligand Efficiency Metrics
 Calculated based on pchembl_value_mean. 
 
 Since LE metrics are based on pchembl values, they are calculated twice.
-Once for the pchembl values based on binding + functional assays (suffix _BF) 
+Once for the pchembl values based on binding and functional assays (suffix _BF) 
 and once for the pchembl values based on binding assays only (suffix _B).
 
 .. csv-table:: 
    :file: tables/LEMetrics.csv
-   :widths: 10, 10, 10, 20
+   :widths: 20, 20, 20, 40
    :header-rows: 1
 
-.. [#] .. math:: LE &= \frac{\Delta G}{HA} \text{where } \Delta G = - RT \ln(K_d) \text{, } - RT\ln(K_i) \text{,  or} - RT\ln(IC_{50}) \\ LE &= \frac{2.303 \cdot 298 \cdot 0.00199 \cdot \text{pchembl_value}} {\text{heavy_atoms}}
 
-.. [#] .. math:: BEI  = \frac{pchembl\text{_}mean \cdot 1000}{mw\text{_}freebase}
+Equations
+---------
+.. math::
+   :nowrap:
 
-.. [#] .. math:: SEI = \frac{pchembl\text{_}mean \cdot 100}{PSA}
-
-.. [#] .. math:: LLE = pchembl\text{_}mean - ALogP
+   \begin{flalign*}
+   LE &= \frac{2.303 \cdot 298 \cdot 0.00199 \cdot pchembl\_value} {heavy\_atoms} \\
+   BEI  &= \frac{pchembl\_mean \cdot 1000}{mw\_freebase} \\
+   SEI &= \frac{pchembl\_mean \cdot 100}{PSA} \\
+   LLE &= pchembl\_mean - ALogP \\
+   \end{flalign*}
 
 
 
 RDKit-Based Compound Descriptors
 ********************************
-Most RDKit-based compound descriptors are calculated using built-in RDKit methods from `Descriptors`_ and `rdMolDescriptors`_.
-A few are calculated with bespoke RDKit-based methods. 
+Built-in Methods
+----------------
+These compound descriptors are calculated using built-in RDKit methods from `Descriptors`_ and `rdMolDescriptors`_.
 
 .. _Descriptors: https://www.rdkit.org/docs/source/rdkit.Chem.Descriptors.html
 .. _rdMolDescriptors: https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html
 
 .. csv-table:: 
-   :file: tables/RDKitProps.csv
-   :widths: 10, 10, 10, 10, 60
+   :file: tables/RDKitProps1.csv
+   :widths: 20, 10, 15, 20, 35
+   :header-rows: 1
+
+Bespoke Methods
+---------------
+These compound descriptors are calculated using custom RDKit-based methods.
+
+.. csv-table:: 
+   :file: tables/RDKitProps2.csv
+   :widths: 20, 10, 15, 20, 35
    :header-rows: 1
 
 
@@ -135,7 +204,7 @@ Helper Columns
 --------------
 .. csv-table:: 
    :file: tables/Filtering.csv
-   :widths: 10, 10, 10, 70
+   :widths: 20, 10, 15, 55
    :header-rows: 1
 
 
@@ -143,7 +212,7 @@ Filtering Columns
 -----------------
 .. csv-table:: 
    :file: tables/Filtering2.csv
-   :widths: 10, 10, 10, 10, 10, 70
+   :widths: 20, 10, 15, 15, 15, 25
    :header-rows: 1
 
 .. [#] Comparator compounds in this context are all compounds with a pchembl_value_mean_BF / _B. 

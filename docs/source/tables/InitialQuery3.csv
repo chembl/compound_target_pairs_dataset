@@ -1,0 +1,7 @@
+﻿Column Name,Type,Info Re.,Based On,Description / Notes
+tid,Int,Target,ChEMBL: assays,Unique ID for the target
+mutation,String,Target,ChEMBL: variant_sequences,"Details of variant(s) used, with residue positions adjusted to match provided sequence."
+target_chembl_id,String,Target,ChEMBL: target_dictionary,ChEMBL identifier for this target (for use on web interface etc)
+target_pref_name,String,Target,"""",Preferred target name: manually curated
+target_type,String,Target,"""","Describes whether target is a protein, an organism, a tissue etc."
+organism,String,Target,"""","Source organism of molecuar target or tissue, or the target organism if compound activity is reported in an organism rather than a protein or tissue"

@@ -12,9 +12,3 @@ num_saturated\_ heterocycles,Int,Compound,"""",Number of saturated heterocycles 
 num_saturated\_ rings,Int,Compound,"""",Number of saturated rings (rdkit.Chem.Descriptors. NumSaturatedRings)
 ring_count,Int,Compound,"""",(rdkit.Chem.Descriptors. RingCount)
 num_stereocentres,Int,Compound,"""",Number of atomic stereocenters (specified and unspecified) (rdkit.Chem.rdMolDescriptors. CalcNumAtomStereoCenters)
-aromatic_atoms,Int,Compound,canonical_smiles + RDKit-based methods,Number of aromatic atoms
-aromatic_c,Int,Compound,"""",Number of aromatic C
-aromatic_n,Int,Compound,"""",Number of aromatic N
-aromatic_hetero,Int,Compound,"""",Number of aromatic hetero atoms
-scaffold\_ w_stereo,String,Compound,"""","Scaffold SMILES, including stereochemistry information"
-scaffold\_ wo_stereo,String,Compound,"""",Scaffold SMILES of the molecule after removing stereochemistry information

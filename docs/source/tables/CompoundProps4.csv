@@ -1,0 +1,4 @@
+﻿Column Name,Type,Info Re.,Based On,Description / Notes
+atc_level1,String,Compound,"ChEMBL: atc_classification, molecule_atc\_ classification","Anatomical Therapeutic Chemical (ATC) classification, level 1"
+target_class_l1,String,Target,"ChEMBL: protein_classification, protein_family\_ classification","Target class, level 1 (more general)"
+target_class_l2,String,Target,"""","Target class, level 2 (more detailed)"

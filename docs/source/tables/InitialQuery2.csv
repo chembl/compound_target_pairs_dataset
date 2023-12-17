@@ -1,0 +1,12 @@
+﻿Column Name,Type,Info Re.,Based On,Description / Notes
+parent_molregno,Int,Compound,ChEMBL: molecule_dictionary,Internal Primary Key for the molecule
+parent_chemblid,String,Compound,"""",ChEMBL identifier for this compound (for use on web interface etc)
+parent_pref_name,String,Compound,"""",Preferred name for the molecule
+max_phase,Float,Compound,"""",Maximum phase of development reached for the compound across all indications [#]_
+first_approval,Int,Compound,"""",Earliest known approval year for the drug (NULL is the default value)
+usan_year,Int,Compound,"""",The year in which the application for a USAN/INN name was granted. (NULL is the default value)
+black_box_warning,Int,Compound,"""","Indicates that the drug has a black box warning (1 = yes, 0 = default value)"
+prodrug,Int,Compound,"""","Indicates that the drug is a pro-drug (1 = yes, 0 = no, -1 = preclinical compound ie not a drug)"
+oral,Int,Compound,"""","Indicates whether the drug is known to be administered orally (1 = yes, 0 = default value)"
+parenteral,Int,Compound,"""","Indicates whether the drug is known to be administered parenterally (1 = yes, 0 = default value)"
+topical,Int,Compound,"""","Indicates whether the drug is known to be administered topically (1 = yes, 0 = default value)"

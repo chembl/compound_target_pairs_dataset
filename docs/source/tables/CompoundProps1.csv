@@ -1,0 +1,2 @@
+﻿Column Name,Type,Info Re.,Based On,Description / Notes
+first_publication_cpd,Int,Compound,ChEMBL: docs,First appearance of the compound in the literature

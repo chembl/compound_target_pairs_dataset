@@ -1,0 +1,4 @@
+﻿Column Name,Type,Info Re.,Based On,Description / Notes
+standard_inchi,String,Compound,ChEMBL: compound_structures,IUPAC standard InChI for the compound
+standard_inchi_key,String,Compound,"""",IUPAC standard InChI key for the compound
+canonical_smiles,String,Compound,"""","Canonical smiles, generated using RDKit"
