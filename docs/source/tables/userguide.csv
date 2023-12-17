@@ -1,0 +1,11 @@
+﻿Parameter,Required,Flag,Default,Explanation
+"\-\-chembl, -c",No,No,None,ChEMBL version. The latest available ChEMBL version is used if this is not set.
+"\-\-sqlite, -s",No,No,None,"Path to SQLite database. If this is not set, ChEMBL is downloaded as an SQLite database and handled using the chembl_downloader package."
+"\-\-output, -o",Yes,No,None,Path to write the output file(s) to.
+"\-\-delimiter, -d",No,No,;,Delimiter in output csv-files.
+\-\-all_sources,No,Yes,n/a,"Include all sources if this is set. By default, this is not set, and the dataset is calculated based on only literature sources."
+\-\-rdkit,No,Yes,n/a,Calculate RDKit-based compound properties if this is set.
+\-\-excel,No,Yes,n/a,Write the results to excel. Note: this may fail if the output is too large. The results will always be written to csv.
+\-\-BF,No,Yes,n/a,Write the subsets based on binding and functional assays.
+\-\-B,No,Yes,n/a,Write the subsets based on binding assays.
+\-\-debug,No,Yes,n/a,Log additional debugging information.
