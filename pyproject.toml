@@ -1,0 +1,33 @@
+[project]
+name = "compound_target_pairs_dataset"  
+version = "0.0.1"  
+description = "Extract a compound-target pair dataset from ChEMBL" 
+readme = "README.md" 
+license = {file = "LICENSE"}
+authors = [
+  {name = "Lina Heinzke"}, 
+  {name = "Barbara Zdrazil"}
+]
+
+requires-python = ">=3.7"
+
+dependencies = [ 
+    "chembl-downloader", 
+    "numpy",
+    "pandas",
+    "rdkit", 
+    "tqdm",
+]
+
+[project.optional-dependencies] 
+dev = [
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+
+
+
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
