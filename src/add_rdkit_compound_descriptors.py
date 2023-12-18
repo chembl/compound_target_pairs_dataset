@@ -18,8 +18,6 @@ def add_built_in_descriptors(df_combined: pd.DataFrame) -> pd.DataFrame:
     PandasTools.AddMoleculeColumnToFrame(df_combined, 'canonical_smiles', 'mol', includeFingerprints=False)
 
     df_combined.loc[:,'fraction_csp3'] = df_combined['mol'].apply(Descriptors.FractionCSP3)
-    df_combined.loc[:,'num_heteroatoms'] = df_combined['mol'].apply(Descriptors.NumHeteroatoms)
-    df_combined.loc[:,'num_stereocentres'] = df_combined['mol'].apply(Chem.rdMolDescriptors.CalcNumAtomStereoCenters)
     df_combined.loc[:,'ring_count'] = df_combined['mol'].apply(Descriptors.RingCount)
     df_combined.loc[:,'num_aliphatic_rings'] = df_combined['mol'].apply(Descriptors.NumAliphaticRings)
     df_combined.loc[:,'num_aliphatic_carbocycles'] = df_combined['mol'].apply(Descriptors.NumAliphaticCarbocycles)
@@ -30,6 +28,8 @@ def add_built_in_descriptors(df_combined: pd.DataFrame) -> pd.DataFrame:
     df_combined.loc[:,'num_saturated_rings'] = df_combined['mol'].apply(Descriptors.NumSaturatedRings)
     df_combined.loc[:,'num_saturated_carbocycles'] = df_combined['mol'].apply(Descriptors.NumSaturatedCarbocycles)
     df_combined.loc[:,'num_saturated_heterocycles'] = df_combined['mol'].apply(Descriptors.NumSaturatedHeterocycles)
+    df_combined.loc[:,'num_stereocentres'] = df_combined['mol'].apply(Chem.rdMolDescriptors.CalcNumAtomStereoCenters)
+    df_combined.loc[:,'num_heteroatoms'] = df_combined['mol'].apply(Descriptors.NumHeteroatoms)
 
     # add scaffolds
     PandasTools.AddMurckoToFrame(df_combined, 'mol', 'scaffold_w_stereo')

@@ -173,11 +173,12 @@ def reorder_columns(df_combined, calculate_RDKit):
     chembl_target_annotations = ['atc_level1',
                                  'target_class_l1', 'target_class_l2']
     rdkit_columns = ['fraction_csp3',
-                     'num_aliphatic_carbocycles', 'num_aliphatic_heterocycles', 'num_aliphatic_rings',
-                     'num_aromatic_carbocycles', 'num_aromatic_heterocycles', 'num_aromatic_rings',
+                     'ring_count', 
+                     'num_aliphatic_rings', 'num_aliphatic_carbocycles', 'num_aliphatic_heterocycles', 
+                     'num_aromatic_rings', 'num_aromatic_carbocycles', 'num_aromatic_heterocycles', 
+                     'num_saturated_rings', 'num_saturated_carbocycles', 'num_saturated_heterocycles', 
+                     'num_stereocentres',
                      'num_heteroatoms',
-                     'num_saturated_carbocycles', 'num_saturated_heterocycles', 'num_saturated_rings',
-                     'ring_count', 'num_stereocentres',
                      'aromatic_atoms', 'aromatic_c', 'aromatic_n', 'aromatic_hetero',
                      'scaffold_w_stereo', 'scaffold_wo_stereo']
     filtering_columns = ['in_dm_table', 'keep_for_binding']
