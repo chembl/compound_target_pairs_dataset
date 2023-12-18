@@ -129,7 +129,7 @@ def get_average_info(df: pd.DataFrame, suffix: str) -> pd.DataFrame:
 
 
 ########### Get Aggregated Compound-Target Pair Information ###########
-def get_aggregated_acticity_ct_pairs(chembl_con: sqlite3.Connection, limit_to_literature: bool, df_sizes: list[list[int], list[int]]) -> pd.DataFrame:
+def get_aggregated_activity_ct_pairs(chembl_con: sqlite3.Connection, limit_to_literature: bool, df_sizes: list[list[int], list[int]]) -> pd.DataFrame:
     """
     Get dataset of compound target-pairs with an associated pchembl value 
     with pchembl and publication dates aggregated into one entry per pair.

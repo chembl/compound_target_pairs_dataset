@@ -54,8 +54,8 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
     # list with sizes of full dataset and dataset subset with pchembl values for debugging
     df_sizes = [[], []]
 
-    logging.info("get_aggregated_acticity_ct_pairs")
-    df_combined = get_activity_ct_pairs.get_aggregated_acticity_ct_pairs(chembl_con, limit_to_literature, df_sizes)
+    logging.info("get_aggregated_activity_ct_pairs")
+    df_combined = get_activity_ct_pairs.get_aggregated_activity_ct_pairs(chembl_con, limit_to_literature, df_sizes)
     if logging.DEBUG >= logging.root.level:
         get_stats.add_dataset_sizes(df_combined, "activity ct-pairs", df_sizes)
     
