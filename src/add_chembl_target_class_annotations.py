@@ -70,7 +70,8 @@ def get_target_class_table(chembl_con: sqlite3.Connection, current_tids: set[int
 
 
 def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: sqlite3.Connection, 
-                                        output_path: str, write_to_csv: bool, write_to_excel: bool, delimiter: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
+                                        output_path: str, write_to_csv: bool, write_to_excel: bool, delimiter: str, 
+                                        chembl_version: str, limited_flag: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
     Add level 1 and 2 target class annotations. 
     Assignments for target IDs with more than one target class assignment per level 
@@ -91,6 +92,10 @@ def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: s
     :type write_to_excel: bool
     :param delimiter: Delimiter in csv-output
     :type delimiter: str
+    :param chembl_version: Version of ChEMBL for output files
+    :type chembl_version: str
+    :param limited_flag: Document suffix indicating whether the dataset was limited to literature sources
+    :type limited_flag: str
     :return: - Pandas DataFrame with added target class annotations \\
         - Pandas DataFrame with mapping from target id to level 1 target class \\
         - Pandas DataFrame with mapping from target id to level 2 target class
@@ -136,7 +141,7 @@ def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: s
     more_than_one_tclass = pd.concat([more_than_one_level_1, more_than_one_level_2]).drop_duplicates()
     logging.debug(f"Targets with more than one target class assignment: {len(more_than_one_tclass)}")
     
-    name_more_than_one_tclass = os.path.join(output_path, "targets_w_more_than_one_tclass")
+    name_more_than_one_tclass = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_targets_w_more_than_one_tclass")
     write_subsets.write_output(more_than_one_tclass, name_more_than_one_tclass, write_to_csv, write_to_excel, delimiter)
 
     return df_combined, target_classes_level1, target_classes_level2

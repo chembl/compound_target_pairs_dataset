@@ -54,6 +54,12 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
     # list with sizes of full dataset and dataset subset with pchembl values for debugging
     df_sizes = [[], []]
 
+    # used in file names
+    if limit_to_literature: 
+        limited_flag = "literature_only"
+    else:
+        limited_flag = "all_sources"
+
     logging.info("get_aggregated_activity_ct_pairs")
     df_combined = get_activity_ct_pairs.get_aggregated_activity_ct_pairs(chembl_con, limit_to_literature, df_sizes)
     if logging.DEBUG >= logging.root.level:
@@ -84,7 +90,7 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
 
     logging.info("add_chembl_target_class_annotations")
     df_combined, target_classes_level1, target_classes_level2 = add_chembl_target_class_annotations.add_chembl_target_class_annotations(
-        df_combined, chembl_con, output_path, write_to_csv, write_to_excel, delimiter)
+        df_combined, chembl_con, output_path, write_to_csv, write_to_excel, delimiter, chembl_version, limited_flag)
     if logging.DEBUG >= logging.root.level:
         get_stats.add_dataset_sizes(df_combined, "tclass annotations", df_sizes)
 
@@ -104,10 +110,6 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
     sanity_checks.sanity_checks(df_combined, df_cpd_props, atc_levels,
                                 target_classes_level1, target_classes_level2, calculate_RDKit)
 
-    if limit_to_literature: 
-        limited_flag = "literature_only"
-    else:
-        limited_flag = "all_sources"
     logging.info("write_BF_to_file")
     min_nof_cpds_BF = 100
     df_combined_annotated = write_subsets.write_BF_to_file(df_combined, 
@@ -131,10 +133,15 @@ def get_ct_pair_dataset(chembl_con: sqlite3.Connection,
                                              limited_flag, calculate_RDKit)
 
     logging.info("output_stats")
-    output_file = os.path.join(output_path, "full_dataset_stats")
+    
+    output_file = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_full_dataset_stats")
     get_stats.output_stats(df_combined_annotated, output_file, write_to_csv, write_to_excel, delimiter)
-    output_file = os.path.join(output_path, "df_BF_100_c_dt_d_dt_literature_only_stats")
-    get_stats.output_stats(df_combined_annotated[df_combined_annotated["BF_100_c_dt_d_dt"]], output_file, write_to_csv, write_to_excel, delimiter)
+    if write_BF:
+        output_file = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_BF}_c_dt_d_dt_stats")
+        get_stats.output_stats(df_combined_annotated[df_combined_annotated["BF_100_c_dt_d_dt"]], output_file, write_to_csv, write_to_excel, delimiter)
+    if write_B:
+        output_file = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_B}_c_dt_d_dt_stats")
+        get_stats.output_stats(df_combined_annotated[df_combined_annotated["B_100_c_dt_d_dt"]], output_file, write_to_csv, write_to_excel, delimiter)
 
     if logging.DEBUG >= logging.root.level:
         get_stats.output_debug_sizes(df_sizes, output_path, write_to_csv, write_to_excel, delimiter)

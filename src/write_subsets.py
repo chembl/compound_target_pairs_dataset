@@ -188,22 +188,22 @@ def write_BF_to_file(df_combined: pd.DataFrame,
     if write_BF:
         # NOTE: This is almost identical to the full dataset which will be saved later on.
         # However, the binding-related columns are dropped
-        name_BF = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_BF_{limited_flag}")
+        name_BF = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF")
         write_and_check_output(df_combined_BF, name_BF, write_to_csv,
                                write_to_excel, delimiter, desc, calculate_RDKit)
 
         name_BF_100 = os.path.join(
-            output_path,  f"ChEMBL{chembl_version}_CTI_BF_{min_nof_cpds_BF}_{limited_flag}")
+            output_path,  f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_BF}")
         write_and_check_output(df_combined_BF_enough_cpds, name_BF_100,
                                write_to_csv, write_to_excel, delimiter, desc, calculate_RDKit)
 
         name_BF_100_c_dt_d_dt = os.path.join(
-            output_path, f"ChEMBL{chembl_version}_CTI_BF_{min_nof_cpds_BF}_c_dt_d_dt_{limited_flag}")
+            output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_BF}_c_dt_d_dt")
         write_and_check_output(df_combined_BF_c_dt_d_dt, name_BF_100_c_dt_d_dt,
                                write_to_csv, write_to_excel, delimiter, desc, calculate_RDKit)
 
         name_BF_100_d_dt = os.path.join(
-            output_path, f"ChEMBL{chembl_version}_CTI_BF_{min_nof_cpds_BF}_d_dt_{limited_flag}")
+            output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_BF}_d_dt")
         write_and_check_output(df_combined_BF_d_dt, name_BF_100_d_dt,
                                write_to_csv, write_to_excel, delimiter, desc, calculate_RDKit)
         
@@ -276,22 +276,22 @@ def write_B_to_file(df_combined: pd.DataFrame, df_combined_annotated: pd.DataFra
             f"Filtering is not accurate for {col_name}."
 
     if write_B:
-        name_B = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_B_{limited_flag}")
+        name_B = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_B")
         write_and_check_output(df_combined_B, name_B, write_to_csv,
                                write_to_excel, delimiter, desc, calculate_RDKit)
 
         name_B_100 = os.path.join(
-            output_path, f"ChEMBL{chembl_version}_CTI_B_{min_nof_cpds_B}_{limited_flag}")
+            output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_B}")
         write_and_check_output(df_combined_B_enough_cpds, name_B_100,
                                write_to_csv, write_to_excel, delimiter, desc, calculate_RDKit)
 
         name_B_100_c_dt_d_dt = os.path.join(
-            output_path,  f"ChEMBL{chembl_version}_CTI_B_{min_nof_cpds_B}_c_dt_d_dt_{limited_flag}")
+            output_path,  f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_B}_c_dt_d_dt")
         write_and_check_output(df_combined_B_c_dt_d_dt, name_B_100_c_dt_d_dt,
                                write_to_csv, write_to_excel, delimiter, desc, calculate_RDKit)
 
         name_B_100_d_dt = os.path.join(
-            output_path, f"ChEMBL{chembl_version}_CTI_B_{min_nof_cpds_B}_d_dt_{limited_flag}")
+            output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_B}_d_dt")
         write_and_check_output(df_combined_B_d_dt, name_B_100_d_dt,
                                write_to_csv, write_to_excel, delimiter, desc, calculate_RDKit)
 
@@ -332,6 +332,6 @@ def write_full_dataset_to_file(df_combined: pd.DataFrame,
     """
     desc = "all"
     if write_full_dataset:
-        name_all = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_all_{limited_flag}")
+        name_all = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_full_dataset")
         write_and_check_output(df_combined, name_all, write_to_csv,
                                write_to_excel, delimiter, desc, calculate_RDKit)
