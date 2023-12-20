@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>get_drug_mechanism_ct_pairs &mdash; compound_target_pairs_dataset 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=fdc28d34" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            compound_target_pairs_dataset
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../columns_docs.html">Columns in the Final Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">compound_target_pairs_dataset</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">get_drug_mechanism_ct_pairs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for get_drug_mechanism_ct_pairs</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+
+<span class="c1">########### Extract Drug-Target Interactions With Disease Relevance From the drug_mechanism Table ###########</span>
+<div class="viewcode-block" id="get_drug_mechanisms_interactions">
+<a class="viewcode-back" href="../get_drug_mechanism_ct_pairs.html#get_drug_mechanism_ct_pairs.get_drug_mechanisms_interactions">[docs]</a>
+<span class="k">def</span> <span class="nf">get_drug_mechanisms_interactions</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract the known compound-target interactions from the ChEMBL drug_mechanisms table.</span>
+<span class="sd">    Note: While the interactions are mostly between drugs and targets, </span>
+<span class="sd">    the table also includes some known interactions between compounds with a max_phase &lt; 4 and their targets.</span>
+
+<span class="sd">    Only entries with a disease_efficacy of 1 are taken into account, </span>
+<span class="sd">    i.e., the target is believed to play a role in the efficacy of the drug.  </span>
+
+<span class="sd">    *disease_efficacy: Flag to show whether the target assigned is believed </span>
+<span class="sd">    to play a role in the efficacy of the drug in the indication(s) for which it is approved (1 = yes, 0 = no).*</span>
+
+<span class="sd">    :param chembl_con: Sqlite3 connection to ChEMBL database.</span>
+<span class="sd">    :type chembl_con: sqlite3.Connection</span>
+<span class="sd">    :return: Pandas DataFrame with compound-target pairs from the drug_mechanism table with disease relevance.</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    SELECT DISTINCT mh.parent_molregno, dm.tid</span>
+<span class="s1">    FROM drug_mechanism dm</span>
+<span class="s1">    INNER JOIN molecule_hierarchy mh</span>
+<span class="s1">        ON dm.molregno = mh.molregno</span>
+<span class="s1">    INNER JOIN molecule_dictionary md</span>
+<span class="s1">        ON mh.parent_molregno = md.molregno</span>
+<span class="s1">    WHERE dm.disease_efficacy = 1</span>
+<span class="s1">        and dm.tid is not null</span>
+<span class="s1">    &#39;&#39;&#39;</span>
+
+    <span class="n">df_dti</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">chembl_con</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df_dti</span></div>
+
+
+
+<div class="viewcode-block" id="get_relevant_tid_mappings">
+<a class="viewcode-back" href="../get_drug_mechanism_ct_pairs.html#get_drug_mechanism_ct_pairs.get_relevant_tid_mappings">[docs]</a>
+<span class="k">def</span> <span class="nf">get_relevant_tid_mappings</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get DataFrame with mappings from target id to their related target ids based on the target_relations table.</span>
+<span class="sd">    The following mappings are considered:</span>
+
+<span class="sd">    +-------------------------------+-----------------------+----------------+</span>
+<span class="sd">    |protein family                 | -[superset of]-&gt;      | single protein |</span>
+<span class="sd">    +-------------------------------+-----------------------+----------------+</span>
+<span class="sd">    |protein complex                | -[superset of]-&gt;      | single protein |</span>
+<span class="sd">    +-------------------------------+-----------------------+----------------+</span>
+<span class="sd">    |protein complex group          | -[superset of]-&gt;      | single protein |</span>
+<span class="sd">    +-------------------------------+-----------------------+----------------+</span>
+<span class="sd">    |single protein                 | -[equivalent to]-&gt;    | single protein |</span>
+<span class="sd">    +-------------------------------+-----------------------+----------------+</span>
+<span class="sd">    |chimeric protein               | -[superset of]-&gt;      | single protein |</span>
+<span class="sd">    +-------------------------------+-----------------------+----------------+</span>
+<span class="sd">    |protein-protein interaction    | -[superset of]-&gt;      | single protein |</span>
+<span class="sd">    +-------------------------------+-----------------------+----------------+</span>
+
+<span class="sd">    These mappings can be used to increase the number of target ids for which there is data in the drug_mechanisms table.</span>
+<span class="sd">    For example, for *protein family -[superset of]-&gt; single protein* this means:  </span>
+<span class="sd">    If there is a known relevant interaction between a compound and a protein family, </span>
+<span class="sd">    interactions between the compound and single proteins of that protein family are considered to be known interactions as well.</span>
+
+<span class="sd">    :param chembl_con: Sqlite3 connection to ChEMBL database.</span>
+<span class="sd">    :type chembl_con: sqlite3.Connection</span>
+<span class="sd">    :return: Pandas DataFrame with mappings from tid to related tid for the defined subset of target relations.</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    SELECT DISTINCT tr.tid, tr.relationship, tr.related_tid, </span>
+<span class="s1">        td1.pref_name as pref_name_1, td1.target_type as target_type_1, td1.organism as organism_1, </span>
+<span class="s1">        td2.pref_name as pref_name_2, td2.target_type as target_type_2, td2.organism as organism_2 </span>
+<span class="s1">    FROM target_relations tr</span>
+<span class="s1">    INNER JOIN target_dictionary td1</span>
+<span class="s1">        ON tr.tid = td1.tid</span>
+<span class="s1">    INNER JOIN target_dictionary td2</span>
+<span class="s1">        ON tr.related_tid = td2.tid</span>
+<span class="s1">    &#39;&#39;&#39;</span>
+    <span class="n">df_related_targets</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">chembl_con</span><span class="p">)</span>
+
+    <span class="n">protein_family_mapping</span> <span class="o">=</span> <span class="n">df_related_targets</span><span class="p">[(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_1&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;PROTEIN FAMILY&quot;</span><span class="p">)</span>
+                                                <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_2&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SINGLE PROTEIN&quot;</span><span class="p">)</span>
+                                                <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SUPERSET OF&quot;</span><span class="p">)]</span>
+
+    <span class="n">protein_complex_mapping</span> <span class="o">=</span> <span class="n">df_related_targets</span><span class="p">[(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_1&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;PROTEIN COMPLEX&quot;</span><span class="p">)</span>
+                                                 <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_2&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SINGLE PROTEIN&quot;</span><span class="p">)</span>
+                                                 <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SUPERSET OF&quot;</span><span class="p">)]</span>
+
+    <span class="n">protein_complex_group_mapping</span> <span class="o">=</span> <span class="n">df_related_targets</span><span class="p">[(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_1&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;PROTEIN COMPLEX GROUP&quot;</span><span class="p">)</span>
+                                                       <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_2&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SINGLE PROTEIN&quot;</span><span class="p">)</span>
+                                                       <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SUPERSET OF&quot;</span><span class="p">)]</span>
+
+    <span class="n">single_protein_mapping</span> <span class="o">=</span> <span class="n">df_related_targets</span><span class="p">[(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_1&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SINGLE PROTEIN&quot;</span><span class="p">)</span>
+                                                <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_2&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SINGLE PROTEIN&quot;</span><span class="p">)</span>
+                                                <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;EQUIVALENT TO&quot;</span><span class="p">)]</span>
+
+    <span class="n">chimeric_protein_mapping</span> <span class="o">=</span> <span class="n">df_related_targets</span><span class="p">[(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_1&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CHIMERIC PROTEIN&quot;</span><span class="p">)</span>
+                                                  <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_2&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SINGLE PROTEIN&quot;</span><span class="p">)</span>
+                                                  <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SUPERSET OF&quot;</span><span class="p">)]</span>
+
+    <span class="n">ppi_mapping</span> <span class="o">=</span> <span class="n">df_related_targets</span><span class="p">[(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_1&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;PROTEIN-PROTEIN INTERACTION&quot;</span><span class="p">)</span>
+                                     <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;target_type_2&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SINGLE PROTEIN&quot;</span><span class="p">)</span>
+                                     <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_related_targets</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;SUPERSET OF&quot;</span><span class="p">)]</span>
+
+    <span class="n">relevant_tid_mappings</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">protein_family_mapping</span><span class="p">,</span>
+                                   <span class="n">protein_complex_mapping</span><span class="p">,</span>
+                                   <span class="n">protein_complex_group_mapping</span><span class="p">,</span>
+                                   <span class="n">single_protein_mapping</span><span class="p">,</span>
+                                   <span class="n">chimeric_protein_mapping</span><span class="p">,</span>
+                                   <span class="n">ppi_mapping</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">relevant_tid_mappings</span></div>
+
+
+
+<div class="viewcode-block" id="add_annotations_to_drug_mechanisms_cti">
+<a class="viewcode-back" href="../get_drug_mechanism_ct_pairs.html#get_drug_mechanism_ct_pairs.add_annotations_to_drug_mechanisms_cti">[docs]</a>
+<span class="k">def</span> <span class="nf">add_annotations_to_drug_mechanisms_cti</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">cpd_target_pairs</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add additional information to the compound-target pairs from the drug_mechanisms table </span>
+<span class="sd">    to match the information that is present in the compound-target pairs table based on activities.</span>
+
+<span class="sd">    :param chembl_con: Sqlite3 connection to ChEMBL database.</span>
+<span class="sd">    :type chembl_con: sqlite3.Connection</span>
+<span class="sd">    :param cpd_target_pairs: Pandas DataFrame with compound-target pairs from the drug_mechanism table.</span>
+<span class="sd">    :type cpd_target_pairs: pd.DataFrame</span>
+<span class="sd">    :return: Updated pandas DataFrame with the additional annotations.</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">##### Set columns existing in the df_combined table. #####</span>
+    <span class="c1"># None of the targets from the drug mechanism table have any mutation annotation, hence tid_mutation = tid</span>
+    <span class="n">cpd_target_pairs</span><span class="p">[</span><span class="s1">&#39;tid_mutation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpd_target_pairs</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">)</span>
+    <span class="n">cpd_target_pairs</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpd_target_pairs</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+        <span class="s1">&#39;</span><span class="si">{0[parent_molregno]}</span><span class="s1">_</span><span class="si">{0[tid]}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">cpd_target_pairs</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair_mutation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpd_target_pairs</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+        <span class="s1">&#39;</span><span class="si">{0[parent_molregno]}</span><span class="s1">_</span><span class="si">{0[tid_mutation]}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># New column: is the compound target pair in the drug_mechanism table?</span>
+    <span class="n">cpd_target_pairs</span><span class="p">[</span><span class="s1">&#39;pair_mutation_in_dm_table&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">cpd_target_pairs</span><span class="p">[</span><span class="s1">&#39;pair_in_dm_table&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1">##### Query and combine compound information with compound-target pairs #####</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    SELECT md.molregno as parent_molregno, </span>
+<span class="s1">        md.chembl_id as parent_chemblid, md.pref_name as parent_pref_name,</span>
+<span class="s1">        md.max_phase, md.first_approval, md.usan_year, md.black_box_warning, </span>
+<span class="s1">        md.prodrug, md.oral, md.parenteral, md.topical</span>
+<span class="s1">    FROM molecule_dictionary md</span>
+<span class="s1">    &#39;&#39;&#39;</span>
+
+    <span class="n">df_compound_info</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">chembl_con</span><span class="p">)</span>
+    <span class="n">cpd_target_pairs</span> <span class="o">=</span> <span class="n">cpd_target_pairs</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">df_compound_info</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="c1">##### Query and combine target information with compound-target pairs #####</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    SELECT td.tid, td.chembl_id as target_chembl_id, td.pref_name as target_pref_name, td.target_type, td.organism</span>
+<span class="s1">    FROM target_dictionary td</span>
+<span class="s1">    &#39;&#39;&#39;</span>
+
+    <span class="n">df_target_info</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">chembl_con</span><span class="p">)</span>
+    <span class="c1"># Fix problems with null not being recognised as None</span>
+    <span class="n">df_target_info</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_target_info</span><span class="p">[</span><span class="s1">&#39;organism&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+        <span class="nb">str</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;null&#39;</span><span class="p">,</span> <span class="s1">&#39;organism&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">cpd_target_pairs</span> <span class="o">=</span> <span class="n">cpd_target_pairs</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_target_info</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;tid&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">cpd_target_pairs</span></div>
+
+
+
+<div class="viewcode-block" id="get_drug_mechanism_ct_pairs">
+<a class="viewcode-back" href="../get_drug_mechanism_ct_pairs.html#get_drug_mechanism_ct_pairs.get_drug_mechanism_ct_pairs">[docs]</a>
+<span class="k">def</span> <span class="nf">get_drug_mechanism_ct_pairs</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get compound-target pairs from the drug_mechanism table </span>
+<span class="sd">    with all the columns that are present in the compound-target pairs based on activities.</span>
+<span class="sd">    Relevant mappings of target ids to related target ids are taken into account.</span>
+
+<span class="sd">    :param chembl_con: Sqlite3 connection to ChEMBL database.</span>
+<span class="sd">    :type chembl_con: sqlite3.Connection</span>
+<span class="sd">    :return: Pandas DataFrame with compound-target interactions from the drug_mechanism table.</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get known compound-target interactions (CTI) from the drug_mechanisms table</span>
+    <span class="n">df_dti</span> <span class="o">=</span> <span class="n">get_drug_mechanisms_interactions</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">)</span>
+
+    <span class="c1"># Query target_relations for related target ids </span>
+    <span class="c1"># to increase the number of target ids for which there is data in the drug_mechanisms table.</span>
+    <span class="n">relevant_tid_mappings</span> <span class="o">=</span> <span class="n">get_relevant_tid_mappings</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">)</span>
+    <span class="c1"># table with mapped target ids</span>
+    <span class="n">df_dti_mapped_targets</span> <span class="o">=</span> <span class="n">df_dti</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">relevant_tid_mappings</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;tid&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
+
+    <span class="c1"># combine CTIs from drug_mechanism table with mapped CTIs</span>
+    <span class="n">cpd_target_pairs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_dti</span><span class="p">[[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;tid&#39;</span><span class="p">]],</span>
+                                  <span class="n">df_dti_mapped_targets</span><span class="p">[[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;related_tid&#39;</span><span class="p">]]</span>
+                                  <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;related_tid&#39;</span><span class="p">:</span> <span class="s1">&#39;tid&#39;</span><span class="p">})])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+    
+    <span class="n">cpd_target_pairs</span> <span class="o">=</span> <span class="n">add_annotations_to_drug_mechanisms_cti</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">,</span> <span class="n">cpd_target_pairs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cpd_target_pairs</span></div>
+
+
+
+
+<span class="c1">########### Add Compounds From the drug_mechanism Table to the Dataset ###########</span>
+<div class="viewcode-block" id="add_drug_mechanism_ct_pairs">
+<a class="viewcode-back" href="../get_drug_mechanism_ct_pairs.html#get_drug_mechanism_ct_pairs.add_drug_mechanism_ct_pairs">[docs]</a>
+<span class="k">def</span> <span class="nf">add_drug_mechanism_ct_pairs</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">chembl_con</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add compound-target pairs from the drug_mechanism table that are not in the dataset based on the initial ChEMBL query.</span>
+<span class="sd">    These are compound-target pairs for which there is no associated pchembl value data.</span>
+<span class="sd">    Since the pairs are known interactions, they are added to the dataset despite not having a pchembl value.</span>
+
+<span class="sd">    :param df_combined: Pandas Dataframe with compound-target pairs based on ChEMBL activity data</span>
+<span class="sd">    :type df_combined: pd.DataFrame</span>
+<span class="sd">    :param chembl_con: Sqlite3 connection to ChEMBL database.</span>
+<span class="sd">    :type chembl_con: sqlite3.Connection</span>
+<span class="sd">    :return: - Pandas DataFrame with compound-target pairs based on activities AND drug_mechanism table \\</span>
+<span class="sd">        - set of compound-target pairs in the drug_mechanism table \\</span>
+<span class="sd">        - set of targets in the drug_mechanism table</span>
+<span class="sd">    :rtype: (pd.DataFrame, set, set)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cpd_target_pairs</span> <span class="o">=</span> <span class="n">get_drug_mechanism_ct_pairs</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">)</span>
+    <span class="n">drug_mechanism_pairs_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cpd_target_pairs</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0[parent_molregno]}</span><span class="s1">_</span><span class="si">{0[tid]}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">drug_mechanism_targets_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cpd_target_pairs</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Add a new column *pair_mutation_in_dm_table* which is set to True if the compound target pair </span>
+    <span class="c1"># (taking mutation annotations into account) is in the drug_mechanism table.</span>
+    <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;pair_mutation_in_dm_table&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair_mutation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)),</span> <span class="s1">&#39;pair_mutation_in_dm_table&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Add a new column *pair_in_dm_table* which is set to True if the compound target pair </span>
+    <span class="c1"># (NOT taking mutation annotations into account) is in the drug_mechanism table.</span>
+    <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;pair_in_dm_table&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)),</span> <span class="s1">&#39;pair_in_dm_table&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1">##### Limit the drug_mechanism pairs to the ones that are not yet in the dataset. #####</span>
+    <span class="c1"># Mutation annotations are taken into account.</span>
+    <span class="c1"># Therefore, *(cpd A, target B without mutation)* will be added </span>
+    <span class="c1"># if a pchembl is present for *(cpd A, target B with mutation C)* but not for *(cpd A, target B without mutation)*.</span>
+    <span class="n">cpd_target_pairs</span> <span class="o">=</span> <span class="n">cpd_target_pairs</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">cpd_target_pairs</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair_mutation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+        <span class="nb">set</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair_mutation&#39;</span><span class="p">])))]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#Pairs not yet present based on binding or functional assays: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cpd_target_pairs</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Combined data of existing query with new compound-target pairs.</span>
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">cpd_target_pairs</span><span class="p">])</span>
+
+    <span class="c1"># Add a new column *keep_for_binding* which is set to True if the row should be kept</span>
+    <span class="c1"># if you want to limit the dataset to only data based on binding assays.</span>
+    <span class="c1"># Rows are kept if</span>
+    <span class="c1"># - there is a binding data-based pchembl value or</span>
+    <span class="c1"># - the compound-target pair (including mutation info) is in the drug_mechanism table</span>
+    <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;keep_for_binding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[((</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;pchembl_value_mean_B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">())</span> <span class="o">|</span>
+                    <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;pair_mutation_in_dm_table&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)),</span> <span class="s1">&#39;keep_for_binding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    
+    <span class="k">return</span> <span class="n">df_combined</span><span class="p">,</span> <span class="n">drug_mechanism_pairs_set</span><span class="p">,</span> <span class="n">drug_mechanism_targets_set</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Lina Heinzke, Barbara Zdrazil.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sanity_checks &mdash; compound_target_pairs_dataset 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=fdc28d34" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            compound_target_pairs_dataset
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../columns_docs.html">Columns in the Final Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">compound_target_pairs_dataset</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sanity_checks</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sanity_checks</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1">########### Sanity checks for the dataset ###########</span>
+<div class="viewcode-block" id="check_null_values">
+<a class="viewcode-back" href="../sanity_checks.html#sanity_checks.check_null_values">[docs]</a>
+<span class="k">def</span> <span class="nf">check_null_values</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if any columns contain nan or null which aren&#39;t recognised as null values. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">col_as_str</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()][</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="s1">&#39;nan&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">col_as_str</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Problem with unrecognised nan value in column </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="s1">&#39;null&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">col_as_str</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Problem with unrecognised null value in column </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="check_for_mixed_types">
+<a class="viewcode-back" href="../sanity_checks.html#sanity_checks.check_for_mixed_types">[docs]</a>
+<span class="k">def</span> <span class="nf">check_for_mixed_types</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that there are no mixed types in columns with dtype=object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="nb">object</span><span class="p">:</span>
+            <span class="n">col_original</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()][</span><span class="n">col</span><span class="p">])</span>
+            <span class="n">col_as_str</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()][</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+            <span class="c1"># is there a difference in the two sets (ignoring null values)</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">col_original</span><span class="o">-</span><span class="n">col_as_str</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Mixed types in colum </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">col_original</span><span class="o">-</span><span class="n">col_as_str</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">col_as_str</span><span class="o">-</span><span class="n">col_original</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Mixed types in colum </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">col_as_str</span><span class="o">-</span><span class="n">col_original</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="check_pairs_without_pchembl_are_in_drug_mechanisms">
+<a class="viewcode-back" href="../sanity_checks.html#sanity_checks.check_pairs_without_pchembl_are_in_drug_mechanisms">[docs]</a>
+<span class="k">def</span> <span class="nf">check_pairs_without_pchembl_are_in_drug_mechanisms</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that rows without a pchembl value based on binding+functional assays (pchembl_x_BF) are in the drug_mechanism table.  </span>
+<span class="sd">    Note that this is not true for the pchembl_x_B columns which are based on binding data only. </span>
+<span class="sd">    They may be in the table because there is data based on functional assays but no data based on binding assays. </span>
+<span class="sd">    All pchembl_value_x_BF columns without a pchembl should be in the dm table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">pchembl_col</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;pchembl_value_mean_BF&#39;</span><span class="p">,</span> <span class="s1">&#39;pchembl_value_max_BF&#39;</span><span class="p">,</span> <span class="s1">&#39;pchembl_value_median_BF&#39;</span><span class="p">]:</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">pchembl_col</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;pair_mutation_in_dm_table&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">pchembl_col</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())])),</span> \
+            <span class="sa">f</span><span class="s2">&quot;Missing pchembl value in column </span><span class="si">{</span><span class="n">pchembl_col</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="check_ligand_efficiency_metrics">
+<a class="viewcode-back" href="../sanity_checks.html#sanity_checks.check_ligand_efficiency_metrics">[docs]</a>
+<span class="k">def</span> <span class="nf">check_ligand_efficiency_metrics</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that ligand efficiency metrics are only null </span>
+<span class="sd">    when at least one of the values used to calculate them is null.</span>
+<span class="sd">    Ligand efficiency metrics are only null when at least one of the values used to calculate them is null.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;BF&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">]:</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;LE_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;pchembl_value_mean_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())</span>
+                        <span class="o">|</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;heavy_atoms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())</span>
+                        <span class="o">|</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;heavy_atoms&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)])),</span> <span class="sa">f</span><span class="s2">&quot;Missing LE value in LE_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">assert</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;BEI_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;pchembl_value_mean_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())</span>
+                        <span class="o">|</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mw_freebase&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())</span>
+                        <span class="o">|</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mw_freebase&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)])),</span> <span class="sa">f</span><span class="s2">&quot;Missing BEI value in BEI_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">assert</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;SEI_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;pchembl_value_mean_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())</span>
+                        <span class="o">|</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;psa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())</span>
+                        <span class="o">|</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;psa&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)])),</span> <span class="sa">f</span><span class="s2">&quot;Missing SEI value in SEI_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">assert</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;LLE_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;pchembl_value_mean_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())</span>
+                        <span class="o">|</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;alogp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())])),</span> <span class="sa">f</span><span class="s2">&quot;Missing LLE value in LLE_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="check_compound_props">
+<a class="viewcode-back" href="../sanity_checks.html#sanity_checks.check_compound_props">[docs]</a>
+<span class="k">def</span> <span class="nf">check_compound_props</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df_cpd_props</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that compound props are only null if </span>
+
+<span class="sd">    - the property in the parent_molregno is not in df_cpd_props</span>
+<span class="sd">    - or if the value in the compound props table is null.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># missing values because the parent_molregno is not in the compound props table</span>
+    <span class="n">no_cpd_prop_info</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="o">~</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+        <span class="nb">set</span><span class="p">(</span><span class="n">df_cpd_props</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]))])</span>
+
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_cpd_props</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="o">!=</span> <span class="s1">&#39;parent_molregno&#39;</span><span class="p">:</span>
+            <span class="c1"># missing values because the compound props query returns null (exists but is null)</span>
+            <span class="n">missing_values</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">df_cpd_props</span><span class="p">[</span><span class="n">df_cpd_props</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()][</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]))])</span>
+            <span class="n">null_values</span> <span class="o">=</span> <span class="n">no_cpd_prop_info</span><span class="o">+</span><span class="n">missing_values</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="n">null_values</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()])),</span> <span class="sa">f</span><span class="s2">&quot;Too many null values in </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="check_atc_and_target_classes">
+<a class="viewcode-back" href="../sanity_checks.html#sanity_checks.check_atc_and_target_classes">[docs]</a>
+<span class="k">def</span> <span class="nf">check_atc_and_target_classes</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                                 <span class="n">atc_levels</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                                 <span class="n">target_classes_level1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                                 <span class="n">target_classes_level2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that atc_level1 and target class information is only null </span>
+<span class="sd">    if the parent_molregno / target id is not in the respective table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;atc_level1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span>
+        <span class="n">df_combined</span><span class="p">[</span><span class="o">~</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">atc_levels</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]))])),</span> \
+            <span class="s2">&quot;Null values in atc_level1 are not exclusively because the parent_molregno is not in the atc_classification table.&quot;</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;target_class_l1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span>
+        <span class="n">df_combined</span><span class="p">[</span><span class="o">~</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">target_classes_level1</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]))])),</span> \
+            <span class="s2">&quot;Null values in target_class_l1 are not exclusively because the tid is not in the protein_classification table.&quot;</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;target_class_l2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span>
+        <span class="n">df_combined</span><span class="p">[</span><span class="o">~</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">target_classes_level2</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]))])),</span> \
+            <span class="s2">&quot;Null values in target_class_l2 are not exclusively because the tid is not in the protein_classification table.&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="check_rdkit_props">
+<a class="viewcode-back" href="../sanity_checks.html#sanity_checks.check_rdkit_props">[docs]</a>
+<span class="k">def</span> <span class="nf">check_rdkit_props</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that columns set by the RDKit are only null if there is no canonical SMILES for the molecule.</span>
+<span class="sd">    Scaffolds are excluded from this test because they can be None if the molecule is acyclic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fraction_csp3&#39;</span><span class="p">,</span> <span class="s1">&#39;num_aliphatic_carbocycles&#39;</span><span class="p">,</span> <span class="s1">&#39;num_aliphatic_heterocycles&#39;</span><span class="p">,</span> <span class="s1">&#39;num_aliphatic_rings&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;num_aromatic_carbocycles&#39;</span><span class="p">,</span> <span class="s1">&#39;num_aromatic_heterocycles&#39;</span><span class="p">,</span> <span class="s1">&#39;num_aromatic_rings&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;num_heteroatoms&#39;</span><span class="p">,</span> <span class="s1">&#39;num_saturated_carbocycles&#39;</span><span class="p">,</span> <span class="s1">&#39;num_saturated_heterocycles&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;num_saturated_rings&#39;</span><span class="p">,</span> <span class="s1">&#39;ring_count&#39;</span><span class="p">,</span> <span class="s1">&#39;num_stereocentres&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;aromatic_atoms&#39;</span><span class="p">,</span> <span class="s1">&#39;aromatic_c&#39;</span><span class="p">,</span> <span class="s1">&#39;aromatic_n&#39;</span><span class="p">,</span> <span class="s1">&#39;aromatic_hetero&#39;</span><span class="p">]:</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span><span class="o">.</span><span class="n">copy</span><span class="p">())),</span> \
+            <span class="sa">f</span><span class="s2">&quot;Missing value in </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2"> despite a smiles being available.&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="sanity_checks">
+<a class="viewcode-back" href="../sanity_checks.html#sanity_checks.sanity_checks">[docs]</a>
+<span class="k">def</span> <span class="nf">sanity_checks</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                  <span class="n">df_cpd_props</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">atc_levels</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">target_classes_level1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">target_classes_level2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                  <span class="n">calculate_RDKit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check basic assumptions about the finished dataset, specifically:</span>
+
+<span class="sd">    - no columns contain nan or null values which aren&#39;t recognised as null values</span>
+<span class="sd">    - there are no mixed types in columns with dtype=object</span>
+<span class="sd">    - rows without a pchembl value based on binding+functional assays (pchembl_x_BF) are in the drug_mechanism table</span>
+<span class="sd">    - ligand efficiency metrics are only null when at least one of the values used to calculate them is null</span>
+<span class="sd">    - compound props are only null if the compound is not in df_cpd_props or the value in that table is null</span>
+<span class="sd">    - atc_level1 and target class information is only null if the parent_molregno / target id is not in the respective table</span>
+<span class="sd">    - columns set by the RDKit are only null if there is no canonical SMILES for the molecule (excluding scaffolds)</span>
+
+<span class="sd">    :param df_combined: Pandas DataFrame with compound-target pairs</span>
+<span class="sd">    :type df_combined: pd.DataFrame</span>
+<span class="sd">    :param df_cpd_props: Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL.</span>
+<span class="sd">    :type df_cpd_props: pd.DataFrame</span>
+<span class="sd">    :param atc_levels: Pandas DataFrame with ATC annotations in ChEMBL</span>
+<span class="sd">    :type atc_levels: pd.DataFrame</span>
+<span class="sd">    :param target_classes_level1: Pandas DataFrame with mapping from target id to level 1 target class</span>
+<span class="sd">    :type target_classes_level1: pd.DataFrame</span>
+<span class="sd">    :param target_classes_level2: Pandas DataFrame with mapping from target id to level 2 target class</span>
+<span class="sd">    :type target_classes_level2: pd.DataFrame</span>
+<span class="sd">    :param calculate_RDKit: True if the DataFrame contains RDKit-based compound properties</span>
+<span class="sd">    :type calculate_RDKit: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_null_values</span><span class="p">(</span><span class="n">df_combined</span><span class="p">)</span>
+    <span class="n">check_for_mixed_types</span><span class="p">(</span><span class="n">df_combined</span><span class="p">)</span>
+    <span class="n">check_pairs_without_pchembl_are_in_drug_mechanisms</span><span class="p">(</span><span class="n">df_combined</span><span class="p">)</span>
+    <span class="n">check_ligand_efficiency_metrics</span><span class="p">(</span><span class="n">df_combined</span><span class="p">)</span>
+    <span class="n">check_compound_props</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">df_cpd_props</span><span class="p">)</span>
+    <span class="n">check_atc_and_target_classes</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">atc_levels</span><span class="p">,</span> <span class="n">target_classes_level1</span><span class="p">,</span> <span class="n">target_classes_level2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">calculate_RDKit</span><span class="p">:</span>
+        <span class="n">check_rdkit_props</span><span class="p">(</span><span class="n">df_combined</span><span class="p">)</span></div>
+
+
+
+
+<span class="c1">########### Sanity checks for writing and reading a dataset ###########</span>
+<div class="viewcode-block" id="test_equality">
+<a class="viewcode-back" href="../sanity_checks.html#sanity_checks.test_equality">[docs]</a>
+<span class="k">def</span> <span class="nf">test_equality</span><span class="p">(</span><span class="n">current_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">read_file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">assay_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_type_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">calculate_RDKit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that the file that was written to &lt;read_file_name&gt; </span>
+<span class="sd">    is identical to the DataFrame &lt;current_df&gt; it was based on.</span>
+
+<span class="sd">    :param current_df: Pandas DataFrame that was written to read_file_name</span>
+<span class="sd">    :type current_df: pd.DataFrame</span>
+<span class="sd">    :param read_file_name: Name of the file current_df was written to</span>
+<span class="sd">    :type read_file_name: str</span>
+<span class="sd">    :param assay_type: Types of assays current_df contains information about. \</span>
+<span class="sd">        Options: &quot;BF&quot; (binding+functional), &quot;B&quot; (binding), &quot;all&quot; (contains both BF and B information)</span>
+<span class="sd">    :type assay_type: str</span>
+<span class="sd">    :param file_type_list: List of file extensions used with read_file_name. Options: csv, xlsx</span>
+<span class="sd">    :type file_type_list: list[str]</span>
+<span class="sd">    :param calculate_RDKit: If True, current_df contains RDKit-based columns</span>
+<span class="sd">    :type calculate_RDKit: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">current_df_copy</span> <span class="o">=</span> <span class="n">current_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="n">file_type_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">read_file</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">read_file_name</span><span class="o">+</span><span class="s2">&quot;.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">,</span>
+                                        <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;mutation&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;tid_mutation&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;atc_level1&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;target_class_l2&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;ro3_pass&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;molecular_species&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;full_molformula&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;standard_inchi&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;standard_inchi_key&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;canonical_smiles&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;scaffold_w_stereo&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;scaffold_wo_stereo&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                               <span class="p">})</span>
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{read_file_name}</span><span class="s2">.</span><span class="si">{file_type}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;xlsx&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">read_file</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">read_file_name</span><span class="o">+</span><span class="s2">&quot;.xlsx&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{read_file_name}</span><span class="s2">.</span><span class="si">{file_type}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">assay_type</span> <span class="o">==</span> <span class="s1">&#39;BF&#39;</span> <span class="ow">or</span> <span class="n">assay_type</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="n">read_file</span> <span class="o">=</span> <span class="n">read_file</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s1">&#39;first_publication_cpd_target_pair_BF&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;first_publication_cpd_target_pair_w_pchembl_BF&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="p">})</span>
+        <span class="k">if</span> <span class="n">assay_type</span> <span class="o">==</span> <span class="s1">&#39;B&#39;</span> <span class="ow">or</span> <span class="n">assay_type</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="n">read_file</span> <span class="o">=</span> <span class="n">read_file</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s1">&#39;first_publication_cpd_target_pair_B&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;first_publication_cpd_target_pair_w_pchembl_B&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="p">})</span>
+        <span class="n">read_file</span> <span class="o">=</span> <span class="n">read_file</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s1">&#39;first_approval&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;usan_year&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;first_publication_cpd&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;hba&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;hbd&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;rtb&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;num_ro5_violations&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;aromatic_rings&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;heavy_atoms&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;hba_lipinski&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;hbd_lipinski&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;num_lipinski_ro5_violations&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                      <span class="p">})</span>
+        <span class="k">if</span> <span class="n">calculate_RDKit</span><span class="p">:</span>
+            <span class="n">read_file</span> <span class="o">=</span> <span class="n">read_file</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s1">&#39;num_aliphatic_carbocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;num_aliphatic_heterocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;num_aliphatic_rings&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;num_aromatic_carbocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;num_aromatic_heterocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;num_aromatic_rings&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;num_heteroatoms&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;num_saturated_carbocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;num_saturated_heterocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;num_saturated_rings&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;ring_count&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;num_stereocentres&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;aromatic_atoms&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;aromatic_c&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;aromatic_n&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;aromatic_hetero&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+                                          <span class="p">})</span>
+        
+        <span class="k">assert</span><span class="p">(</span><span class="n">read_file</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">current_df_copy</span><span class="p">)),</span> <span class="sa">f</span><span class="s2">&quot;File </span><span class="si">{</span><span class="n">read_file_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">file_type</span><span class="si">}</span><span class="s2"> is not equal to the dataset it was based on.&quot;</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Lina Heinzke, Barbara Zdrazil.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

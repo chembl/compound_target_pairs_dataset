@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>get_stats module &mdash; compound_target_pairs_dataset 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=fdc28d34" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="main module" href="main.html" />
+    <link rel="prev" title="get_drug_mechanism_ct_pairs module" href="get_drug_mechanism_ct_pairs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            compound_target_pairs_dataset
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="columns_docs.html">Columns in the Final Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="add_chembl_compound_properties.html">add_chembl_compound_properties module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="add_chembl_target_class_annotations.html">add_chembl_target_class_annotations module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="add_dti_annotations.html">add_dti_annotations module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="add_rdkit_compound_descriptors.html">add_rdkit_compound_descriptors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clean_dataset.html">clean_dataset module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_activity_ct_pairs.html">get_activity_ct_pairs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_dataset.html">get_dataset module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_drug_mechanism_ct_pairs.html">get_drug_mechanism_ct_pairs module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">get_stats module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#get_stats.add_dataset_sizes"><code class="docutils literal notranslate"><span class="pre">add_dataset_sizes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get_stats.calculate_dataset_sizes"><code class="docutils literal notranslate"><span class="pre">calculate_dataset_sizes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get_stats.get_stats_for_column"><code class="docutils literal notranslate"><span class="pre">get_stats_for_column()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get_stats.output_debug_sizes"><code class="docutils literal notranslate"><span class="pre">output_debug_sizes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get_stats.output_stats"><code class="docutils literal notranslate"><span class="pre">output_stats()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sanity_checks.html">sanity_checks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="write_subsets.html">write_subsets module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">compound_target_pairs_dataset</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">get_stats module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/get_stats.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-get_stats">
+<span id="get-stats-module"></span><h1>get_stats module<a class="headerlink" href="#module-get_stats" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="get_stats.add_dataset_sizes">
+<span class="sig-prename descclassname"><span class="pre">get_stats.</span></span><span class="sig-name descname"><span class="pre">add_dataset_sizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_stats.html#add_dataset_sizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_stats.add_dataset_sizes" title="Link to this definition"></a></dt>
+<dd><p>Count and add representative counts of df to the list df_sizes used for debugging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with current compound-target pairs</p></li>
+<li><p><strong>label</strong> (<em>str</em>) – Description of pipeline step (e.g., initial query).</p></li>
+<li><p><strong>df_sizes</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>, </em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – List of intermediate sized of the dataset used for debugging.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="get_stats.calculate_dataset_sizes">
+<span class="sig-prename descclassname"><span class="pre">get_stats.</span></span><span class="sig-name descname"><span class="pre">calculate_dataset_sizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/get_stats.html#calculate_dataset_sizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_stats.calculate_dataset_sizes" title="Link to this definition"></a></dt>
+<dd><p>Calculate the number of unique compounds, targets and pairs
+for df and df limited to drugs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame for which the dataset sizes should be calculated.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of calculated unique counts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="get_stats.get_stats_for_column">
+<span class="sig-prename descclassname"><span class="pre">get_stats.</span></span><span class="sig-name descname"><span class="pre">get_stats_for_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns_desc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/get_stats.html#get_stats_for_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_stats.get_stats_for_column" title="Link to this definition"></a></dt>
+<dd><p>Calculate the number of unique values in df[column] and various subsets of df.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Pandas Dataframe for which the number of unique values should be calculated</p></li>
+<li><p><strong>column</strong> (<em>str</em>) – Column of df that the values should be calculated for</p></li>
+<li><p><strong>columns_desc</strong> (<em>str</em>) – Description of the column</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of results in the format [column_name, subset_type, size]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[list[str, str, int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="get_stats.output_debug_sizes">
+<span class="sig-prename descclassname"><span class="pre">get_stats.</span></span><span class="sig-name descname"><span class="pre">output_debug_sizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_stats.html#output_debug_sizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_stats.output_debug_sizes" title="Link to this definition"></a></dt>
+<dd><p>Output counts at various points during calculating the final dataset for debugging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_sizes</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>, </em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – List of intermediate sized of the dataset used for debugging.</p></li>
+<li><p><strong>output_path</strong> (<em>str</em>) – Path to write the dataset counts to</p></li>
+<li><p><strong>write_to_csv</strong> (<em>bool</em>) – True if counts should be written to csv</p></li>
+<li><p><strong>write_to_excel</strong> (<em>bool</em>) – True if counts should be written to excel</p></li>
+<li><p><strong>delimiter</strong> (<em>str</em>) – Delimiter in csv-output</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="get_stats.output_stats">
+<span class="sig-prename descclassname"><span class="pre">get_stats.</span></span><span class="sig-name descname"><span class="pre">output_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_stats.html#output_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_stats.output_stats" title="Link to this definition"></a></dt>
+<dd><p>Summarise and output the number of unique values in the following columns:</p>
+<ul class="simple">
+<li><p>parent_molregno (compound ID)</p></li>
+<li><p>tid (target ID)</p></li>
+<li><p>tid_mutation (target ID + mutation annotations)</p></li>
+<li><p>cpd_target_pair (compound-target pairs)</p></li>
+<li><p>cpd_target_pair_mutation (compound-target pairs including mutation annotations)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Pandas Dataframe for which the stats should be calculated</p></li>
+<li><p><strong>output_file</strong> (<em>str</em>) – Path and filename to write the dataset stats to</p></li>
+<li><p><strong>write_to_csv</strong> (<em>bool</em>) – True if stats should be written to csv</p></li>
+<li><p><strong>write_to_excel</strong> (<em>bool</em>) – True if stats should be written to excel</p></li>
+<li><p><strong>delimiter</strong> (<em>str</em>) – Delimiter in csv-output</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="get_drug_mechanism_ct_pairs.html" class="btn btn-neutral float-left" title="get_drug_mechanism_ct_pairs module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="main.html" class="btn btn-neutral float-right" title="main module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Lina Heinzke, Barbara Zdrazil.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

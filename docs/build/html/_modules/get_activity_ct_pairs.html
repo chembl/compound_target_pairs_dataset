@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>get_activity_ct_pairs &mdash; compound_target_pairs_dataset 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=fdc28d34" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            compound_target_pairs_dataset
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../columns_docs.html">Columns in the Final Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">compound_target_pairs_dataset</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">get_activity_ct_pairs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for get_activity_ct_pairs</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+
+<span class="kn">import</span> <span class="nn">get_stats</span>
+
+<span class="c1">########### Get Initial Compound-Target Data From ChEMBL ###########</span>
+<div class="viewcode-block" id="get_compound_target_pairs_with_pchembl">
+<a class="viewcode-back" href="../get_activity_ct_pairs.html#get_activity_ct_pairs.get_compound_target_pairs_with_pchembl">[docs]</a>
+<span class="k">def</span> <span class="nf">get_compound_target_pairs_with_pchembl</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">limit_to_literature</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Query ChEMBL activities and related assay for compound-target pairs with an associated pchembl value.  </span>
+<span class="sd">    Compound-target pairs are required to have a pchembl value.  </span>
+<span class="sd">    Salt forms of compounds are mapped to their parent form.  </span>
+<span class="sd">    If limit_to_literature is true, only literature sources will be considered. Otherwise, all sources are included.  </span>
+<span class="sd">    Includes information about targets, mutations and year of publication (based on docs).  </span>
+
+<span class="sd">    :param chembl_con: Sqlite3 connection to ChEMBL database.</span>
+<span class="sd">    :type chembl_con: sqlite3.Connection</span>
+<span class="sd">    :param limit_to_literature: Include only literature sources if True. Include all available sources otherwise.</span>
+<span class="sd">    :type limit_to_literature: bool</span>
+<span class="sd">    :param df_sizes: List of intermediate sized of the dataset used for debugging.</span>
+<span class="sd">    :type df_sizes: list[list[int], list[int]]</span>
+<span class="sd">    :return: Pandas DataFrame with compound-target pairs with a pchembl value.</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># NOTE: DO NOT USE DISTINCT</span>
+    <span class="c1"># This query does not capture act.activity_id. </span>
+    <span class="c1"># There can be mulitple activities with different activity_ids but the same queries values. </span>
+    <span class="c1"># For accurate mean, median, and max pchembl these additional rows are important.</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    SELECT act.pchembl_value, </span>
+<span class="s1">        md.molregno as parent_molregno, md.chembl_id as parent_chemblid, md.pref_name as parent_pref_name,</span>
+<span class="s1">        md.max_phase, md.first_approval, md.usan_year, md.black_box_warning, </span>
+<span class="s1">        md.prodrug, md.oral, md.parenteral, md.topical, </span>
+<span class="s1">        ass.assay_type, ass.tid, </span>
+<span class="s1">        vs.mutation,</span>
+<span class="s1">        td.chembl_id as target_chembl_id, td.pref_name as target_pref_name, td.target_type, td.organism, </span>
+<span class="s1">        docs.year</span>
+<span class="s1">    FROM activities act</span>
+<span class="s1">    INNER JOIN molecule_hierarchy mh </span>
+<span class="s1">        ON act.molregno = mh.molregno         -- act.molregno = salt_molregno</span>
+<span class="s1">    INNER JOIN molecule_dictionary md</span>
+<span class="s1">        ON mh.parent_molregno = md.molregno   -- compound information based on parent compound</span>
+<span class="s1">    INNER JOIN assays ass </span>
+<span class="s1">        ON  act.assay_id = ass.assay_id</span>
+<span class="s1">    LEFT JOIN variant_sequences vs</span>
+<span class="s1">        ON ass.variant_id = vs.variant_id</span>
+<span class="s1">    INNER JOIN target_dictionary td</span>
+<span class="s1">        ON ass.tid = td.tid</span>
+<span class="s1">    LEFT JOIN docs</span>
+<span class="s1">        ON act.doc_id = docs.doc_id</span>
+<span class="s1">    WHERE act.pchembl_value is not null</span>
+<span class="s1">        and act.potential_duplicate = 0</span>
+<span class="s1">        and act.standard_relation = &#39;=&#39;</span>
+<span class="s1">        and act.data_validity_comment is null</span>
+<span class="s1">        and td.tid &lt;&gt;22226                    -- exclude unchecked targets</span>
+<span class="s1">        and td.target_type like &#39;%PROTEIN%&#39;</span>
+<span class="s1">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">limit_to_literature</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s1">&#39;&#39;&#39;    and docs.src_id = 1&#39;&#39;&#39;</span>
+
+    <span class="n">df_mols</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">chembl_con</span><span class="p">)</span>
+
+    <span class="c1"># Set relevant combinations of columns for easier processing later</span>
+    <span class="c1"># target_id_mutation</span>
+    <span class="n">df_mols</span><span class="p">[</span><span class="s1">&#39;tid_mutation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df_mols</span><span class="p">[</span><span class="s1">&#39;mutation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">(),</span>
+                                       <span class="n">df_mols</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                                           <span class="s1">&#39;str&#39;</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">df_mols</span><span class="p">[</span><span class="s1">&#39;mutation&#39;</span><span class="p">],</span>
+                                       <span class="n">df_mols</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">))</span>
+    <span class="c1"># compound-target association</span>
+    <span class="n">df_mols</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mols</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0[parent_molregno]}</span><span class="s1">_</span><span class="si">{0[tid]}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">df_mols</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair_mutation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mols</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0[parent_molregno]}</span><span class="s1">_</span><span class="si">{0[tid_mutation]}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="o">&gt;=</span> <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
+        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_mols</span><span class="p">,</span>  <span class="s2">&quot;initial query&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df_mols</span></div>
+
+
+
+
+<span class="c1">########### Calculate Mean, Median, and Max *pchembl* Values for Each Compound-Target Pair ###########</span>
+<div class="viewcode-block" id="get_average_info">
+<a class="viewcode-back" href="../get_activity_ct_pairs.html#get_activity_ct_pairs.get_average_info">[docs]</a>
+<span class="k">def</span> <span class="nf">get_average_info</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aggregate the information about compound-target pairs for which there is more than one entry into one entry. </span>
+<span class="sd">    Compound-target pairs are considered equal if parent_molregno (internal compound ID) and tid_mutation (target ID + mutation annotations) are equal.</span>
+
+<span class="sd">    The following values are aggregated:  </span>
+
+<span class="sd">    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+</span>
+<span class="sd">    | pchembl_value_mean                            | mean pchembl value for a compound-target pair                                                 |</span>
+<span class="sd">    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+</span>
+<span class="sd">    | pchembl_value_max                             | maximum pchembl value for a compound-target pair                                              |</span>
+<span class="sd">    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+</span>
+<span class="sd">    | pchembl_value_median                          | median pchembl value for a compound-target pair                                               |</span>
+<span class="sd">    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+</span>
+<span class="sd">    | first_publication_cpd_target_pair             | first publication in ChEMBL with this compound-target pair                                    |</span>
+<span class="sd">    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+</span>
+<span class="sd">    | first_publication_cpd_target_pair_w_pchembl   | first publication in ChEMBL with this compound-target pair and an associated pchembl value    |</span>
+<span class="sd">    +-----------------------------------------------+-----------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">    :param df: Pandas DataFrame with compound-target pairs for which the information should be aggregated.</span>
+<span class="sd">    :type df: pd.DataFrame</span>
+<span class="sd">    :param suffix: Suffix indicating the type of the given DataFrame, e.g., _B for binding assays, _BF for binding+functional assays.</span>
+<span class="sd">    :type suffix: str</span>
+<span class="sd">    :return: Pandas DataFrame with &#39;parent_molregno&#39;, &#39;tid_mutation&#39;, and the aggregated columns.</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pchembl mean, max, median</span>
+    <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;pchembl_value_mean_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;tid_mutation&#39;</span><span class="p">])[</span><span class="s1">&#39;pchembl_value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;pchembl_value_max_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;tid_mutation&#39;</span><span class="p">])[</span><span class="s1">&#39;pchembl_value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;pchembl_value_median_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;tid_mutation&#39;</span><span class="p">])[</span><span class="s1">&#39;pchembl_value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;median&#39;</span><span class="p">)</span>
+
+    <span class="c1"># first publication of pair</span>
+    <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;first_publication_cpd_target_pair_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;tid_mutation&#39;</span><span class="p">])[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+
+    <span class="c1"># first publication of pair with pchembl value</span>
+    <span class="n">df_mols_all_first_publication_pchembl</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;pchembl_value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span> \
+        <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;tid_mutation&#39;</span><span class="p">])[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span> \
+        <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;first_publication_cpd_target_pair_w_pchembl_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_mols_all_first_publication_pchembl</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;tid_mutation&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="c1"># return relevant summarised information without duplicates</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;tid_mutation&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;pchembl_value_mean_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;pchembl_value_max_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;pchembl_value_median_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;first_publication_cpd_target_pair_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;first_publication_cpd_target_pair_w_pchembl_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+
+
+<span class="c1">########### Get Aggregated Compound-Target Pair Information ###########</span>
+<div class="viewcode-block" id="get_aggregated_activity_ct_pairs">
+<a class="viewcode-back" href="../get_activity_ct_pairs.html#get_activity_ct_pairs.get_aggregated_activity_ct_pairs">[docs]</a>
+<span class="k">def</span> <span class="nf">get_aggregated_activity_ct_pairs</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">limit_to_literature</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get dataset of compound target-pairs with an associated pchembl value </span>
+<span class="sd">    with pchembl and publication dates aggregated into one entry per pair.</span>
+
+<span class="sd">    Values are aggregated for </span>
+
+<span class="sd">    - a subset of the initial dataset based on binding and functional assays (suffix &#39;_BF&#39;) and </span>
+<span class="sd">    - a subset of the initial dataset set on only binding assays (suffix &#39;_B&#39;). </span>
+
+<span class="sd">    Therefore, there are two columns for pchembl_value_mean, _max, _median, first_publication_cpd_target_pair and first_publication_cpd_target_pair_w_pchembl, </span>
+<span class="sd">    one with the suffix &#39;_BF&#39; based on binding + functional data and one with the suffix &#39;_B&#39; based on only binding data.</span>
+
+<span class="sd">    :param chembl_con: Sqlite3 connection to ChEMBL database.</span>
+<span class="sd">    :type chembl_con: sqlite3.Connection</span>
+<span class="sd">    :param limit_to_literature: Include only literature sources if True. Include all available sources otherwise.</span>
+<span class="sd">    :type limit_to_literature: bool</span>
+<span class="sd">    :param df_sizes: List of intermediate sized of the dataset used for debugging.</span>
+<span class="sd">    :type df_sizes: list[list[int], list[int]]</span>
+<span class="sd">    :return: Pandas Dataframe with compound-target pairs based on ChEMBL activity data aggregated into one entry per compound-target pair.</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df_mols</span> <span class="o">=</span> <span class="n">get_compound_target_pairs_with_pchembl</span><span class="p">(</span><span class="n">chembl_con</span><span class="p">,</span> <span class="n">limit_to_literature</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
+
+    <span class="c1"># Summarise the information for binding and functional assays</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;BF&#39;</span>
+    <span class="n">df_mols_BF</span> <span class="o">=</span> <span class="n">df_mols</span><span class="p">[(</span><span class="n">df_mols</span><span class="p">[</span><span class="s1">&#39;assay_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;B&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">df_mols</span><span class="p">[</span><span class="s1">&#39;assay_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">df_mols_BF</span> <span class="o">=</span> <span class="n">get_average_info</span><span class="p">(</span><span class="n">df_mols_BF</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+
+    <span class="c1"># Summarise the information for only binding assays</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;B&#39;</span>
+    <span class="n">df_mols_B</span> <span class="o">=</span> <span class="n">df_mols</span><span class="p">[</span><span class="n">df_mols</span><span class="p">[</span><span class="s1">&#39;assay_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">df_mols_B</span> <span class="o">=</span> <span class="n">get_average_info</span><span class="p">(</span><span class="n">df_mols_B</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+
+    <span class="c1"># Combine both into one table with two columns per value</span>
+    <span class="c1"># (one with suffix &#39;_BF&#39; for binding+functional and one with suffix &#39;_B&#39; for binding).</span>
+    <span class="c1"># df_mols_B is a subset of the compound-target pairs of df_mols_BF</span>
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_mols_BF</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_mols_B</span><span class="p">,</span>
+                                   <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;tid_mutation&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+    <span class="c1"># Merge with other information from df_mols</span>
+    <span class="c1"># left merge because df_mols may contain assays that are of other types than binding / functional</span>
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_mols</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pchembl_value&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;assay_type&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(),</span>
+                                    <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;tid_mutation&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df_combined</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Lina Heinzke, Barbara Zdrazil.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

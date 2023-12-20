@@ -1,0 +1,7 @@
+This is makeindex, version 2.15 [TeX Live 2021] (kpathsea + Thai support).
+Scanning style file ./python.ist.......done (7 attributes redefined, 0 ignored).
+Scanning input file compound_target_pairs_dataset.idx....done (71 entries accepted, 0 rejected).
+Sorting entries....done (446 comparisons).
+Generating output file compound_target_pairs_dataset.ind....done (142 lines written, 0 warnings).
+Output written in compound_target_pairs_dataset.ind.
+Transcript written in compound_target_pairs_dataset.ilg.
