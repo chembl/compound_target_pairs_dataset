@@ -10,7 +10,7 @@ The compound-target pairs are known to interact because
 Furthermore, the dataset contains a number of compound and target annotations to enable future analyses. 
 
 Previously, a similar dataset has been curated manually and has been used to investigate target-based differences in drug-like properties and ligand efficiencies [Leeson2021]_. 
-This code can generate an extended version of the previous dataset for every ChEMBL version from ChEMBL 21 (released in 2016) onwards.  
+This code can generate an extended version of the previous dataset for every ChEMBL version from ChEMBL 26 onwards.  
 
 .. _ChEMBL: https://www.ebi.ac.uk/chembl/
 

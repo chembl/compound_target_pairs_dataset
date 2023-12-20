@@ -202,6 +202,27 @@ Columns are only available for the full dataset to facilitate the filtering into
 
 Helper Columns
 --------------
+pair_mutation_in_dm_table and pair_in_dm_table are similar fields. 
+They differ in whether mutation information is taken into account, 
+reflecting that mutation information is only sometimes taken into account 
+when calculating fields and adding rows to the dataset. 
+
+   - pair_mutation_in_dm_table: 
+      Is the compound-target pair in the drug_mechanism table 
+      when taking mutation information into account? 
+      Mutation information IS taken into account when adding pairs to the dataset 
+      because they appear in the drug_mechanism table. 
+      (cpd A, target B without mutation) will be added to the set of existing 
+      compound-target pairs with pchembl values 
+      if there is a pair with a pchembl value for (cpd A, target B with mutation C) 
+      but there is no pair with a pchembl value for (cpd A, target B without mutation).
+      It is used to determine keep_for_binding which in turn is used 
+      to determine the B subset of data based on binding assays. 
+   - pair_in_dm_table: 
+      Is the compound-target pair in the drug_mechanism table
+      when ignoring mutation information? 
+      Mutation information is NOT taken into account when assigning DTI values. 
+
 .. csv-table:: 
    :file: tables/Filtering.csv
    :widths: 20, 10, 15, 55

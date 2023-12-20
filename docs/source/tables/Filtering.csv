@@ -1,3 +1,4 @@
 ﻿Column Name,Type,Info Re.,Description / Notes
-in_dm_table,Bool,Compound-Target Pair,Is the compound-target pair (taking mutation annotation into account) in the drug mechanism table?
-keep_for_binding,Bool,Compound-Target Pair,"Rows to keep if interested in information based only on binding assays + the drug_mechanism table. True if pchembl_value_mean_B (based on binding assays) exists or if in_dm_table == True, i.e., the pair is in the drug mechanism table."
+pair_mutation_in_dm_table,Bool,Compound-Target Pair,Is the compound-target pair (taking mutation annotation into account) in the drug mechanism table?
+pair_in_dm_table,Bool,Compound-Target Pair,Is the compound-target pair (ignoring mutation annotation) in the drug mechanism table?
+keep_for_binding,Bool,Compound-Target Pair,"Rows to keep if interested in information based only on binding assays + the drug_mechanism table. True if pchembl_value_mean_B (based on binding assays) exists or if pair_mutation_in_dm_table == True, i.e., the pair (including mutation information) is in the drug mechanism table."
