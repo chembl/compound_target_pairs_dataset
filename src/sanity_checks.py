@@ -33,7 +33,7 @@ def check_pairs_without_pchembl_are_in_drug_mechanisms(df_combined: pd.DataFrame
     """
     for pchembl_col in ['pchembl_value_mean_BF', 'pchembl_value_max_BF', 'pchembl_value_median_BF']:
         assert (df_combined[(df_combined[pchembl_col].isnull())].equals(
-            df_combined[(df_combined['in_dm_table'] == True) & (df_combined[pchembl_col].isnull())])), \
+            df_combined[(df_combined['pair_mutation_in_dm_table'] == True) & (df_combined[pchembl_col].isnull())])), \
             f"Missing pchembl value in column {pchembl_col}"
 
 

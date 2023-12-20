@@ -181,7 +181,7 @@ def reorder_columns(df_combined, calculate_RDKit):
                      'num_heteroatoms',
                      'aromatic_atoms', 'aromatic_c', 'aromatic_n', 'aromatic_hetero',
                      'scaffold_w_stereo', 'scaffold_wo_stereo']
-    filtering_columns = ['in_dm_table', 'keep_for_binding']
+    filtering_columns = ['pair_mutation_in_dm_table', 'pair_in_dm_table', 'keep_for_binding']
 
     if calculate_RDKit:
         columns = compound_target_pair_columns + \
