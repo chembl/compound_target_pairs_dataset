@@ -216,6 +216,7 @@ def clean_dataset(df_combined: pd.DataFrame, calculate_RDKit: bool) -> pd.DataFr
     - setting the type of relevant columns to Int64
     - rounding floats to 4 decimal places (with the exception of max_phase which is not rounded)
     - reordering columns
+    - sorting rows by cpd_target_pair_mutation
 
     :param df_combined: Pandas DataFrame with compound-target pairs
     :type df_combined: pd.DataFrame
@@ -228,4 +229,5 @@ def clean_dataset(df_combined: pd.DataFrame, calculate_RDKit: bool) -> pd.DataFr
     df_combined = set_types_to_int(df_combined, calculate_RDKit)
     df_combined = round_floats(df_combined, decimal_places=4)
     df_combined = reorder_columns(df_combined, calculate_RDKit)
+    df_combined = df_combined.sort_values(by=["cpd_target_pair_mutation"]).reset_index(drop=True)
     return df_combined
