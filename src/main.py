@@ -15,9 +15,8 @@ if __name__ == "__main__":
                         metavar='<version>',
                         type=str,
                         default=None,
-                        help='ChEMBL version. Version 21 is the oldest version that is available as an SQLite database \
-                            and therefore currently the oldest version for which the dataset can be calculated. \
-                            Latest version if None. (default: None)')
+                        help='ChEMBL version. \
+                            Latest version if None. Required if a path to a SQLite database is provided, i.e., if --sqlite is set. (default: None)')
     parser.add_argument('--sqlite', '-s',
                         metavar='<path>',
                         type=str,
@@ -70,12 +69,10 @@ if __name__ == "__main__":
     assert(isinstance(numeric_log_level, int)), f"Invalid log level: %{args.log_level}"
     logging.basicConfig(level=numeric_log_level)
 
-    if args.chembl is None:
-        args.chembl = chembl_downloader.latest()
-
-    if args.sqlite is None:
-        logging.info("Using chembl_downloader to connect to ChEMBL.")
-        with chembl_downloader.connect(version=args.chembl) as chembl_con:
+    if args.sqlite:
+        logging.info(f"Using provided sqlite3 path ({args.sqlite}) to connect to ChEMBL.")
+        assert(args.chembl), "Please provide a ChEMBL version."
+        with sqlite3.connect(args.sqlite) as chembl_con:
             get_dataset.get_ct_pair_dataset(chembl_con,
                                             args.chembl,
                                             args.output,
@@ -86,8 +83,11 @@ if __name__ == "__main__":
                                             args.delimiter,
                                             full_df, args.BF, args.B)
     else:
-        logging.info(f"Using provided sqlite3 path ({args.sqlite}) to connect to ChEMBL.")
-        with sqlite3.connect(args.sqlite) as chembl_con:
+        logging.info("Using chembl_downloader to connect to ChEMBL.")
+        if args.chembl is None:
+            args.chembl = chembl_downloader.latest()
+
+        with chembl_downloader.connect(version=args.chembl) as chembl_con:
             get_dataset.get_ct_pair_dataset(chembl_con,
                                             args.chembl,
                                             args.output,
