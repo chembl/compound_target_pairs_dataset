@@ -103,15 +103,11 @@ def add_ligand_efficiency_metrics(df_combined: pd.DataFrame) -> pd.DataFrame:
     :rtype: pd.DataFrame
     """
     for suffix in ['BF', 'B']:
-        df_combined[f"LE_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]/df_combined['heavy_atoms']*(2.303*298*0.00199)
-        # replace infinity values with None as they are not useful
-        df_combined[f"LE_{suffix}"] = df_combined[f"LE_{suffix}"].replace(np.inf, None)
+        df_combined.loc[df_combined['heavy_atoms'] != 0, f"LE_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]/df_combined['heavy_atoms']*(2.303*298*0.00199)
+
+        df_combined.loc[df_combined['mw_freebase'] != 0, f"BEI_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]*1000/df_combined["mw_freebase"]
         
-        df_combined[f"BEI_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]*1000/df_combined["mw_freebase"]
-        df_combined[f"BEI_{suffix}"] = df_combined[f"BEI_{suffix}"].replace(np.inf, None)
-        
-        df_combined[f"SEI_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]*100/df_combined["psa"]
-        df_combined[f"SEI_{suffix}"] = df_combined[f"SEI_{suffix}"].replace(np.inf, None)
+        df_combined.loc[df_combined['psa'] != 0, f"SEI_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]*100/df_combined["psa"]
         
         df_combined[f"LLE_{suffix}"] = df_combined[f"pchembl_value_mean_{suffix}"]-df_combined["alogp"]
         
