@@ -1,12 +1,26 @@
 [project]
 name = "compound_target_pairs_dataset"  
 version = "0.0.1"  
-description = "Extract a compound-target pair dataset from ChEMBL" 
+description = "Extract a dataset of compound-target pairs from ChEMBL" 
 readme = "README.md" 
 license = {file = "LICENSE"}
 authors = [
-  {name = "Lina Heinzke"}, 
-  {name = "Barbara Zdrazil"}
+  {name = "Lina Heinzke", email = "heinzke@ebi.ac.uk"}, 
+  {name = "Barbara Zdrazil", email = "bzdrazil@ebi.ac.uk"}
+]
+keywords = ["python", 
+    "chemistry", "cheminformatics", "chemoinformatics", 
+    "dataset", "drug-targets", "drug-target-interactions", "chembl"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
 ]
 
 requires-python = ">=3.7"
@@ -25,7 +39,8 @@ dev = [
     "sphinx-rtd-theme",
 ]
 
-
+[project.urls]
+Repository = "https://github.com/chembl/compound_target_pairs_dataset"
 
 [build-system]
 requires = ["setuptools >= 61.0"]
