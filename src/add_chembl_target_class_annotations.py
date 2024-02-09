@@ -5,8 +5,11 @@ import sqlite3
 
 import write_subsets
 
+
 ########### Add Target Class Annotations Based on ChEMBL Data ###########
-def get_target_class_table(chembl_con: sqlite3.Connection, current_tids: set[int]) -> pd.DataFrame:
+def get_target_class_table(
+    chembl_con: sqlite3.Connection, current_tids: set[int]
+) -> pd.DataFrame:
     """
     Get level 1 and level 2 target class annotations in ChEMBL.
 
@@ -17,7 +20,7 @@ def get_target_class_table(chembl_con: sqlite3.Connection, current_tids: set[int
     :return: Pandas DataFrame with target class information
     :rtype: pd.DataFrame
     """
-    sql = '''
+    sql = """
     SELECT DISTINCT tc.tid, 
         pc.protein_class_id, pc.pref_name, pc.short_name, pc.protein_class_desc, pc.definition
     FROM protein_classification pc
@@ -28,16 +31,16 @@ def get_target_class_table(chembl_con: sqlite3.Connection, current_tids: set[int
         ON cc.component_id = cs.component_id
     INNER JOIN target_components tc
         ON cs.component_id = tc.component_id
-    '''
+    """
 
     df_target_classes = pd.read_sql_query(sql, con=chembl_con)
 
     # only interested in the target ids that are in the current dataset
-    df_target_classes = df_target_classes[df_target_classes['tid'].isin(current_tids)]
+    df_target_classes = df_target_classes[df_target_classes["tid"].isin(current_tids)]
 
     # Query the protein_classification table for the protein classification hierarchy
     # and merge it with the target class information for specific tids.
-    sql = '''
+    sql = """
     WITH RECURSIVE pc_hierarchy AS (
         SELECT protein_class_id,
                 parent_id,
@@ -58,20 +61,32 @@ def get_target_class_table(chembl_con: sqlite3.Connection, current_tids: set[int
     )
     SELECT *
     FROM pc_hierarchy
-    '''
+    """
 
     target_class_hierarchy = pd.read_sql_query(sql, con=chembl_con)
-    target_class_hierarchy[['l0', 'l1', 'l2', 'l3', 'l4', 'l5', 'l6']
-                           ] = target_class_hierarchy['names'].str.split('|', expand=True)
-    target_class_hierarchy = target_class_hierarchy[target_class_hierarchy['protein_class_id'] != 0][['protein_class_id', 'l1', 'l2']]
-    df_target_classes = df_target_classes.merge(target_class_hierarchy, on='protein_class_id', how='left')
+    target_class_hierarchy[["l0", "l1", "l2", "l3", "l4", "l5", "l6"]] = (
+        target_class_hierarchy["names"].str.split("|", expand=True)
+    )
+    target_class_hierarchy = target_class_hierarchy[
+        target_class_hierarchy["protein_class_id"] != 0
+    ][["protein_class_id", "l1", "l2"]]
+    df_target_classes = df_target_classes.merge(
+        target_class_hierarchy, on="protein_class_id", how="left"
+    )
 
     return df_target_classes
 
 
-def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: sqlite3.Connection, 
-                                        output_path: str, write_to_csv: bool, write_to_excel: bool, delimiter: str, 
-                                        chembl_version: str, limited_flag: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
+def add_chembl_target_class_annotations(
+    df_combined: pd.DataFrame,
+    chembl_con: sqlite3.Connection,
+    output_path: str,
+    write_to_csv: bool,
+    write_to_excel: bool,
+    delimiter: str,
+    chembl_version: str,
+    limited_flag: str,
+) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
     Add level 1 and 2 target class annotations. 
     Assignments for target IDs with more than one target class assignment per level 
@@ -101,47 +116,90 @@ def add_chembl_target_class_annotations(df_combined: pd.DataFrame, chembl_con: s
         - Pandas DataFrame with mapping from target id to level 2 target class
     :rtype: (pd.DataFrame, pd.DataFrame, pd.DataFrame)
     """
-    current_tids = set(df_combined['tid'])
+    current_tids = set(df_combined["tid"])
     df_target_classes = get_target_class_table(chembl_con, current_tids)
 
     # Summarise the information for a target id with several assigned target classes of level 1 into one description.
     # If a target id has more than one assigned target class, the target class 'Unclassified protein' is discarded.
-    level = 'l1'
-    between_str_join = '|'
-    target_classes_level1 = df_target_classes[['tid', level]].drop_duplicates().dropna()
+    level = "l1"
+    between_str_join = "|"
+    target_classes_level1 = df_target_classes[["tid", level]].drop_duplicates().dropna()
 
     # remove 'Unclassified protein' from targets with more than one target class, level 1
-    nof_classes = target_classes_level1.groupby(['tid'])[level].count()
+    nof_classes = target_classes_level1.groupby(["tid"])[level].count()
     target_classes_level1 = target_classes_level1[
-        (target_classes_level1['tid'].isin(
-            nof_classes[nof_classes == 1].index.tolist()))
-        | ((target_classes_level1['tid'].isin(nof_classes[nof_classes > 1].index.tolist()))
-           & (target_classes_level1['l1'] != 'Unclassified protein'))]
+        (
+            target_classes_level1["tid"].isin(
+                nof_classes[nof_classes == 1].index.tolist()
+            )
+        )
+        | (
+            (
+                target_classes_level1["tid"].isin(
+                    nof_classes[nof_classes > 1].index.tolist()
+                )
+            )
+            & (target_classes_level1["l1"] != "Unclassified protein")
+        )
+    ]
 
-    target_classes_level1['target_class_l1'] = target_classes_level1.groupby(
-        ['tid'])[level].transform(lambda x: between_str_join.join(sorted(x)))
-    target_classes_level1 = target_classes_level1[['tid', 'target_class_l1']].drop_duplicates()
+    target_classes_level1["target_class_l1"] = target_classes_level1.groupby(["tid"])[
+        level
+    ].transform(lambda x: between_str_join.join(sorted(x)))
+    target_classes_level1 = target_classes_level1[
+        ["tid", "target_class_l1"]
+    ].drop_duplicates()
 
-    df_combined = df_combined.merge(target_classes_level1, on='tid', how='left')
+    df_combined = df_combined.merge(target_classes_level1, on="tid", how="left")
 
     # Repeat the summary step for target classes of level 2.
-    level = 'l2'
-    target_classes_level2 = df_target_classes[['tid', level]].drop_duplicates().dropna()
-    target_classes_level2['target_class_l2'] = target_classes_level2.groupby(
-        ['tid'])[level].transform(lambda x: between_str_join.join(sorted(x)))
-    target_classes_level2 = target_classes_level2[['tid', 'target_class_l2']].drop_duplicates()
+    level = "l2"
+    target_classes_level2 = df_target_classes[["tid", level]].drop_duplicates().dropna()
+    target_classes_level2["target_class_l2"] = target_classes_level2.groupby(["tid"])[
+        level
+    ].transform(lambda x: between_str_join.join(sorted(x)))
+    target_classes_level2 = target_classes_level2[
+        ["tid", "target_class_l2"]
+    ].drop_duplicates()
 
-    df_combined = df_combined.merge(target_classes_level2, on='tid', how='left')
+    df_combined = df_combined.merge(target_classes_level2, on="tid", how="left")
 
     # Output targets have more than one target class assignment
-    more_than_one_level_1 = df_combined[(df_combined['target_class_l1'].notnull()) & (df_combined['target_class_l1'].str.contains('|', regex=False))][['tid', 'target_pref_name', 'target_type', 'target_class_l1', 'target_class_l2']].drop_duplicates()
-    logging.debug(f"Targets with more than one level 1 target class assignment: {len(more_than_one_level_1)}")
-    more_than_one_level_2 = df_combined[(df_combined['target_class_l2'].notnull()) & (df_combined['target_class_l2'].str.contains('|', regex=False))][['tid', 'target_pref_name', 'target_type', 'target_class_l1', 'target_class_l2']].drop_duplicates()
-    logging.debug(f"Targets with more than one level 2 target class assignment: {len(more_than_one_level_2)}")
-    more_than_one_tclass = pd.concat([more_than_one_level_1, more_than_one_level_2]).drop_duplicates()
-    logging.debug(f"Targets with more than one target class assignment: {len(more_than_one_tclass)}")
-    
-    name_more_than_one_tclass = os.path.join(output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_targets_w_more_than_one_tclass")
-    write_subsets.write_output(more_than_one_tclass, name_more_than_one_tclass, write_to_csv, write_to_excel, delimiter)
+    more_than_one_level_1 = df_combined[
+        (df_combined["target_class_l1"].notnull())
+        & (df_combined["target_class_l1"].str.contains("|", regex=False))
+    ][
+        ["tid", "target_pref_name", "target_type", "target_class_l1", "target_class_l2"]
+    ].drop_duplicates()
+    logging.debug(
+        f"Targets with more than one level 1 target class assignment: {len(more_than_one_level_1)}"
+    )
+    more_than_one_level_2 = df_combined[
+        (df_combined["target_class_l2"].notnull())
+        & (df_combined["target_class_l2"].str.contains("|", regex=False))
+    ][
+        ["tid", "target_pref_name", "target_type", "target_class_l1", "target_class_l2"]
+    ].drop_duplicates()
+    logging.debug(
+        f"Targets with more than one level 2 target class assignment: {len(more_than_one_level_2)}"
+    )
+    more_than_one_tclass = pd.concat(
+        [more_than_one_level_1, more_than_one_level_2]
+    ).drop_duplicates()
+    logging.debug(
+        f"Targets with more than one target class assignment: {len(more_than_one_tclass)}"
+    )
+
+    name_more_than_one_tclass = os.path.join(
+        output_path,
+        f"ChEMBL{chembl_version}_CTI_{limited_flag}_targets_w_more_than_one_tclass",
+    )
+    write_subsets.write_output(
+        more_than_one_tclass,
+        name_more_than_one_tclass,
+        write_to_csv,
+        write_to_excel,
+        delimiter,
+    )
 
     return df_combined, target_classes_level1, target_classes_level2

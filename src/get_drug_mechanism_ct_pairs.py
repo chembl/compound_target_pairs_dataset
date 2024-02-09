@@ -2,17 +2,18 @@ import logging
 import pandas as pd
 import sqlite3
 
+
 ########### Extract Drug-Target Interactions With Disease Relevance From the drug_mechanism Table ###########
 def get_drug_mechanisms_interactions(chembl_con: sqlite3.Connection) -> pd.DataFrame:
     """
     Extract the known compound-target interactions from the ChEMBL drug_mechanisms table.
-    Note: While the interactions are mostly between drugs and targets, 
+    Note: While the interactions are mostly between drugs and targets,
     the table also includes some known interactions between compounds with a max_phase < 4 and their targets.
 
-    Only entries with a disease_efficacy of 1 are taken into account, 
-    i.e., the target is believed to play a role in the efficacy of the drug.  
+    Only entries with a disease_efficacy of 1 are taken into account,
+    i.e., the target is believed to play a role in the efficacy of the drug.
 
-    *disease_efficacy: Flag to show whether the target assigned is believed 
+    *disease_efficacy: Flag to show whether the target assigned is believed
     to play a role in the efficacy of the drug in the indication(s) for which it is approved (1 = yes, 0 = no).*
 
     :param chembl_con: Sqlite3 connection to ChEMBL database.
@@ -20,7 +21,7 @@ def get_drug_mechanisms_interactions(chembl_con: sqlite3.Connection) -> pd.DataF
     :return: Pandas DataFrame with compound-target pairs from the drug_mechanism table with disease relevance.
     :rtype: pd.DataFrame
     """
-    sql = '''
+    sql = """
     SELECT DISTINCT mh.parent_molregno, dm.tid
     FROM drug_mechanism dm
     INNER JOIN molecule_hierarchy mh
@@ -29,7 +30,7 @@ def get_drug_mechanisms_interactions(chembl_con: sqlite3.Connection) -> pd.DataF
         ON mh.parent_molregno = md.molregno
     WHERE dm.disease_efficacy = 1
         and dm.tid is not null
-    '''
+    """
 
     df_dti = pd.read_sql_query(sql, con=chembl_con)
 
@@ -56,8 +57,8 @@ def get_relevant_tid_mappings(chembl_con: sqlite3.Connection) -> pd.DataFrame:
     +-------------------------------+-----------------------+----------------+
 
     These mappings can be used to increase the number of target ids for which there is data in the drug_mechanisms table.
-    For example, for *protein family -[superset of]-> single protein* this means:  
-    If there is a known relevant interaction between a compound and a protein family, 
+    For example, for *protein family -[superset of]-> single protein* this means:
+    If there is a known relevant interaction between a compound and a protein family,
     interactions between the compound and single proteins of that protein family are considered to be known interactions as well.
 
     :param chembl_con: Sqlite3 connection to ChEMBL database.
@@ -65,7 +66,7 @@ def get_relevant_tid_mappings(chembl_con: sqlite3.Connection) -> pd.DataFrame:
     :return: Pandas DataFrame with mappings from tid to related tid for the defined subset of target relations.
     :rtype: pd.DataFrame
     """
-    sql = '''
+    sql = """
     SELECT DISTINCT tr.tid, tr.relationship, tr.related_tid, 
         td1.pref_name as pref_name_1, td1.target_type as target_type_1, td1.organism as organism_1, 
         td2.pref_name as pref_name_2, td2.target_type as target_type_2, td2.organism as organism_2 
@@ -74,46 +75,64 @@ def get_relevant_tid_mappings(chembl_con: sqlite3.Connection) -> pd.DataFrame:
         ON tr.tid = td1.tid
     INNER JOIN target_dictionary td2
         ON tr.related_tid = td2.tid
-    '''
+    """
     df_related_targets = pd.read_sql_query(sql, con=chembl_con)
 
-    protein_family_mapping = df_related_targets[(df_related_targets["target_type_1"] == "PROTEIN FAMILY")
-                                                & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
-                                                & (df_related_targets["relationship"] == "SUPERSET OF")]
+    protein_family_mapping = df_related_targets[
+        (df_related_targets["target_type_1"] == "PROTEIN FAMILY")
+        & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
+        & (df_related_targets["relationship"] == "SUPERSET OF")
+    ]
 
-    protein_complex_mapping = df_related_targets[(df_related_targets["target_type_1"] == "PROTEIN COMPLEX")
-                                                 & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
-                                                 & (df_related_targets["relationship"] == "SUPERSET OF")]
+    protein_complex_mapping = df_related_targets[
+        (df_related_targets["target_type_1"] == "PROTEIN COMPLEX")
+        & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
+        & (df_related_targets["relationship"] == "SUPERSET OF")
+    ]
 
-    protein_complex_group_mapping = df_related_targets[(df_related_targets["target_type_1"] == "PROTEIN COMPLEX GROUP")
-                                                       & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
-                                                       & (df_related_targets["relationship"] == "SUPERSET OF")]
+    protein_complex_group_mapping = df_related_targets[
+        (df_related_targets["target_type_1"] == "PROTEIN COMPLEX GROUP")
+        & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
+        & (df_related_targets["relationship"] == "SUPERSET OF")
+    ]
 
-    single_protein_mapping = df_related_targets[(df_related_targets["target_type_1"] == "SINGLE PROTEIN")
-                                                & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
-                                                & (df_related_targets["relationship"] == "EQUIVALENT TO")]
+    single_protein_mapping = df_related_targets[
+        (df_related_targets["target_type_1"] == "SINGLE PROTEIN")
+        & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
+        & (df_related_targets["relationship"] == "EQUIVALENT TO")
+    ]
 
-    chimeric_protein_mapping = df_related_targets[(df_related_targets["target_type_1"] == "CHIMERIC PROTEIN")
-                                                  & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
-                                                  & (df_related_targets["relationship"] == "SUPERSET OF")]
+    chimeric_protein_mapping = df_related_targets[
+        (df_related_targets["target_type_1"] == "CHIMERIC PROTEIN")
+        & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
+        & (df_related_targets["relationship"] == "SUPERSET OF")
+    ]
 
-    ppi_mapping = df_related_targets[(df_related_targets["target_type_1"] == "PROTEIN-PROTEIN INTERACTION")
-                                     & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
-                                     & (df_related_targets["relationship"] == "SUPERSET OF")]
+    ppi_mapping = df_related_targets[
+        (df_related_targets["target_type_1"] == "PROTEIN-PROTEIN INTERACTION")
+        & (df_related_targets["target_type_2"] == "SINGLE PROTEIN")
+        & (df_related_targets["relationship"] == "SUPERSET OF")
+    ]
 
-    relevant_tid_mappings = pd.concat([protein_family_mapping,
-                                   protein_complex_mapping,
-                                   protein_complex_group_mapping,
-                                   single_protein_mapping,
-                                   chimeric_protein_mapping,
-                                   ppi_mapping])
+    relevant_tid_mappings = pd.concat(
+        [
+            protein_family_mapping,
+            protein_complex_mapping,
+            protein_complex_group_mapping,
+            single_protein_mapping,
+            chimeric_protein_mapping,
+            ppi_mapping,
+        ]
+    )
 
     return relevant_tid_mappings
 
 
-def add_annotations_to_drug_mechanisms_cti(chembl_con: sqlite3.Connection, cpd_target_pairs: pd.DataFrame) -> pd.DataFrame:
+def add_annotations_to_drug_mechanisms_cti(
+    chembl_con: sqlite3.Connection, cpd_target_pairs: pd.DataFrame
+) -> pd.DataFrame:
     """
-    Add additional information to the compound-target pairs from the drug_mechanisms table 
+    Add additional information to the compound-target pairs from the drug_mechanisms table
     to match the information that is present in the compound-target pairs table based on activities.
 
     :param chembl_con: Sqlite3 connection to ChEMBL database.
@@ -125,47 +144,51 @@ def add_annotations_to_drug_mechanisms_cti(chembl_con: sqlite3.Connection, cpd_t
     """
     ##### Set columns existing in the df_combined table. #####
     # None of the targets from the drug mechanism table have any mutation annotation, hence tid_mutation = tid
-    cpd_target_pairs['tid_mutation'] = cpd_target_pairs['tid'].astype('str')
-    cpd_target_pairs['cpd_target_pair'] = cpd_target_pairs.agg(
-        '{0[parent_molregno]}_{0[tid]}'.format, axis=1)
-    cpd_target_pairs['cpd_target_pair_mutation'] = cpd_target_pairs.agg(
-        '{0[parent_molregno]}_{0[tid_mutation]}'.format, axis=1)
+    cpd_target_pairs["tid_mutation"] = cpd_target_pairs["tid"].astype("str")
+    cpd_target_pairs["cpd_target_pair"] = cpd_target_pairs.agg(
+        "{0[parent_molregno]}_{0[tid]}".format, axis=1
+    )
+    cpd_target_pairs["cpd_target_pair_mutation"] = cpd_target_pairs.agg(
+        "{0[parent_molregno]}_{0[tid_mutation]}".format, axis=1
+    )
 
     # New column: is the compound target pair in the drug_mechanism table?
-    cpd_target_pairs['pair_mutation_in_dm_table'] = True
-    cpd_target_pairs['pair_in_dm_table'] = True
+    cpd_target_pairs["pair_mutation_in_dm_table"] = True
+    cpd_target_pairs["pair_in_dm_table"] = True
 
     ##### Query and combine compound information with compound-target pairs #####
-    sql = '''
+    sql = """
     SELECT md.molregno as parent_molregno, 
         md.chembl_id as parent_chemblid, md.pref_name as parent_pref_name,
         md.max_phase, md.first_approval, md.usan_year, md.black_box_warning, 
         md.prodrug, md.oral, md.parenteral, md.topical
     FROM molecule_dictionary md
-    '''
+    """
 
     df_compound_info = pd.read_sql_query(sql, con=chembl_con)
     cpd_target_pairs = cpd_target_pairs.merge(
-        df_compound_info, on='parent_molregno', how='left')
+        df_compound_info, on="parent_molregno", how="left"
+    )
 
     ##### Query and combine target information with compound-target pairs #####
-    sql = '''
+    sql = """
     SELECT td.tid, td.chembl_id as target_chembl_id, td.pref_name as target_pref_name, td.target_type, td.organism
     FROM target_dictionary td
-    '''
+    """
 
     df_target_info = pd.read_sql_query(sql, con=chembl_con)
     # Fix problems with null not being recognised as None
-    df_target_info.loc[df_target_info['organism'].astype(
-        str) == 'null', 'organism'] = None
-    cpd_target_pairs = cpd_target_pairs.merge(df_target_info, on='tid', how='left')
-    
+    df_target_info.loc[df_target_info["organism"].astype(str) == "null", "organism"] = (
+        None
+    )
+    cpd_target_pairs = cpd_target_pairs.merge(df_target_info, on="tid", how="left")
+
     return cpd_target_pairs
 
 
 def get_drug_mechanism_ct_pairs(chembl_con: sqlite3.Connection) -> pd.DataFrame:
     """
-    Get compound-target pairs from the drug_mechanism table 
+    Get compound-target pairs from the drug_mechanism table
     with all the columns that are present in the compound-target pairs based on activities.
     Relevant mappings of target ids to related target ids are taken into account.
 
@@ -177,25 +200,33 @@ def get_drug_mechanism_ct_pairs(chembl_con: sqlite3.Connection) -> pd.DataFrame:
     # get known compound-target interactions (CTI) from the drug_mechanisms table
     df_dti = get_drug_mechanisms_interactions(chembl_con)
 
-    # Query target_relations for related target ids 
+    # Query target_relations for related target ids
     # to increase the number of target ids for which there is data in the drug_mechanisms table.
     relevant_tid_mappings = get_relevant_tid_mappings(chembl_con)
     # table with mapped target ids
-    df_dti_mapped_targets = df_dti.merge(relevant_tid_mappings, on='tid', how='inner')
+    df_dti_mapped_targets = df_dti.merge(relevant_tid_mappings, on="tid", how="inner")
 
     # combine CTIs from drug_mechanism table with mapped CTIs
-    cpd_target_pairs = pd.concat([df_dti[['parent_molregno', 'tid']],
-                                  df_dti_mapped_targets[['parent_molregno', 'related_tid']]
-                                  .rename(columns={'related_tid': 'tid'})]).drop_duplicates()
-    
-    cpd_target_pairs = add_annotations_to_drug_mechanisms_cti(chembl_con, cpd_target_pairs)
+    cpd_target_pairs = pd.concat(
+        [
+            df_dti[["parent_molregno", "tid"]],
+            df_dti_mapped_targets[["parent_molregno", "related_tid"]].rename(
+                columns={"related_tid": "tid"}
+            ),
+        ]
+    ).drop_duplicates()
+
+    cpd_target_pairs = add_annotations_to_drug_mechanisms_cti(
+        chembl_con, cpd_target_pairs
+    )
 
     return cpd_target_pairs
 
 
-
 ########### Add Compounds From the drug_mechanism Table to the Dataset ###########
-def add_drug_mechanism_ct_pairs(df_combined: pd.DataFrame, chembl_con: sqlite3.Connection) -> (pd.DataFrame, set, set):
+def add_drug_mechanism_ct_pairs(
+    df_combined: pd.DataFrame, chembl_con: sqlite3.Connection
+) -> (pd.DataFrame, set, set):
     """
     Add compound-target pairs from the drug_mechanism table that are not in the dataset based on the initial ChEMBL query.
     These are compound-target pairs for which there is no associated pchembl value data.
@@ -211,27 +242,42 @@ def add_drug_mechanism_ct_pairs(df_combined: pd.DataFrame, chembl_con: sqlite3.C
     :rtype: (pd.DataFrame, set, set)
     """
     cpd_target_pairs = get_drug_mechanism_ct_pairs(chembl_con)
-    drug_mechanism_pairs_set = set(cpd_target_pairs.agg('{0[parent_molregno]}_{0[tid]}'.format, axis=1))
-    drug_mechanism_targets_set = set(cpd_target_pairs['tid'])
+    drug_mechanism_pairs_set = set(
+        cpd_target_pairs.agg("{0[parent_molregno]}_{0[tid]}".format, axis=1)
+    )
+    drug_mechanism_targets_set = set(cpd_target_pairs["tid"])
 
-    # Add a new column *pair_mutation_in_dm_table* which is set to True if the compound target pair 
+    # Add a new column *pair_mutation_in_dm_table* which is set to True if the compound target pair
     # (taking mutation annotations into account) is in the drug_mechanism table.
-    df_combined['pair_mutation_in_dm_table'] = False
-    df_combined.loc[(df_combined['cpd_target_pair_mutation'].isin(drug_mechanism_pairs_set)), 'pair_mutation_in_dm_table'] = True
+    df_combined["pair_mutation_in_dm_table"] = False
+    df_combined.loc[
+        (df_combined["cpd_target_pair_mutation"].isin(drug_mechanism_pairs_set)),
+        "pair_mutation_in_dm_table",
+    ] = True
 
-    # Add a new column *pair_in_dm_table* which is set to True if the compound target pair 
+    # Add a new column *pair_in_dm_table* which is set to True if the compound target pair
     # (NOT taking mutation annotations into account) is in the drug_mechanism table.
-    df_combined['pair_in_dm_table'] = False
-    df_combined.loc[(df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set)), 'pair_in_dm_table'] = True
+    df_combined["pair_in_dm_table"] = False
+    df_combined.loc[
+        (df_combined["cpd_target_pair"].isin(drug_mechanism_pairs_set)),
+        "pair_in_dm_table",
+    ] = True
 
     ##### Limit the drug_mechanism pairs to the ones that are not yet in the dataset. #####
     # Mutation annotations are taken into account.
-    # Therefore, *(cpd A, target B without mutation)* will be added 
+    # Therefore, *(cpd A, target B without mutation)* will be added
     # if a pchembl is present for *(cpd A, target B with mutation C)* but not for *(cpd A, target B without mutation)*.
-    cpd_target_pairs = cpd_target_pairs[~(cpd_target_pairs['cpd_target_pair_mutation'].isin(
-        set(df_combined['cpd_target_pair_mutation'])))].copy()
-    
-    logging.debug(f"#Pairs not yet present based on binding or functional assays: {len(cpd_target_pairs)}")
+    cpd_target_pairs = cpd_target_pairs[
+        ~(
+            cpd_target_pairs["cpd_target_pair_mutation"].isin(
+                set(df_combined["cpd_target_pair_mutation"])
+            )
+        )
+    ].copy()
+
+    logging.debug(
+        f"#Pairs not yet present based on binding or functional assays: {len(cpd_target_pairs)}"
+    )
 
     # Combined data of existing query with new compound-target pairs.
     df_combined = pd.concat([df_combined, cpd_target_pairs])
@@ -241,8 +287,13 @@ def add_drug_mechanism_ct_pairs(df_combined: pd.DataFrame, chembl_con: sqlite3.C
     # Rows are kept if
     # - there is a binding data-based pchembl value or
     # - the compound-target pair (including mutation info) is in the drug_mechanism table
-    df_combined['keep_for_binding'] = False
-    df_combined.loc[((df_combined['pchembl_value_mean_B'].notnull()) |
-                    (df_combined['pair_mutation_in_dm_table'] == True)), 'keep_for_binding'] = True
-    
+    df_combined["keep_for_binding"] = False
+    df_combined.loc[
+        (
+            (df_combined["pchembl_value_mean_B"].notnull())
+            | (df_combined["pair_mutation_in_dm_table"] == True)
+        ),
+        "keep_for_binding",
+    ] = True
+
     return df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set

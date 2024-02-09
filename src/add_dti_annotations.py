@@ -1,7 +1,12 @@
 import pandas as pd
 
+
 ########### CTI (Compound-Target Interaction) Annotations ###########
-def add_dti_annotations(df_combined: pd.DataFrame, drug_mechanism_pairs_set: set, drug_mechanism_targets_set: set) -> pd.DataFrame:
+def add_dti_annotations(
+    df_combined: pd.DataFrame,
+    drug_mechanism_pairs_set: set,
+    drug_mechanism_targets_set: set,
+) -> pd.DataFrame:
     """
     Every compound-target pair is assigned a DTI (drug target interaction) annotation.  
 
@@ -57,34 +62,72 @@ def add_dti_annotations(df_combined: pd.DataFrame, drug_mechanism_pairs_set: set
     :rtype: pd.DataFrame
     """
     # Add a new column *therapeutic_target* which is set to True if the target is in the drug_mechanism table
-    df_combined['therapeutic_target'] = df_combined['tid'].isin(drug_mechanism_targets_set)
+    df_combined["therapeutic_target"] = df_combined["tid"].isin(
+        drug_mechanism_targets_set
+    )
 
     # Assign the annotations based on the table.
     # Compound-target pairs from the drug mechanism table
-    df_combined.loc[(df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set) & (df_combined['max_phase'] == 4)), 'DTI'] = "D_DT"
-    df_combined.loc[(df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set) & (df_combined['max_phase'] == 3)), 'DTI'] = "C3_DT"
-    df_combined.loc[(df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set) & (df_combined['max_phase'] == 2)), 'DTI'] = "C2_DT"
-    df_combined.loc[(df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set) & (df_combined['max_phase'] == 1)), 'DTI'] = "C1_DT"
+    df_combined.loc[
+        (
+            df_combined["cpd_target_pair"].isin(drug_mechanism_pairs_set)
+            & (df_combined["max_phase"] == 4)
+        ),
+        "DTI",
+    ] = "D_DT"
+    df_combined.loc[
+        (
+            df_combined["cpd_target_pair"].isin(drug_mechanism_pairs_set)
+            & (df_combined["max_phase"] == 3)
+        ),
+        "DTI",
+    ] = "C3_DT"
+    df_combined.loc[
+        (
+            df_combined["cpd_target_pair"].isin(drug_mechanism_pairs_set)
+            & (df_combined["max_phase"] == 2)
+        ),
+        "DTI",
+    ] = "C2_DT"
+    df_combined.loc[
+        (
+            df_combined["cpd_target_pair"].isin(drug_mechanism_pairs_set)
+            & (df_combined["max_phase"] == 1)
+        ),
+        "DTI",
+    ] = "C1_DT"
     # Compounds that are in the drug_mechanism table but don't have a known phase between 1-4:
-    df_combined.loc[(df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set) & 
-                    (~df_combined['max_phase'].isin([1, 2, 3, 4]))), 'DTI'] = "C0_DT"
+    df_combined.loc[
+        (
+            df_combined["cpd_target_pair"].isin(drug_mechanism_pairs_set)
+            & (~df_combined["max_phase"].isin([1, 2, 3, 4]))
+        ),
+        "DTI",
+    ] = "C0_DT"
 
     # Target is in the drug mechanism table
-    df_combined.loc[((~df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set)) 
-                    & (df_combined['therapeutic_target'] == True)), 'DTI'] = "DT"
+    df_combined.loc[
+        (
+            (~df_combined["cpd_target_pair"].isin(drug_mechanism_pairs_set))
+            & (df_combined["therapeutic_target"] == True)
+        ),
+        "DTI",
+    ] = "DT"
 
     # Other compound-target pairs
     # if target is not a therapeutic target, 'cpd_target_pair' cannot be in DTIs_set
     # (~df_combined['cpd_target_pair'].isin(DTIs_set)) is included for clarity
-    df_combined.loc[((~df_combined['cpd_target_pair'].isin(drug_mechanism_pairs_set)) 
-                    & (df_combined['therapeutic_target'] == False)), 'DTI'] = "NDT"
+    df_combined.loc[
+        (
+            (~df_combined["cpd_target_pair"].isin(drug_mechanism_pairs_set))
+            & (df_combined["therapeutic_target"] == False)
+        ),
+        "DTI",
+    ] = "NDT"
 
     # Discard NDT rows
-    df_combined = df_combined[(df_combined['DTI'].isin(['D_DT', 'C3_DT', 'C2_DT', 'C1_DT', 'C0_DT', 'DT']))]
-    
+    df_combined = df_combined[
+        (df_combined["DTI"].isin(["D_DT", "C3_DT", "C2_DT", "C1_DT", "C0_DT", "DT"]))
+    ]
+
     return df_combined
-
-
-
-
-
