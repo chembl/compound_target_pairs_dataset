@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2022.3.3)  20 DEC 2023 19:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2022.3.3)  9 FEB 2024 16:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1346,7 +1346,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 3056--3056
  []
 
 [19] [20] [21] [22]
-Overfull \hbox (45.39798pt too wide) in paragraph at lines 3532--3532
+Overfull \hbox (45.39798pt too wide) in paragraph at lines 3536--3536
 []\T1/qtm/m/n/10 first_publication_cpd_target_pair_w_pchembl| 
  []
 
@@ -1496,12 +1496,12 @@ in mod-ule
 ]) (./compound_target_pairs_dataset.aux)
 Package rerunfilecheck Info: File `compound_target_pairs_dataset.out' has not c
 hanged.
-(rerunfilecheck)             Checksum: A0944B0032C1BCF130B2D278AC0ED322;7838.
+(rerunfilecheck)             Checksum: 9A999FEA579B9A1E96BCFA0609EB1441;7818.
  ) 
 Here is how much of TeX's memory you used:
  15203 strings out of 478994
- 238268 string characters out of 5858185
- 591853 words of memory out of 5000000
+ 238264 string characters out of 5858185
+ 591849 words of memory out of 5000000
  32125 multiletter control sequences out of 15000+600000
  472439 words of font info for 86 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
@@ -1522,7 +1522,7 @@ c/tex-gyre/qtmri.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txf
 onts/t1xbtt.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/
 t1xtt.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/t1xtt.
 pfb>
-Output written on compound_target_pairs_dataset.pdf (44 pages, 303186 bytes).
+Output written on compound_target_pairs_dataset.pdf (44 pages, 303873 bytes).
 PDF statistics:
  694 PDF objects out of 1000 (max. 8388607)
  622 compressed objects within 7 object streams

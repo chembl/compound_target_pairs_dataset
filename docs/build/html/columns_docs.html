@@ -51,7 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Columns in the Final Dataset</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#initial-query">Initial Query</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pchembl-values">Pchembl Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pchembl-values">PChEMBL Values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compound-information">Compound Information</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#target-information">Target Information</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#helper-columns">Helper Columns</a></li>
@@ -63,7 +63,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#dti-drug-target-interaction-annotations">DTI (Drug-Target Interaction) Annotations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#mechanism-to-assign-dti">Mechanism to Assign DTI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#maximum-phase-in-chembl">Maximum Phase in ChEMBL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#max-phase-in-chembl">MAX_PHASE in ChEMBL</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#compound-and-target-properties-based-on-chembl-data">Compound and Target Properties Based on ChEMBL Data</a><ul>
@@ -125,7 +125,7 @@ The information on this page mostly corresponds to the <a class="reference exter
 <section id="initial-query">
 <h2>Initial Query<a class="headerlink" href="#initial-query" title="Link to this heading"></a></h2>
 <section id="pchembl-values">
-<h3>Pchembl Values<a class="headerlink" href="#pchembl-values" title="Link to this heading"></a></h3>
+<h3>PChEMBL Values<a class="headerlink" href="#pchembl-values" title="Link to this heading"></a></h3>
 <p>The pchembl_value is later aggregated into mean, max and median per compound-target pair and dropped.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -243,7 +243,7 @@ The information on this page mostly corresponds to the <a class="reference exter
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="id2" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
-<p>There have been changes to the max_phase field in ChEMBL with <a class="reference external" href="https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_32/chembl_32_release_notes.txt">version 32</a>. See <a class="reference internal" href="#maximum-phase-in-chembl">Maximum Phase in ChEMBL</a>.</p>
+<p>There have been changes to the max_phase field in ChEMBL with <a class="reference external" href="https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_32/chembl_32_release_notes.txt">version 32</a>. See <a class="reference internal" href="#max-phase-in-chembl">MAX_PHASE in ChEMBL</a>.</p>
 </aside>
 </aside>
 </section>
@@ -515,12 +515,12 @@ The corresponding columns in the final dataset have a suffix that corresponds to
 <aside class="footnote brackets" id="id10" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">5</a><span class="fn-bracket">]</span></span>
 <p>There have been changes to the max_phase field in ChEMBL with <a class="reference external" href="https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_32/chembl_32_release_notes.txt">version 32</a>.
-C0_DT groups together all compounds with a max_phase not between 1 and 4. See <a class="reference internal" href="#maximum-phase-in-chembl">Maximum Phase in ChEMBL</a></p>
+C0_DT groups together all compounds with a max_phase not between 1 and 4. See <a class="reference internal" href="#max-phase-in-chembl">MAX_PHASE in ChEMBL</a></p>
 </aside>
 </aside>
 </section>
-<section id="maximum-phase-in-chembl">
-<h3>Maximum Phase in ChEMBL<a class="headerlink" href="#maximum-phase-in-chembl" title="Link to this heading"></a></h3>
+<section id="max-phase-in-chembl">
+<h3>MAX_PHASE in ChEMBL<a class="headerlink" href="#max-phase-in-chembl" title="Link to this heading"></a></h3>
 <p>Before ChEMBL 32, compounds with a max_phase not between 1 and 4 were assigned a max_phase of 0.</p>
 <div class="line-block">
 <div class="line">From ChEMBL 32 onwards, compounds with a max_phase not between 1 and 4 can have three possible values:</div>
@@ -802,9 +802,9 @@ this field takes all of ChEMBL and not just the time-related data within the dat
 <section id="ligand-efficiency-metrics">
 <h2>Ligand Efficiency Metrics<a class="headerlink" href="#ligand-efficiency-metrics" title="Link to this heading"></a></h2>
 <p>Calculated based on pchembl_value_mean.</p>
-<p>Since LE metrics are based on pchembl values, they are calculated twice.
-Once for the pchembl values based on binding and functional assays (suffix _BF)
-and once for the pchembl values based on binding assays only (suffix _B).</p>
+<p>Since LE metrics are based on pChEMBL values, they are calculated twice.
+Once for the pChEMBL values based on binding and functional assays (suffix _BF)
+and once for the pChEMBL values based on binding assays only (suffix _B).</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20.0%" />
@@ -1032,9 +1032,9 @@ when taking mutation information into account?
 Mutation information IS taken into account when adding pairs to the dataset
 because they appear in the drug_mechanism table.
 (cpd A, target B without mutation) will be added to the set of existing
-compound-target pairs with pchembl values
-if there is a pair with a pchembl value for (cpd A, target B with mutation C)
-but there is no pair with a pchembl value for (cpd A, target B without mutation).
+compound-target pairs with pChEMBL values
+if there is a pair with a pChEMBL value for (cpd A, target B with mutation C)
+but there is no pair with a pChEMBL value for (cpd A, target B without mutation).
 It is used to determine keep_for_binding which in turn is used
 to determine the B subset of data based on binding assays.</p>
 </dd>

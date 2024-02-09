@@ -11,7 +11,7 @@ The information on this page mostly corresponds to the `ChEMBL 32 schema documen
 
 Initial Query
 *************
-Pchembl Values
+PChEMBL Values
 ---------------
 The pchembl_value is later aggregated into mean, max and median per compound-target pair and dropped.
 
@@ -27,7 +27,7 @@ Compound Information
    :widths: 20, 10, 15, 20, 35
    :header-rows: 1
 
-.. [#] There have been changes to the max_phase field in ChEMBL with `version 32`_. See `Maximum Phase in ChEMBL`_.
+.. [#] There have been changes to the max_phase field in ChEMBL with `version 32`_. See `MAX_PHASE in ChEMBL`_.
 
 .. _version 32: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_32/chembl_32_release_notes.txt
 
@@ -94,10 +94,10 @@ Mechanism to Assign DTI
 
 
 .. [#] There have been changes to the max_phase field in ChEMBL with `version 32`_. 
-   C0_DT groups together all compounds with a max_phase not between 1 and 4. See `Maximum Phase in ChEMBL`_
+   C0_DT groups together all compounds with a max_phase not between 1 and 4. See `MAX_PHASE in ChEMBL`_
 
 
-Maximum Phase in ChEMBL
+MAX_PHASE in ChEMBL
 -----------------------
 Before ChEMBL 32, compounds with a max_phase not between 1 and 4 were assigned a max_phase of 0. 
 
@@ -146,9 +146,9 @@ Ligand Efficiency Metrics
 *************************
 Calculated based on pchembl_value_mean. 
 
-Since LE metrics are based on pchembl values, they are calculated twice.
-Once for the pchembl values based on binding and functional assays (suffix _BF) 
-and once for the pchembl values based on binding assays only (suffix _B).
+Since LE metrics are based on pChEMBL values, they are calculated twice.
+Once for the pChEMBL values based on binding and functional assays (suffix _BF) 
+and once for the pChEMBL values based on binding assays only (suffix _B).
 
 .. csv-table:: 
    :file: tables/LEMetrics.csv
@@ -213,9 +213,9 @@ when calculating fields and adding rows to the dataset.
       Mutation information IS taken into account when adding pairs to the dataset 
       because they appear in the drug_mechanism table. 
       (cpd A, target B without mutation) will be added to the set of existing 
-      compound-target pairs with pchembl values 
-      if there is a pair with a pchembl value for (cpd A, target B with mutation C) 
-      but there is no pair with a pchembl value for (cpd A, target B without mutation).
+      compound-target pairs with pChEMBL values 
+      if there is a pair with a pChEMBL value for (cpd A, target B with mutation C) 
+      but there is no pair with a pChEMBL value for (cpd A, target B without mutation).
       It is used to determine keep_for_binding which in turn is used 
       to determine the B subset of data based on binding assays. 
    - pair_in_dm_table: 

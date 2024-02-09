@@ -4,10 +4,10 @@ This code extract a dataset of compound-target pairs from the open-source bioact
 
 The compound-target pairs are known to interact because 
 
-- they have at least one corresponding measured activitiy values in ChEMBL or 
+- they have at least one corresponding measured activity values in ChEMBL or 
 - they are part of a set of manually curated known interactions in ChEMBL.
 
-Furthermore, the dataset contains a number of compound and target annotations to enable future analyses. 
+Furthermore, the dataset contains a number of compounds and target annotations to enable future analyses. 
 
 Previously, a similar dataset has been curated manually and has been used to investigate target-based differences in drug-like properties and ligand efficiencies [Leeson2021]_. 
 This code can generate an extended version of the previous dataset for every ChEMBL version from ChEMBL 26 onwards.  

@@ -64,7 +64,7 @@
 
 
 \title{compound\_target\_pairs\_dataset}
-\date{Dec 20, 2023}
+\date{Feb 09, 2024}
 \release{0.0.1}
 \author{Lina Heinzke, Barbara Zdrazil}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -98,7 +98,7 @@ The compound\sphinxhyphen{}target pairs are known to interact because
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-they have at least one corresponding measured activitiy values in ChEMBL or
+they have at least one corresponding measured activity values in ChEMBL or
 
 \item {} 
 \sphinxAtStartPar
@@ -107,7 +107,7 @@ they are part of a set of manually curated known interactions in ChEMBL.
 \end{itemize}
 
 \sphinxAtStartPar
-Furthermore, the dataset contains a number of compound and target annotations to enable future analyses.
+Furthermore, the dataset contains a number of compounds and target annotations to enable future analyses.
 
 \sphinxAtStartPar
 Previously, a similar dataset has been curated manually and has been used to investigate target\sphinxhyphen{}based differences in drug\sphinxhyphen{}like properties and ligand efficiencies \sphinxcite{introduction:leeson2021}.
@@ -147,7 +147,7 @@ The information on this page mostly corresponds to the \sphinxhref{https://ftp.e
 \section{Initial Query}
 \label{\detokenize{columns_docs:initial-query}}
 
-\subsection{Pchembl Values}
+\subsection{PChEMBL Values}
 \label{\detokenize{columns_docs:pchembl-values}}
 \sphinxAtStartPar
 The pchembl\_value is later aggregated into mean, max and median per compound\sphinxhyphen{}target pair and dropped.
@@ -286,7 +286,7 @@ Compound
 \sphinxAtStartPar
 Maximum phase of development reached for the compound across all indications %
 \begin{footnote}[1]\sphinxAtStartFootnote
-There have been changes to the max\_phase field in ChEMBL with \sphinxhref{https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl\_32/chembl\_32\_release\_notes.txt}{version 32}. See {\hyperref[\detokenize{columns_docs:maximum-phase-in-chembl}]{\sphinxcrossref{Maximum Phase in ChEMBL}}}.
+There have been changes to the max\_phase field in ChEMBL with \sphinxhref{https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl\_32/chembl\_32\_release\_notes.txt}{version 32}. See {\hyperref[\detokenize{columns_docs:max-phase-in-chembl}]{\sphinxcrossref{MAX\_PHASE in ChEMBL}}}.
 %
 \end{footnote}
 \\
@@ -914,7 +914,7 @@ C0\_DT
 Compound in unknown clinical phase %
 \begin{footnote}[5]\sphinxAtStartFootnote
 There have been changes to the max\_phase field in ChEMBL with \sphinxhref{https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl\_32/chembl\_32\_release\_notes.txt}{version 32}.
-C0\_DT groups together all compounds with a max\_phase not between 1 and 4. See {\hyperref[\detokenize{columns_docs:maximum-phase-in-chembl}]{\sphinxcrossref{Maximum Phase in ChEMBL}}}
+C0\_DT groups together all compounds with a max\_phase not between 1 and 4. See {\hyperref[\detokenize{columns_docs:max-phase-in-chembl}]{\sphinxcrossref{MAX\_PHASE in ChEMBL}}}
 %
 \end{footnote}  \sphinxhyphen{} drug target
 \\
@@ -956,8 +956,8 @@ Not drug target
 \sphinxattableend\end{savenotes}
 
 
-\subsection{Maximum Phase in ChEMBL}
-\label{\detokenize{columns_docs:maximum-phase-in-chembl}}
+\subsection{MAX\_PHASE in ChEMBL}
+\label{\detokenize{columns_docs:max-phase-in-chembl}}
 \sphinxAtStartPar
 Before ChEMBL 32, compounds with a max\_phase not between 1 and 4 were assigned a max\_phase of 0.
 
@@ -1573,9 +1573,9 @@ Target class, level 2 (more detailed)
 Calculated based on pchembl\_value\_mean.
 
 \sphinxAtStartPar
-Since LE metrics are based on pchembl values, they are calculated twice.
-Once for the pchembl values based on binding and functional assays (suffix \_BF)
-and once for the pchembl values based on binding assays only (suffix \_B).
+Since LE metrics are based on pChEMBL values, they are calculated twice.
+Once for the pChEMBL values based on binding and functional assays (suffix \_BF)
+and once for the pChEMBL values based on binding assays only (suffix \_B).
 
 
 \begin{savenotes}\sphinxattablestart
@@ -2060,9 +2060,9 @@ when taking mutation information into account?
 Mutation information IS taken into account when adding pairs to the dataset
 because they appear in the drug\_mechanism table.
 (cpd A, target B without mutation) will be added to the set of existing
-compound\sphinxhyphen{}target pairs with pchembl values
-if there is a pair with a pchembl value for (cpd A, target B with mutation C)
-but there is no pair with a pchembl value for (cpd A, target B without mutation).
+compound\sphinxhyphen{}target pairs with pChEMBL values
+if there is a pair with a pChEMBL value for (cpd A, target B with mutation C)
+but there is no pair with a pChEMBL value for (cpd A, target B without mutation).
 It is used to determine keep\_for\_binding which in turn is used
 to determine the B subset of data based on binding assays.
 
@@ -3291,6 +3291,10 @@ rounding floats to 4 decimal places (with the exception of max\_phase which is n
 \item {} 
 \sphinxAtStartPar
 reordering columns
+
+\item {} 
+\sphinxAtStartPar
+sorting rows by cpd\_target\_pair\_mutation
 
 \end{itemize}
 \begin{quote}\begin{description}
