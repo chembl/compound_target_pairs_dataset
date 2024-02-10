@@ -1,6 +1,6 @@
-import numpy as np
-import pandas as pd
 import sqlite3
+
+import pandas as pd
 
 
 ########### Add Compound Properties Based on ChEMBL Data ###########
@@ -8,8 +8,10 @@ def add_first_publication_date(
     df_combined: pd.DataFrame, chembl_con: sqlite3.Connection, limit_to_literature: bool
 ) -> pd.DataFrame:
     """
-    Query and calculate the first publication of a compound based on ChEMBL data (column name: first_publication_cpd).
-    If limit_to_literature is True, this corresponds to the first appearance of the compound in the literature according to ChEMBL.
+    Query and calculate the first publication of a compound
+    based on ChEMBL data (column name: first_publication_cpd).
+    If limit_to_literature is True, this corresponds to the first appearance
+    of the compound in the literature according to ChEMBL.
     Otherwise this is the first appearance in any source in ChEMBL.
 
     :param df_combined: Pandas DataFrame with compound-target pairs
@@ -47,9 +49,10 @@ def add_first_publication_date(
 
 def add_chembl_properties_and_structures(
     df_combined: pd.DataFrame, chembl_con: sqlite3.Connection
-) -> (pd.DataFrame, pd.DataFrame):
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Add compound properties from the compound_properties table (e.g., alogp, #hydrogen bond acceptors / donors, etc.).
+    Add compound properties from the compound_properties table 
+    (e.g., alogp, #hydrogen bond acceptors / donors, etc.).
     Add InChI, InChI key and canonical smiles. 
 
     :param df_combined: Pandas DataFrame with compound-target pairs
@@ -84,7 +87,8 @@ def add_chembl_properties_and_structures(
 def add_ligand_efficiency_metrics(df_combined: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate the ligand efficiency metrics for the compounds
-    based on the mean pchembl values for a compound-target pair and the following ligand efficiency (LE) formulas:
+    based on the mean pchembl values for a compound-target pair and
+    the following ligand efficiency (LE) formulas:
 
     .. math::
         LE &= \\frac{\\Delta G}{HA}
@@ -144,11 +148,13 @@ def add_ligand_efficiency_metrics(df_combined: pd.DataFrame) -> pd.DataFrame:
 
 def add_atc_classification(
     df_combined: pd.DataFrame, chembl_con: sqlite3.Connection
-) -> (pd.DataFrame, pd.DataFrame):
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Query and add ATC classifications (level 1) from the atc_classification and molecule_atc_classification tables.
+    Query and add ATC classifications (level 1) from the atc_classification and 
+    molecule_atc_classification tables.
     ATC level annotations for the same parent_molregno are combined into one description 
-    that concatenates all descriptions sorted alphabetically into one string with ' | ' as a separator.
+    that concatenates all descriptions sorted alphabetically 
+    into one string with ' | ' as a separator.
 
     :param df_combined: Pandas DataFrame with compound-target pairs
     :type df_combined: pd.DataFrame
@@ -186,7 +192,7 @@ def add_atc_classification(
 
 def add_all_chembl_compound_properties(
     df_combined: pd.DataFrame, chembl_con: sqlite3.Connection, limit_to_literature: bool
-) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Add ChEMBL-based compound properties to the given compound-target pairs, specifically:
 
@@ -200,7 +206,8 @@ def add_all_chembl_compound_properties(
     :type df_combined: pd.DataFrame
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
-    :param limit_to_literature: Base first_publication_cpd on literature sources only if True. Base it on all available sources otherwise.
+    :param limit_to_literature: Base first_publication_cpd on literature sources only if True. 
+        Base it on all available sources otherwise.
     :type limit_to_literature: bool
     :return: - Pandas DataFrame with added compound properties \\
         - Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL \\

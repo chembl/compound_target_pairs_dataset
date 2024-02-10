@@ -1,5 +1,6 @@
 import logging
 import os
+
 import pandas as pd
 
 import write_subsets
@@ -64,8 +65,10 @@ def add_dataset_sizes(
     df_copy = df.copy()
     df_sizes[0].append([label] + calculate_dataset_sizes(df_copy))
 
-    # restrict to data with any pchembl value (any data with a pchembl, even if it is based on only functional data)
-    # these statistics are purely based on removing compound-target pairs without pchembl information
+    # restrict to data with any pchembl value (any data with a pchembl,
+    # even if it is based on only functional data)
+    # these statistics are purely based on removing
+    # compound-target pairs without pchembl information,
     # i.e., the subset of the dataset is determined by the given df and not recalculated
     df_pchembl = df_copy.dropna(
         subset=[x for x in df_copy.columns if x.startswith("pchembl_value")], how="all"
@@ -118,7 +121,8 @@ def output_debug_sizes(
 
     logging.debug("Size of dataset with any pchembl values at different points.")
     logging.debug(
-        "This includes data for which we only have pchembl data for functional assays but not for binding assays."
+        "This includes data for which we only have pchembl data \
+            for functional assays but not for binding assays."
     )
     df_pchembl_sizes = pd.DataFrame(df_sizes[1], columns=column_names)
     logging.debug(df_pchembl_sizes)
@@ -228,14 +232,22 @@ def output_stats(
         "compound-target pair with mutation annotations",
     ]
 
-    logging.debug(f"Stats for {output_file}")
+    logging.debug("Stats for %s", output_file)
     stats = []
     for column, columns_desc in zip(df_columns, columns_descs):
-        logging.debug(f"Stats for column {column}:")
+        logging.debug("Stats for column %s:", column)
         column_stats = get_stats_for_column(df, column, columns_desc)
         stats += column_stats
         for colum_stat in column_stats:
-            logging.debug(f"{colum_stat[1] : <40} {colum_stat[3]}")
+            # TODO remove
+            logging.debug(
+                "%20s %20s %20s %s",
+                colum_stat[0],
+                colum_stat[1],
+                colum_stat[2],
+                colum_stat[3],
+            )
+            # logging.debug(f"{colum_stat[1] : <40} {colum_stat[3]}")
 
     df_stats = pd.DataFrame(
         stats, columns=["column", "column_description", "subset_type", "counts"]

@@ -1,14 +1,16 @@
 import argparse
-import chembl_downloader
 import logging
 import sqlite3
+
+import chembl_downloader
 
 import get_dataset
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Extract the compound-target pairs dataset from ChEMBL. \
-            The full dataset plus filtering columns for binding vs. binding+functional data will always be written to csv. \
+            The full dataset plus filtering columns for binding vs. binding+functional data \
+            will always be written to csv. \
             Additional outputs and output types can be chosen with the parameters below."
     )
 
@@ -19,7 +21,9 @@ if __name__ == "__main__":
         type=str,
         default=None,
         help="ChEMBL version. \
-                            Latest version if None. Required if a path to a SQLite database is provided, i.e., if --sqlite is set. (default: None)",
+            Latest version if None. \
+            Required if a path to a SQLite database is provided, \
+            i.e., if --sqlite is set. (default: None)",
     )
     parser.add_argument(
         "--sqlite",
@@ -28,7 +32,8 @@ if __name__ == "__main__":
         type=str,
         default=None,
         help="Path to SQLite database. \
-                            ChEMBL is downloaded as an SQLite database and handled by chembl_downloader if None. (default: None)",
+            ChEMBL is downloaded as an SQLite database \
+            and handled by chembl_downloader if None. (default: None)",
     )
     parser.add_argument(
         "--output",
@@ -50,8 +55,8 @@ if __name__ == "__main__":
         "--all_sources",
         action="store_true",
         help="If this is set, the dataset is calculated based on all sources in ChEMBL. \
-                            This includes data from BindingDB which may skew the results. \
-                            Default (not set): the dataset is calculated based on only literature data.",
+            This includes data from BindingDB which may skew the results. \
+            Default (not set): the dataset is calculated based on only literature data.",
     )
     parser.add_argument(
         "--rdkit",
@@ -78,17 +83,14 @@ if __name__ == "__main__":
     # Write the full dataset plus filtering columns for binding vs. binding+functional data.
     full_df = True
 
-    if args.debug:
-        log_level = "DEBUG"
-    else:
-        log_level = "INFO"
+    log_level = "DEBUG" if args.debug else "INFO"
     numeric_log_level = getattr(logging, log_level, None)
     assert isinstance(numeric_log_level, int), f"Invalid log level: %{args.log_level}"
     logging.basicConfig(level=numeric_log_level)
 
     if args.sqlite:
         logging.info(
-            f"Using provided sqlite3 path ({args.sqlite}) to connect to ChEMBL."
+            "Using provided sqlite3 path (%s) to connect to ChEMBL.", args.sqlite
         )
         assert args.chembl, "Please provide a ChEMBL version."
         with sqlite3.connect(args.sqlite) as chembl_con:

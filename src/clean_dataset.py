@@ -1,6 +1,7 @@
 import logging
-import pandas as pd
 import sqlite3
+
+import pandas as pd
 
 
 def remove_compounds_without_smiles_and_mixtures(
@@ -77,8 +78,8 @@ def remove_compounds_without_smiles_and_mixtures(
             df_combined["parent_molregno"].isin(set(smiles_with_dot["parent_molregno"]))
         ]
     )
-    logging.debug(f"#Compounds without a SMILES: {len_missing_smiles}")
-    logging.debug(f"#SMILES with a dot: {len_smiles_w_dot}")
+    logging.debug("#Compounds without a SMILES: %s", len_missing_smiles)
+    logging.debug("#SMILES with a dot: %s", len_smiles_w_dot)
 
     df_combined = df_combined[
         (df_combined["canonical_smiles"].notnull())
@@ -102,7 +103,7 @@ def clean_none_values(df_combined):
     return df_combined
 
 
-def set_types_to_int(df_combined, calculate_RDKit):
+def set_types_to_int(df_combined, calculate_rdkit):
     """
     Set the type of relevant columns to Int64.
     """
@@ -127,7 +128,7 @@ def set_types_to_int(df_combined, calculate_RDKit):
         }
     )
 
-    if calculate_RDKit:
+    if calculate_rdkit:
         df_combined = df_combined.astype(
             {
                 "num_aliphatic_carbocycles": "Int64",
@@ -158,13 +159,13 @@ def round_floats(df_combined, decimal_places=4):
     This does not apply to max_phase.
     """
     for _, (col, dtype) in enumerate(df_combined.dtypes.to_dict().items()):
-        if ((dtype == "float64") or (dtype == "Float64")) and col != "max_phase":
+        if (dtype in ("float64", "Float64")) and col != "max_phase":
             df_combined[col] = df_combined[col].round(decimals=decimal_places)
 
     return df_combined
 
 
-def reorder_columns(df_combined, calculate_RDKit):
+def reorder_columns(df_combined, calculate_rdkit):
     """
     Reorder the columns in the DataFrame.
     """
@@ -204,7 +205,7 @@ def reorder_columns(df_combined, calculate_RDKit):
         "first_publication_cpd_target_pair_B",
         "first_publication_cpd_target_pair_w_pchembl_B",
     ]
-    DTI_annotations = ["therapeutic_target", "DTI"]
+    dti_annotations = ["therapeutic_target", "DTI"]
     first_publication_cpd = ["first_publication_cpd"]
     chembl_compound_props = [
         "mw_freebase",
@@ -269,11 +270,11 @@ def reorder_columns(df_combined, calculate_RDKit):
         "keep_for_binding",
     ]
 
-    if calculate_RDKit:
+    if calculate_rdkit:
         columns = (
             compound_target_pair_columns
             + aggregated_values
-            + DTI_annotations
+            + dti_annotations
             + first_publication_cpd
             + chembl_compound_props
             + chembl_structures
@@ -287,7 +288,7 @@ def reorder_columns(df_combined, calculate_RDKit):
         columns = (
             compound_target_pair_columns
             + aggregated_values
-            + DTI_annotations
+            + dti_annotations
             + first_publication_cpd
             + chembl_compound_props
             + chembl_structures
@@ -300,12 +301,13 @@ def reorder_columns(df_combined, calculate_RDKit):
     len_columns_after = len(df_combined.columns)
     assert (
         len_columns_before == len_columns_after
-    ), f"Different number of columns after reordering (before: {len_columns_before}, after: {len_columns_after})."
+    ), f"Different number of columns after reordering \
+        (before: {len_columns_before}, after: {len_columns_after})."
 
     return df_combined
 
 
-def clean_dataset(df_combined: pd.DataFrame, calculate_RDKit: bool) -> pd.DataFrame:
+def clean_dataset(df_combined: pd.DataFrame, calculate_rdkit: bool) -> pd.DataFrame:
     """
     Clean the dataset by
 
@@ -317,15 +319,15 @@ def clean_dataset(df_combined: pd.DataFrame, calculate_RDKit: bool) -> pd.DataFr
 
     :param df_combined: Pandas DataFrame with compound-target pairs
     :type df_combined: pd.DataFrame
-    :param calculate_RDKit: True if the DataFrame contains RDKit-based compound properties
-    :type calculate_RDKit: bool
+    :param calculate_rdkit: True if the DataFrame contains RDKit-based compound properties
+    :type calculate_rdkit: bool
     :return: Cleaned pandas DataFrame with compound-target pairs
     :rtype: pd.DataFrame
     """
     df_combined = clean_none_values(df_combined)
-    df_combined = set_types_to_int(df_combined, calculate_RDKit)
+    df_combined = set_types_to_int(df_combined, calculate_rdkit)
     df_combined = round_floats(df_combined, decimal_places=4)
-    df_combined = reorder_columns(df_combined, calculate_RDKit)
+    df_combined = reorder_columns(df_combined, calculate_rdkit)
     df_combined = df_combined.sort_values(by=["cpd_target_pair_mutation"]).reset_index(
         drop=True
     )

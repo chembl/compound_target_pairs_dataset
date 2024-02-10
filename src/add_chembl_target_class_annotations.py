@@ -1,7 +1,8 @@
 import logging
 import os
-import pandas as pd
 import sqlite3
+
+import pandas as pd
 
 import write_subsets
 
@@ -86,11 +87,12 @@ def add_chembl_target_class_annotations(
     delimiter: str,
     chembl_version: str,
     limited_flag: str,
-) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Add level 1 and 2 target class annotations. 
     Assignments for target IDs with more than one target class assignment per level 
-    are summarised into one string with '|' as a separator between the different target class annotations.
+    are summarised into one string with '|' as a separator 
+    between the different target class annotations.
 
     Targets with more than one level 1 / level 2 target class assignment are written to a file.
     These could be reassigned by hand if a single target class is preferable.
@@ -109,7 +111,8 @@ def add_chembl_target_class_annotations(
     :type delimiter: str
     :param chembl_version: Version of ChEMBL for output files
     :type chembl_version: str
-    :param limited_flag: Document suffix indicating whether the dataset was limited to literature sources
+    :param limited_flag: Document suffix indicating 
+        whether the dataset was limited to literature sources
     :type limited_flag: str
     :return: - Pandas DataFrame with added target class annotations \\
         - Pandas DataFrame with mapping from target id to level 1 target class \\
@@ -119,8 +122,10 @@ def add_chembl_target_class_annotations(
     current_tids = set(df_combined["tid"])
     df_target_classes = get_target_class_table(chembl_con, current_tids)
 
-    # Summarise the information for a target id with several assigned target classes of level 1 into one description.
-    # If a target id has more than one assigned target class, the target class 'Unclassified protein' is discarded.
+    # Summarise the information for a target id with
+    # several assigned target classes of level 1 into one description.
+    # If a target id has more than one assigned target class,
+    # the target class 'Unclassified protein' is discarded.
     level = "l1"
     between_str_join = "|"
     target_classes_level1 = df_target_classes[["tid", level]].drop_duplicates().dropna()
@@ -172,7 +177,8 @@ def add_chembl_target_class_annotations(
         ["tid", "target_pref_name", "target_type", "target_class_l1", "target_class_l2"]
     ].drop_duplicates()
     logging.debug(
-        f"Targets with more than one level 1 target class assignment: {len(more_than_one_level_1)}"
+        "Targets with more than one level 1 target class assignment: %s",
+        len(more_than_one_level_1),
     )
     more_than_one_level_2 = df_combined[
         (df_combined["target_class_l2"].notnull())
@@ -181,13 +187,15 @@ def add_chembl_target_class_annotations(
         ["tid", "target_pref_name", "target_type", "target_class_l1", "target_class_l2"]
     ].drop_duplicates()
     logging.debug(
-        f"Targets with more than one level 2 target class assignment: {len(more_than_one_level_2)}"
+        "Targets with more than one level 2 target class assignment: %s",
+        len(more_than_one_level_2),
     )
     more_than_one_tclass = pd.concat(
         [more_than_one_level_1, more_than_one_level_2]
     ).drop_duplicates()
     logging.debug(
-        f"Targets with more than one target class assignment: {len(more_than_one_tclass)}"
+        "Targets with more than one target class assignment: %s",
+        len(more_than_one_tclass),
     )
 
     name_more_than_one_tclass = os.path.join(

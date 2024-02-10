@@ -19,13 +19,13 @@ def get_ct_pair_dataset(
     chembl_version: str,
     output_path: str,
     limit_to_literature: bool,
-    calculate_RDKit: bool,
+    calculate_rdkit: bool,
     write_to_csv: bool,
     write_to_excel: bool,
     delimiter: str,
     write_full_dataset: bool,
-    write_BF: bool,
-    write_B: bool,
+    write_bf: bool,
+    write_b: bool,
 ):
     """
     Calculate and output the compound-target pair dataset.
@@ -36,10 +36,11 @@ def get_ct_pair_dataset(
     :type chembl_version: str
     :param output_path: Path to write output files to
     :type output_path: str
-    :param limit_to_literature: Include only literature sources if True. Include all available sources otherwise.
+    :param limit_to_literature: Include only literature sources if True.
+        Include all available sources otherwise.
     :type limit_to_literature: bool
-    :param calculate_RDKit: True if RDKit-based compound properties should be calculated
-    :type calculate_RDKit: bool
+    :param calculate_rdkit: True if RDKit-based compound properties should be calculated
+    :type calculate_rdkit: bool
     :param write_to_csv: True if output should be written to csv
     :type write_to_csv: bool
     :param write_to_excel: True if output should be written to excel
@@ -48,10 +49,10 @@ def get_ct_pair_dataset(
     :type delimiter: str
     :param write_full_dataset: True if the full dataset should be written to output
     :type write_full_dataset: bool
-    :param write_BF: True if subsets based on binding+functional data should be written to output
-    :type write_BF: bool
-    :param write_B: True if subsets based on binding data only should be written to output
-    :type write_B: bool
+    :param write_bf: True if subsets based on binding+functional data should be written to output
+    :type write_bf: bool
+    :param write_b: True if subsets based on binding data only should be written to output
+    :type write_b: bool
     """
     # list with sizes of full dataset and dataset subset with pchembl values for debugging
     df_sizes = [[], []]
@@ -116,7 +117,7 @@ def get_ct_pair_dataset(
         get_stats.add_dataset_sizes(df_combined, "tclass annotations", df_sizes)
 
     logging.info("add_rdkit_compound_descriptors")
-    if calculate_RDKit:
+    if calculate_rdkit:
         df_combined = add_rdkit_compound_descriptors.add_rdkit_compound_descriptors(
             df_combined
         )
@@ -124,7 +125,7 @@ def get_ct_pair_dataset(
             get_stats.add_dataset_sizes(df_combined, "RDKit props", df_sizes)
 
     logging.info("clean_dataset")
-    df_combined = clean_dataset.clean_dataset(df_combined, calculate_RDKit)
+    df_combined = clean_dataset.clean_dataset(df_combined, calculate_rdkit)
     if logging.DEBUG >= logging.root.level:
         get_stats.add_dataset_sizes(df_combined, "clean df", df_sizes)
 
@@ -135,39 +136,39 @@ def get_ct_pair_dataset(
         atc_levels,
         target_classes_level1,
         target_classes_level2,
-        calculate_RDKit,
+        calculate_rdkit,
     )
 
     logging.info("write_BF_to_file")
-    min_nof_cpds_BF = 100
-    df_combined_annotated = write_subsets.write_BF_to_file(
+    min_nof_cpds_bf = 100
+    df_combined_annotated = write_subsets.write_bf_to_file(
         df_combined,
         chembl_version,
-        min_nof_cpds_BF,
+        min_nof_cpds_bf,
         output_path,
-        write_BF,
+        write_bf,
         write_to_csv,
         write_to_excel,
         delimiter,
         limited_flag,
-        calculate_RDKit,
+        calculate_rdkit,
         df_sizes,
     )
 
     logging.info("write_B_to_file")
-    min_nof_cpds_B = 100
-    df_combined_annotated = write_subsets.write_B_to_file(
+    min_nof_cpds_b = 100
+    df_combined_annotated = write_subsets.write_b_to_file(
         df_combined,
         df_combined_annotated,
         chembl_version,
-        min_nof_cpds_B,
+        min_nof_cpds_b,
         output_path,
-        write_B,
+        write_b,
         write_to_csv,
         write_to_excel,
         delimiter,
         limited_flag,
-        calculate_RDKit,
+        calculate_rdkit,
         df_sizes,
     )
 
@@ -181,7 +182,7 @@ def get_ct_pair_dataset(
         write_to_excel,
         delimiter,
         limited_flag,
-        calculate_RDKit,
+        calculate_rdkit,
     )
 
     logging.info("output_stats")
@@ -192,10 +193,10 @@ def get_ct_pair_dataset(
     get_stats.output_stats(
         df_combined_annotated, output_file, write_to_csv, write_to_excel, delimiter
     )
-    if write_BF:
+    if write_bf:
         output_file = os.path.join(
             output_path,
-            f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_BF}_c_dt_d_dt_stats",
+            f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_bf}_c_dt_d_dt_stats",
         )
         get_stats.output_stats(
             df_combined_annotated[df_combined_annotated["BF_100_c_dt_d_dt"]],
@@ -204,10 +205,10 @@ def get_ct_pair_dataset(
             write_to_excel,
             delimiter,
         )
-    if write_B:
+    if write_b:
         output_file = os.path.join(
             output_path,
-            f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_B}_c_dt_d_dt_stats",
+            f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_b}_c_dt_d_dt_stats",
         )
         get_stats.output_stats(
             df_combined_annotated[df_combined_annotated["B_100_c_dt_d_dt"]],

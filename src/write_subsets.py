@@ -54,7 +54,7 @@ def write_and_check_output(
     write_to_excel: bool,
     delimiter: str,
     assay_type: str,
-    calculate_RDKit: bool,
+    calculate_rdkit: bool,
 ):
     """
     Write df to file and check that writing was successful.
@@ -70,20 +70,22 @@ def write_and_check_output(
     :param delimiter: Delimiter in csv-output
     :type delimiter: str
     :param assay_type: Types of assays current_df contains information about. \
-        Options: "BF" (binding+functional), "B" (binding), "all" (contains both BF and B information)
+        Options: "BF" (binding+functional), 
+        "B" (binding), 
+        "all" (contains both BF and B information)
     :type assay_type: str
-    :param calculate_RDKit: If True, current_df contains RDKit-based columns
-    :type calculate_RDKit: bool
+    :param calculate_rdkit: If True, current_df contains RDKit-based columns
+    :type calculate_rdkit: bool
     """
     file_type_list = write_output(df, filename, write_to_csv, write_to_excel, delimiter)
     sanity_checks.test_equality(
-        df, filename, assay_type, file_type_list, calculate_RDKit
+        df, filename, assay_type, file_type_list, calculate_rdkit
     )
 
 
 def get_data_subsets(
     data: pd.DataFrame, min_nof_cpds: int, desc: str
-) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame):
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Calculate and return the different subsets of interest.
 
@@ -94,13 +96,19 @@ def get_data_subsets(
     :param desc: Types of assays current_df contains information about. \
         Options: "BF" (binding+functional), "B" (binding)
     :type desc: str
-    :return: - data: Pandas DataFrame with compound-target pairs without the annotations for the opposite desc, \
-            e.g. if desc = "BF", the average pchembl value based on binding data only is dropped
-        - df_enough_cpds: Pandas DataFrame with targets with at least <min_nof_cpds> compounds with a pchembl value, 
+    :return: 
+        - data: Pandas DataFrame with compound-target pairs 
+            without the annotations for the opposite desc, \
+            e.g. if desc = "BF", the average pchembl value based on 
+            binding data only is dropped
+        - df_enough_cpds: Pandas DataFrame with targets 
+            with at least <min_nof_cpds> compounds with a pchembl value, 
         - df_c_dt_d_dt: As df_enough_cpds but with \
-            at least one compound-target pair labelled as 'D_DT', 'C3_DT', 'C2_DT', 'C1_DT' or 'C0_DT' (i.e., known interaction), 
+            at least one compound-target pair labelled as 
+            'D_DT', 'C3_DT', 'C2_DT', 'C1_DT' or 'C0_DT' (i.e., known interaction), 
         - df_d_dt: As df_enough_cpds but with \
-            at least one compound-target pair labelled as 'D_DT' (i.e., known drug-target interaction)
+            at least one compound-target pair labelled as 
+            'D_DT' (i.e., known drug-target interaction)
     :rtype: (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame)
     """
     if desc == "B":
@@ -133,7 +141,8 @@ def get_data_subsets(
     df_enough_cpds = data.query("tid_mutation in @targets_w_enough_cpds")
 
     # Restrict the dataset further to targets
-    # with at least one compound-target pair labelled as 'D_DT', 'C3_DT', 'C2_DT', 'C1_DT' or 'C0_DT',
+    # with at least one compound-target pair labelled as
+    # 'D_DT', 'C3_DT', 'C2_DT', 'C1_DT' or 'C0_DT',
     # i.e., compound-target pairs with a known interactions.
     c_dt_d_dt_targets = set(
         df_enough_cpds[
@@ -142,7 +151,8 @@ def get_data_subsets(
     )
     df_c_dt_d_dt = df_enough_cpds.query("tid_mutation in @c_dt_d_dt_targets")
 
-    # Restrict the dataset further to targets with at least one compound-target pair labelled as 'D_DT',
+    # Restrict the dataset further to targets with
+    # at least one compound-target pair labelled as 'D_DT',
     # i.e., known drug-target interactions.
     d_dt_targets = set(
         df_enough_cpds[df_enough_cpds["DTI"] == "D_DT"].tid_mutation.to_list()
@@ -152,44 +162,46 @@ def get_data_subsets(
     return data, df_enough_cpds, df_c_dt_d_dt, df_d_dt
 
 
-def write_BF_to_file(
+def write_bf_to_file(
     df_combined: pd.DataFrame,
     chembl_version: str,
-    min_nof_cpds_BF: int,
+    min_nof_cpds_bf: int,
     output_path: str,
-    write_BF: bool,
+    write_bf: bool,
     write_to_csv: bool,
     write_to_excel: bool,
     delimiter: str,
     limited_flag: str,
-    calculate_RDKit: bool,
+    calculate_rdkit: bool,
     df_sizes: list[list[int], list[int]],
 ) -> pd.DataFrame:
     """
-    Calculate relevant subsets for the portion of df_combined that is based on binding+functional data.
-    If write_BF the subsets are written to output_path.
-    Independent of write_BF, filtering columns for BF are added to df_combined and returned.
+    Calculate relevant subsets for the portion of df_combined
+    that is based on binding+functional data.
+    If write_bf the subsets are written to output_path.
+    Independent of write_bf, filtering columns for BF are added to df_combined and returned.
 
     :param df_combined: Pandas DataFrame with compound-target pairs
     :type df_combined: pd.DataFrame
     :param chembl_version: Version of ChEMBL for output files
     :type chembl_version: str
-    :param min_nof_cpds_BF: Miminum number of compounds per target
-    :type min_nof_cpds_BF: int
+    :param min_nof_cpds_bf: Miminum number of compounds per target
+    :type min_nof_cpds_bf: int
     :param output_path: Path to write the output to
     :type output_path: str
-    :param write_BF: Should the subsets be written to files?
-    :type write_BF: bool
+    :param write_bf: Should the subsets be written to files?
+    :type write_bf: bool
     :param write_to_csv: Should the subsets be written to csv?
     :type write_to_csv: bool
     :param write_to_excel: Should the subsets be written to excel?
     :type write_to_excel: bool
     :param delimiter: Delimiter for csv output
     :type delimiter: str
-    :param limited_flag: Document suffix indicating whether the dataset was limited to literature sources
+    :param limited_flag: Document suffix indicating
+        whether the dataset was limited to literature sources
     :type limited_flag: str
-    :param calculate_RDKit: Does df_combined include RDKit-based columns?
-    :type calculate_RDKit: bool
+    :param calculate_rdkit: Does df_combined include RDKit-based columns?
+    :type calculate_rdkit: bool
     :param df_sizes: List of intermediate sized of the dataset used for debugging.
     :type df_sizes: list[list[int], list[int]]
     :return: Pandas DataFrame with additional filtering columns for BF subsets
@@ -201,25 +213,25 @@ def write_BF_to_file(
     # df_combined with additional filtering columns
     df_combined_annotated = df_combined.copy()
     # df_combined without binding only data
-    df_combined_BF = df_combined.copy()
+    df_combined_bf = df_combined.copy()
     (
-        df_combined_BF,
-        df_combined_BF_enough_cpds,
-        df_combined_BF_c_dt_d_dt,
-        df_combined_BF_d_dt,
-    ) = get_data_subsets(df_combined_BF, min_nof_cpds_BF, desc)
+        df_combined_bf,
+        df_combined_bf_enough_cpds,
+        df_combined_bf_c_dt_d_dt,
+        df_combined_bf_d_dt,
+    ) = get_data_subsets(df_combined_bf, min_nof_cpds_bf, desc)
 
     # add filtering columns to df_combined_annotated
     for df, col_name in zip(
         [
-            df_combined_BF_enough_cpds,
-            df_combined_BF_c_dt_d_dt,
-            df_combined_BF_d_dt,
+            df_combined_bf_enough_cpds,
+            df_combined_bf_c_dt_d_dt,
+            df_combined_bf_d_dt,
         ],
         [
-            f"BF_{min_nof_cpds_BF}",
-            f"BF_{min_nof_cpds_BF}_c_dt_d_dt",
-            f"BF_{min_nof_cpds_BF}_d_dt",
+            f"BF_{min_nof_cpds_bf}",
+            f"BF_{min_nof_cpds_bf}_c_dt_d_dt",
+            f"BF_{min_nof_cpds_bf}_d_dt",
         ],
     ):
         df_combined_annotated[col_name] = False
@@ -231,93 +243,93 @@ def write_BF_to_file(
             df.columns
         ].equals(df), f"Filtering is not accurate for {col_name}."
 
-    if write_BF:
+    if write_bf:
         # NOTE: This is almost identical to the full dataset which will be saved later on.
         # However, the binding-related columns are dropped
-        name_BF = os.path.join(
+        name_bf = os.path.join(
             output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF"
         )
         write_and_check_output(
-            df_combined_BF,
-            name_BF,
+            df_combined_bf,
+            name_bf,
             write_to_csv,
             write_to_excel,
             delimiter,
             desc,
-            calculate_RDKit,
+            calculate_rdkit,
         )
 
-        name_BF_100 = os.path.join(
+        name_bf_100 = os.path.join(
             output_path,
-            f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_BF}",
+            f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_bf}",
         )
         write_and_check_output(
-            df_combined_BF_enough_cpds,
-            name_BF_100,
+            df_combined_bf_enough_cpds,
+            name_bf_100,
             write_to_csv,
             write_to_excel,
             delimiter,
             desc,
-            calculate_RDKit,
+            calculate_rdkit,
         )
 
-        name_BF_100_c_dt_d_dt = os.path.join(
+        name_bf_100_c_dt_d_dt = os.path.join(
             output_path,
-            f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_BF}_c_dt_d_dt",
+            f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_bf}_c_dt_d_dt",
         )
         write_and_check_output(
-            df_combined_BF_c_dt_d_dt,
-            name_BF_100_c_dt_d_dt,
+            df_combined_bf_c_dt_d_dt,
+            name_bf_100_c_dt_d_dt,
             write_to_csv,
             write_to_excel,
             delimiter,
             desc,
-            calculate_RDKit,
+            calculate_rdkit,
         )
 
-        name_BF_100_d_dt = os.path.join(
+        name_bf_100_d_dt = os.path.join(
             output_path,
-            f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_BF}_d_dt",
+            f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_bf}_d_dt",
         )
         write_and_check_output(
-            df_combined_BF_d_dt,
-            name_BF_100_d_dt,
+            df_combined_bf_d_dt,
+            name_bf_100_d_dt,
             write_to_csv,
             write_to_excel,
             delimiter,
             desc,
-            calculate_RDKit,
+            calculate_rdkit,
         )
 
     if logging.DEBUG >= logging.root.level:
-        get_stats.add_dataset_sizes(df_combined_BF, "binding + functional", df_sizes)
-        get_stats.add_dataset_sizes(df_combined_BF_enough_cpds, "BF, >= 100", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_bf, "binding + functional", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_bf_enough_cpds, "BF, >= 100", df_sizes)
         get_stats.add_dataset_sizes(
-            df_combined_BF_c_dt_d_dt, "BF, >= 100, c_dt and d_dt", df_sizes
+            df_combined_bf_c_dt_d_dt, "BF, >= 100, c_dt and d_dt", df_sizes
         )
-        get_stats.add_dataset_sizes(df_combined_BF_d_dt, "BF, >= 100, d_dt", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_bf_d_dt, "BF, >= 100, d_dt", df_sizes)
 
     return df_combined_annotated
 
 
-def write_B_to_file(
+def write_b_to_file(
     df_combined: pd.DataFrame,
     df_combined_annotated: pd.DataFrame,
     chembl_version: str,
-    min_nof_cpds_B: int,
+    min_nof_cpds_b: int,
     output_path: str,
-    write_B: bool,
+    write_b: bool,
     write_to_csv: bool,
     write_to_excel: bool,
     delimiter: str,
     limited_flag: str,
-    calculate_RDKit: bool,
+    calculate_rdkit: bool,
     df_sizes: list[list[int], list[int]],
 ) -> pd.DataFrame:
     """
     Calculate relevant subsets for the portion of df_combined that is based on binding data.
-    If write_B the subsets are written to output_path.
-    Independent of write_B, filtering columns for B are added to df_combined_annotated.
+    If write_b the subsets are written to output_path.
+    Independent of write_b, filtering columns for B are added to df_combined_annotated.
 
     :param df_combined: Pandas DataFrame with compound-target pairs
     :type df_combined: pd.DataFrame
@@ -325,22 +337,23 @@ def write_B_to_file(
     :type df_combined_annotated: pd.DataFrame
     :param chembl_version: Version of ChEMBL for output files
     :type chembl_version: str
-    :param min_nof_cpds_BF: Miminum number of compounds per target
-    :type min_nof_cpds_BF: int
+    :param min_nof_cpds_b: Miminum number of compounds per target
+    :type min_nof_cpds_b: int
     :param output_path: Path to write the output to
     :type output_path: str
-    :param write_BF: Should the subsets be written to files?
-    :type write_BF: bool
+    :param write_b: Should the subsets be written to files?
+    :type write_b: bool
     :param write_to_csv: Should the subsets be written to csv?
     :type write_to_csv: bool
     :param write_to_excel: Should the subsets be written to excel?
     :type write_to_excel: bool
     :param delimiter: Delimiter for csv output
     :type delimiter: str
-    :param limited_flag: Document suffix indicating whether the dataset was limited to literature sources
+    :param limited_flag: Document suffix indicating
+        whether the dataset was limited to literature sources
     :type limited_flag: str
-    :param calculate_RDKit: Does df_combined include RDKit-based columns?
-    :type calculate_RDKit: bool
+    :param calculate_rdkit: Does df_combined include RDKit-based columns?
+    :type calculate_rdkit: bool
     :param df_sizes: List of intermediate sized of the dataset used for debugging.
     :type df_sizes: list[list[int], list[int]]
     :return: Pandas DataFrame with additional filtering columns for B subsets
@@ -349,21 +362,21 @@ def write_B_to_file(
     # consider only binding assays
     # assay description = binding
     desc = "B"
-    df_combined_B = df_combined[df_combined["keep_for_binding"] == True].copy()
+    df_combined_b = df_combined[df_combined["keep_for_binding"] == True].copy()
     (
-        df_combined_B,
-        df_combined_B_enough_cpds,
-        df_combined_B_c_dt_d_dt,
-        df_combined_B_d_dt,
-    ) = get_data_subsets(df_combined_B, min_nof_cpds_B, desc)
+        df_combined_b,
+        df_combined_b_enough_cpds,
+        df_combined_b_c_dt_d_dt,
+        df_combined_b_d_dt,
+    ) = get_data_subsets(df_combined_b, min_nof_cpds_b, desc)
 
     # add filtering columns to df_combined_annotated
     for df, col_name in zip(
-        [df_combined_B_enough_cpds, df_combined_B_c_dt_d_dt, df_combined_B_d_dt],
+        [df_combined_b_enough_cpds, df_combined_b_c_dt_d_dt, df_combined_b_d_dt],
         [
-            f"B_{min_nof_cpds_B}",
-            f"B_{min_nof_cpds_B}_c_dt_d_dt",
-            f"B_{min_nof_cpds_B}_d_dt",
+            f"B_{min_nof_cpds_b}",
+            f"B_{min_nof_cpds_b}_c_dt_d_dt",
+            f"B_{min_nof_cpds_b}_d_dt",
         ],
     ):
         df_combined_annotated[col_name] = False
@@ -375,68 +388,68 @@ def write_B_to_file(
             df.columns
         ].equals(df), f"Filtering is not accurate for {col_name}."
 
-    if write_B:
-        name_B = os.path.join(
+    if write_b:
+        name_b = os.path.join(
             output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_B"
         )
         write_and_check_output(
-            df_combined_B,
-            name_B,
+            df_combined_b,
+            name_b,
             write_to_csv,
             write_to_excel,
             delimiter,
             desc,
-            calculate_RDKit,
+            calculate_rdkit,
         )
 
-        name_B_100 = os.path.join(
-            output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_B}"
+        name_b_100 = os.path.join(
+            output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_b}"
         )
         write_and_check_output(
-            df_combined_B_enough_cpds,
-            name_B_100,
+            df_combined_b_enough_cpds,
+            name_b_100,
             write_to_csv,
             write_to_excel,
             delimiter,
             desc,
-            calculate_RDKit,
+            calculate_rdkit,
         )
 
-        name_B_100_c_dt_d_dt = os.path.join(
+        name_b_100_c_dt_d_dt = os.path.join(
             output_path,
-            f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_B}_c_dt_d_dt",
+            f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_b}_c_dt_d_dt",
         )
         write_and_check_output(
-            df_combined_B_c_dt_d_dt,
-            name_B_100_c_dt_d_dt,
+            df_combined_b_c_dt_d_dt,
+            name_b_100_c_dt_d_dt,
             write_to_csv,
             write_to_excel,
             delimiter,
             desc,
-            calculate_RDKit,
+            calculate_rdkit,
         )
 
-        name_B_100_d_dt = os.path.join(
+        name_b_100_d_dt = os.path.join(
             output_path,
-            f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_B}_d_dt",
+            f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_b}_d_dt",
         )
         write_and_check_output(
-            df_combined_B_d_dt,
-            name_B_100_d_dt,
+            df_combined_b_d_dt,
+            name_b_100_d_dt,
             write_to_csv,
             write_to_excel,
             delimiter,
             desc,
-            calculate_RDKit,
+            calculate_rdkit,
         )
 
     if logging.DEBUG >= logging.root.level:
-        get_stats.add_dataset_sizes(df_combined_B, "binding", df_sizes)
-        get_stats.add_dataset_sizes(df_combined_B_enough_cpds, "B, >= 100", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_b, "binding", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_b_enough_cpds, "B, >= 100", df_sizes)
         get_stats.add_dataset_sizes(
-            df_combined_B_c_dt_d_dt, "B, >= 100, c_dt and d_dt", df_sizes
+            df_combined_b_c_dt_d_dt, "B, >= 100, c_dt and d_dt", df_sizes
         )
-        get_stats.add_dataset_sizes(df_combined_B_d_dt, "B, >= 100, d_dt", df_sizes)
+        get_stats.add_dataset_sizes(df_combined_b_d_dt, "B, >= 100, d_dt", df_sizes)
 
     return df_combined_annotated
 
@@ -450,7 +463,7 @@ def write_full_dataset_to_file(
     write_to_excel: bool,
     delimiter: str,
     limited_flag: str,
-    calculate_RDKit: bool,
+    calculate_rdkit: bool,
 ):
     """
     If write_full_dataset, write df_combined with filtering columns to output_path.
@@ -469,10 +482,11 @@ def write_full_dataset_to_file(
     :type write_to_excel: bool
     :param delimiter: Delimiter for csv output
     :type delimiter: str
-    :param limited_flag: Document suffix indicating whether the dataset was limited to literature sources
+    :param limited_flag: Document suffix indicating
+        whether the dataset was limited to literature sources
     :type limited_flag: str
-    :param calculate_RDKit: Does df_combined include RDKit-based columns?
-    :type calculate_RDKit: bool
+    :param calculate_rdkit: Does df_combined include RDKit-based columns?
+    :type calculate_rdkit: bool
     """
     desc = "all"
     if write_full_dataset:
@@ -486,5 +500,5 @@ def write_full_dataset_to_file(
             write_to_excel,
             delimiter,
             desc,
-            calculate_RDKit,
+            calculate_rdkit,
         )

@@ -35,9 +35,11 @@ def check_for_mixed_types(df_combined: pd.DataFrame):
 
 def check_pairs_without_pchembl_are_in_drug_mechanisms(df_combined: pd.DataFrame):
     """
-    Check that rows without a pchembl value based on binding+functional assays (pchembl_x_BF) are in the drug_mechanism table.
+    Check that rows without a pchembl value based on binding+functional assays (pchembl_x_BF)
+    are in the drug_mechanism table.
     Note that this is not true for the pchembl_x_B columns which are based on binding data only.
-    They may be in the table because there is data based on functional assays but no data based on binding assays.
+    They may be in the table because there is data based on functional assays
+    but no data based on binding assays.
     All pchembl_value_x_BF columns without a pchembl should be in the dm table.
     """
     for pchembl_col in [
@@ -57,7 +59,8 @@ def check_ligand_efficiency_metrics(df_combined: pd.DataFrame):
     """
     Check that ligand efficiency metrics are only null
     when at least one of the values used to calculate them is null.
-    Ligand efficiency metrics are only null when at least one of the values used to calculate them is null.
+    Ligand efficiency metrics are only null when at least
+    one of the values used to calculate them is null.
     """
     for suffix in ["BF", "B"]:
         assert df_combined[(df_combined[f"LE_{suffix}"].isnull())].equals(
@@ -136,21 +139,26 @@ def check_atc_and_target_classes(
         df_combined[
             ~df_combined["parent_molregno"].isin(set(atc_levels["parent_molregno"]))
         ]
-    ), "Null values in atc_level1 are not exclusively because the parent_molregno is not in the atc_classification table."
+    ), "Null values in atc_level1 are not exclusively \
+        because the parent_molregno is not in the atc_classification table."
 
     assert df_combined[(df_combined["target_class_l1"].isnull())].equals(
         df_combined[~df_combined["tid"].isin(set(target_classes_level1["tid"]))]
-    ), "Null values in target_class_l1 are not exclusively because the tid is not in the protein_classification table."
+    ), "Null values in target_class_l1 are not exclusively \
+        because the tid is not in the protein_classification table."
 
     assert df_combined[(df_combined["target_class_l2"].isnull())].equals(
         df_combined[~df_combined["tid"].isin(set(target_classes_level2["tid"]))]
-    ), "Null values in target_class_l2 are not exclusively because the tid is not in the protein_classification table."
+    ), "Null values in target_class_l2 are not exclusively \
+        because the tid is not in the protein_classification table."
 
 
 def check_rdkit_props(df_combined: pd.DataFrame):
     """
-    Check that columns set by the RDKit are only null if there is no canonical SMILES for the molecule.
-    Scaffolds are excluded from this test because they can be None if the molecule is acyclic.
+    Check that columns set by the RDKit are only null
+    if there is no canonical SMILES for the molecule.
+    Scaffolds are excluded from this test because
+    they can be None if the molecule is acyclic.
     """
     for col in [
         "fraction_csp3",
@@ -182,31 +190,39 @@ def sanity_checks(
     atc_levels: pd.DataFrame,
     target_classes_level1: pd.DataFrame,
     target_classes_level2: pd.DataFrame,
-    calculate_RDKit: bool,
+    calculate_rdkit: bool,
 ):
     """
     Check basic assumptions about the finished dataset, specifically:
 
     - no columns contain nan or null values which aren't recognised as null values
     - there are no mixed types in columns with dtype=object
-    - rows without a pchembl value based on binding+functional assays (pchembl_x_BF) are in the drug_mechanism table
-    - ligand efficiency metrics are only null when at least one of the values used to calculate them is null
-    - compound props are only null if the compound is not in df_cpd_props or the value in that table is null
-    - atc_level1 and target class information is only null if the parent_molregno / target id is not in the respective table
-    - columns set by the RDKit are only null if there is no canonical SMILES for the molecule (excluding scaffolds)
+    - rows without a pchembl value based on binding+functional assays (pchembl_x_BF)
+        are in the drug_mechanism table
+    - ligand efficiency metrics are only null when at least one of the values
+        used to calculate them is null
+    - compound props are only null if the compound is not in df_cpd_props
+        or the value in that table is null
+    - atc_level1 and target class information is only null if
+        the parent_molregno / target id is not in the respective table
+    - columns set by the RDKit are only null if there is no canonical SMILES
+        for the molecule (excluding scaffolds)
 
     :param df_combined: Pandas DataFrame with compound-target pairs
     :type df_combined: pd.DataFrame
-    :param df_cpd_props: Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL.
+    :param df_cpd_props: Pandas DataFrame with compound properties
+        and structures for all compound ids in ChEMBL.
     :type df_cpd_props: pd.DataFrame
     :param atc_levels: Pandas DataFrame with ATC annotations in ChEMBL
     :type atc_levels: pd.DataFrame
-    :param target_classes_level1: Pandas DataFrame with mapping from target id to level 1 target class
+    :param target_classes_level1: Pandas DataFrame with mapping
+        from target id to level 1 target class
     :type target_classes_level1: pd.DataFrame
-    :param target_classes_level2: Pandas DataFrame with mapping from target id to level 2 target class
+    :param target_classes_level2: Pandas DataFrame with mapping
+        from target id to level 2 target class
     :type target_classes_level2: pd.DataFrame
-    :param calculate_RDKit: True if the DataFrame contains RDKit-based compound properties
-    :type calculate_RDKit: bool
+    :param calculate_rdkit: True if the DataFrame contains RDKit-based compound properties
+    :type calculate_rdkit: bool
     """
     check_null_values(df_combined)
     check_for_mixed_types(df_combined)
@@ -216,7 +232,7 @@ def sanity_checks(
     check_atc_and_target_classes(
         df_combined, atc_levels, target_classes_level1, target_classes_level2
     )
-    if calculate_RDKit:
+    if calculate_rdkit:
         check_rdkit_props(df_combined)
 
 
@@ -226,7 +242,7 @@ def test_equality(
     read_file_name: str,
     assay_type: str,
     file_type_list: list[str],
-    calculate_RDKit: bool,
+    calculate_rdkit: bool,
 ):
     """
     Check that the file that was written to <read_file_name> 
@@ -237,12 +253,14 @@ def test_equality(
     :param read_file_name: Name of the file current_df was written to
     :type read_file_name: str
     :param assay_type: Types of assays current_df contains information about. \
-        Options: "BF" (binding+functional), "B" (binding), "all" (contains both BF and B information)
+        Options:    "BF" (binding+functional), 
+                    "B" (binding), 
+                    "all" (contains both BF and B information)
     :type assay_type: str
     :param file_type_list: List of file extensions used with read_file_name. Options: csv, xlsx
     :type file_type_list: list[str]
-    :param calculate_RDKit: If True, current_df contains RDKit-based columns
-    :type calculate_RDKit: bool
+    :param calculate_rdkit: If True, current_df contains RDKit-based columns
+    :type calculate_rdkit: bool
     """
     current_df_copy = current_df.copy().reset_index(drop=True)
 
@@ -277,14 +295,14 @@ def test_equality(
                 print("{read_file_name}.{file_type} not found")
                 continue
 
-        if assay_type == "BF" or assay_type == "all":
+        if assay_type in ("BF", "all"):
             read_file = read_file.astype(
                 {
                     "first_publication_cpd_target_pair_BF": "Int64",
                     "first_publication_cpd_target_pair_w_pchembl_BF": "Int64",
                 }
             )
-        if assay_type == "B" or assay_type == "all":
+        if assay_type in ("B", "all"):
             read_file = read_file.astype(
                 {
                     "first_publication_cpd_target_pair_B": "Int64",
@@ -307,7 +325,7 @@ def test_equality(
                 "num_lipinski_ro5_violations": "Int64",
             }
         )
-        if calculate_RDKit:
+        if calculate_rdkit:
             read_file = read_file.astype(
                 {
                     "num_aliphatic_carbocycles": "Int64",
