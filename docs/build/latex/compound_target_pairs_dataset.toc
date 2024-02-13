@@ -33,17 +33,17 @@
 \contentsline {chapter}{\numberline {4}src}{15}{chapter.4}%
 \contentsline {section}{\numberline {4.1}add\_chembl\_compound\_properties module}{15}{section.4.1}%
 \contentsline {section}{\numberline {4.2}add\_chembl\_target\_class\_annotations module}{17}{section.4.2}%
-\contentsline {section}{\numberline {4.3}add\_dti\_annotations module}{19}{section.4.3}%
-\contentsline {section}{\numberline {4.4}add\_rdkit\_compound\_descriptors module}{20}{section.4.4}%
+\contentsline {section}{\numberline {4.3}add\_dti\_annotations module}{18}{section.4.3}%
+\contentsline {section}{\numberline {4.4}add\_rdkit\_compound\_descriptors module}{19}{section.4.4}%
 \contentsline {section}{\numberline {4.5}clean\_dataset module}{21}{section.4.5}%
 \contentsline {section}{\numberline {4.6}get\_activity\_ct\_pairs module}{22}{section.4.6}%
-\contentsline {section}{\numberline {4.7}get\_dataset module}{24}{section.4.7}%
+\contentsline {section}{\numberline {4.7}get\_dataset module}{23}{section.4.7}%
 \contentsline {section}{\numberline {4.8}get\_drug\_mechanism\_ct\_pairs module}{24}{section.4.8}%
 \contentsline {section}{\numberline {4.9}get\_stats module}{26}{section.4.9}%
-\contentsline {section}{\numberline {4.10}main module}{28}{section.4.10}%
-\contentsline {section}{\numberline {4.11}sanity\_checks module}{28}{section.4.11}%
-\contentsline {section}{\numberline {4.12}write\_subsets module}{29}{section.4.12}%
+\contentsline {section}{\numberline {4.10}main module}{26}{section.4.10}%
+\contentsline {section}{\numberline {4.11}sanity\_checks module}{27}{section.4.11}%
+\contentsline {section}{\numberline {4.12}write\_subsets module}{28}{section.4.12}%
 \contentsline {chapter}{\numberline {5}Indices and tables}{33}{chapter.5}%
-\contentsline {chapter}{Bibliography}{35}{chapter*.56}%
-\contentsline {chapter}{Python Module Index}{37}{section*.57}%
-\contentsline {chapter}{Index}{39}{section*.58}%
+\contentsline {chapter}{Bibliography}{35}{chapter*.62}%
+\contentsline {chapter}{Python Module Index}{37}{section*.63}%
+\contentsline {chapter}{Index}{39}{section*.64}%

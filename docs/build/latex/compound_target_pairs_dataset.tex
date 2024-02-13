@@ -64,7 +64,7 @@
 
 
 \title{compound\_target\_pairs\_dataset}
-\date{Feb 09, 2024}
+\date{Feb 13, 2024}
 \release{0.0.1}
 \author{Lina Heinzke, Barbara Zdrazil}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -2530,7 +2530,7 @@ Therefore, the earliest ChEMBL version for which the dataset can be calculated i
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{add_chembl_compound_properties:add_chembl_compound_properties.add_all_chembl_compound_properties}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_chembl\_compound\_properties.}}\sphinxbfcode{\sphinxupquote{add\_all\_chembl\_compound\_properties}}}{\sphinxparam{\DUrole{n}{df\_combined: \textasciitilde{}pandas.core.frame.DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con: \textasciitilde{}sqlite3.Connection}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit\_to\_literature: bool) \sphinxhyphen{}\textgreater{} (\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_chembl\_compound\_properties.}}\sphinxbfcode{\sphinxupquote{add\_all\_chembl\_compound\_properties}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Connection}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit\_to\_literature}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{{ $\rightarrow$ tuple\DUrole{p}{{[}}DataFrame\DUrole{p}{,}\DUrole{w}{ }DataFrame\DUrole{p}{,}\DUrole{w}{ }DataFrame\DUrole{p}{{]}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
 Add ChEMBL\sphinxhyphen{}based compound properties to the given compound\sphinxhyphen{}target pairs, specifically:
@@ -2568,7 +2568,8 @@ ATC classifications
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{limit\_to\_literature}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Base first\_publication\_cpd on literature sources only if True. Base it on all available sources otherwise.
+\sphinxstyleliteralstrong{\sphinxupquote{limit\_to\_literature}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Base first\_publication\_cpd on literature sources only if True.
+Base it on all available sources otherwise.
 
 \end{itemize}
 
@@ -2603,12 +2604,14 @@ Pandas DataFrame with ATC annotations in ChEMBL
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{add_chembl_compound_properties:add_chembl_compound_properties.add_atc_classification}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_chembl\_compound\_properties.}}\sphinxbfcode{\sphinxupquote{add\_atc\_classification}}}{\sphinxparam{\DUrole{n}{df\_combined: \textasciitilde{}pandas.core.frame.DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con: \textasciitilde{}sqlite3.Connection) \sphinxhyphen{}\textgreater{} (\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_chembl\_compound\_properties.}}\sphinxbfcode{\sphinxupquote{add\_atc\_classification}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Connection}}}{{ $\rightarrow$ tuple\DUrole{p}{{[}}DataFrame\DUrole{p}{,}\DUrole{w}{ }DataFrame\DUrole{p}{{]}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Query and add ATC classifications (level 1) from the atc\_classification and molecule\_atc\_classification tables.
+Query and add ATC classifications (level 1) from the atc\_classification and
+molecule\_atc\_classification tables.
 ATC level annotations for the same parent\_molregno are combined into one description
-that concatenates all descriptions sorted alphabetically into one string with ‘ | ‘ as a separator.
+that concatenates all descriptions sorted alphabetically
+into one string with ‘ | ‘ as a separator.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
@@ -2648,10 +2651,11 @@ Pandas DataFrame with ATC annotations in ChEMBL
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{add_chembl_compound_properties:add_chembl_compound_properties.add_chembl_properties_and_structures}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_chembl\_compound\_properties.}}\sphinxbfcode{\sphinxupquote{add\_chembl\_properties\_and\_structures}}}{\sphinxparam{\DUrole{n}{df\_combined: \textasciitilde{}pandas.core.frame.DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con: \textasciitilde{}sqlite3.Connection) \sphinxhyphen{}\textgreater{} (\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_chembl\_compound\_properties.}}\sphinxbfcode{\sphinxupquote{add\_chembl\_properties\_and\_structures}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Connection}}}{{ $\rightarrow$ tuple\DUrole{p}{{[}}DataFrame\DUrole{p}{,}\DUrole{w}{ }DataFrame\DUrole{p}{{]}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Add compound properties from the compound\_properties table (e.g., alogp, \#hydrogen bond acceptors / donors, etc.).
+Add compound properties from the compound\_properties table
+(e.g., alogp, \#hydrogen bond acceptors / donors, etc.).
 Add InChI, InChI key and canonical smiles.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
@@ -2695,8 +2699,10 @@ Pandas DataFrame with compound properties and structures for all compound ids in
 \pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_chembl\_compound\_properties.}}\sphinxbfcode{\sphinxupquote{add\_first\_publication\_date}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Connection}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit\_to\_literature}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{{ $\rightarrow$ DataFrame}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Query and calculate the first publication of a compound based on ChEMBL data (column name: first\_publication\_cpd).
-If limit\_to\_literature is True, this corresponds to the first appearance of the compound in the literature according to ChEMBL.
+Query and calculate the first publication of a compound
+based on ChEMBL data (column name: first\_publication\_cpd).
+If limit\_to\_literature is True, this corresponds to the first appearance
+of the compound in the literature according to ChEMBL.
 Otherwise this is the first appearance in any source in ChEMBL.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
@@ -2735,7 +2741,8 @@ pd.DataFrame
 \pysigstopsignatures
 \sphinxAtStartPar
 Calculate the ligand efficiency metrics for the compounds
-based on the mean pchembl values for a compound\sphinxhyphen{}target pair and the following ligand efficiency (LE) formulas:
+based on the mean pchembl values for a compound\sphinxhyphen{}target pair and
+the following ligand efficiency (LE) formulas:
 \begin{align*}\!\begin{aligned}
 LE &= \frac{\Delta G}{HA}
     \qquad \qquad \text{where } \Delta G = - RT \ln(K_d)
@@ -2777,12 +2784,13 @@ pd.DataFrame
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{add_chembl_target_class_annotations:add_chembl_target_class_annotations.add_chembl_target_class_annotations}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_chembl\_target\_class\_annotations.}}\sphinxbfcode{\sphinxupquote{add\_chembl\_target\_class\_annotations}}}{\sphinxparam{\DUrole{n}{df\_combined: \textasciitilde{}pandas.core.frame.DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con: \textasciitilde{}sqlite3.Connection}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path: str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv: bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel: bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter: str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_version: str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limited\_flag: str) \sphinxhyphen{}\textgreater{} (\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_chembl\_target\_class\_annotations.}}\sphinxbfcode{\sphinxupquote{add\_chembl\_target\_class\_annotations}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Connection}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_version}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limited\_flag}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}{{ $\rightarrow$ tuple\DUrole{p}{{[}}DataFrame\DUrole{p}{,}\DUrole{w}{ }DataFrame\DUrole{p}{,}\DUrole{w}{ }DataFrame\DUrole{p}{{]}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
 Add level 1 and 2 target class annotations.
 Assignments for target IDs with more than one target class assignment per level
-are summarised into one string with ‘|’ as a separator between the different target class annotations.
+are summarised into one string with ‘|’ as a separator
+between the different target class annotations.
 
 \sphinxAtStartPar
 Targets with more than one level 1 / level 2 target class assignment are written to a file.
@@ -2819,7 +2827,8 @@ These could be reassigned by hand if a single target class is preferable.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{limited\_flag}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Document suffix indicating whether the dataset was limited to literature sources
+\sphinxstyleliteralstrong{\sphinxupquote{limited\_flag}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Document suffix indicating
+whether the dataset was limited to literature sources
 
 \end{itemize}
 
@@ -2900,9 +2909,12 @@ Every compound\sphinxhyphen{}target pair is assigned a DTI (drug target interact
 \sphinxAtStartPar
 The assignment is based on three questions:
 \begin{itemize}
-\item {} 
+\item {} \begin{description}
+\sphinxlineitem{Is the compound\sphinxhyphen{}target pair in the drug\_mechanisms table? =}
 \sphinxAtStartPar
-Is the compound\sphinxhyphen{}target pair in the drug\_mechanisms table? = Is it a known relevant compound\sphinxhyphen{}target interaction?
+Is it a known relevant compound\sphinxhyphen{}target interaction?
+
+\end{description}
 
 \item {} 
 \sphinxAtStartPar
@@ -2925,16 +2937,16 @@ The assigments are based on the following table:
 \sphinxtoprule
 \sphinxstyletheadfamily 
 \sphinxAtStartPar
-in drug\_mechanisms table?
+in DM table?
 &\sphinxstyletheadfamily 
 \sphinxAtStartPar
 max\_phase?
 &\sphinxstyletheadfamily 
 \sphinxAtStartPar
-therapeutic target?
+th. target?
 &\sphinxstyletheadfamily 
 \sphinxAtStartPar
-DTI annotation
+DTI
 &\sphinxstyletheadfamily 
 \sphinxAtStartPar
 explanation
@@ -2951,7 +2963,11 @@ yes
 \textendash{}
 &
 \sphinxAtStartPar
-D\_DT {[}1{]}
+D\_DT %
+\begin{footnote}[1]\sphinxAtStartFootnote
+The annotation D\_DT instead of C4\_DT was chosen to be consistent     with the annotations in a previous version of the dataset.     For the same reason the column is named DTI (drug\sphinxhyphen{}target interaction)     instead of CTI (compound\sphinxhyphen{}target interaction)     despite having specific annotations for clinical canidates.
+%
+\end{footnote}
 &
 \sphinxAtStartPar
 drug \sphinxhyphen{} drug target
@@ -3018,7 +3034,11 @@ yes
 C0\_DT
 &
 \sphinxAtStartPar
-compound in unknown clinical phase {[}2{]} \sphinxhyphen{} drug target
+compound in unknown phase %
+\begin{footnote}[2]\sphinxAtStartFootnote
+C0\_DT groups together all compounds with a max\_phase not between 1 and 4.
+%
+\end{footnote} \sphinxhyphen{} drug target
 \\
 \sphinxhline
 \sphinxAtStartPar
@@ -3058,19 +3078,19 @@ not drug target
 \sphinxattableend\end{savenotes}
 
 \sphinxAtStartPar
-{[}1{]} The annotation D\_DT instead of C4\_DT was chosen to be consistent with the annotations in a previous version of the dataset. For the same reason the column is named DTI (drug\sphinxhyphen{}target interaction) instead of CTI (compound\sphinxhyphen{}target interaction)
-despite having specific annotations for clinical canidates.
-
-\sphinxAtStartPar
-{[}2{]} Since ChEMBL32 there are three possible annotations in ChEMBL with a max\_phase value not between 1 and 4:
+Since ChEMBL32 there are three possible annotations in ChEMBL
+with a max\_phase value not between 1 and 4:
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
 0.5 = early phase 1 clinical trials
 
-\item {} 
+\item {} \begin{description}
+\sphinxlineitem{\sphinxhyphen{}1 = clinical phase unknown for drug or clinical candidate drug,}
 \sphinxAtStartPar
-\sphinxhyphen{}1 = clinical phase unknown for drug or clinical candidate drug, i.e., where ChEMBL cannot assign a clinical phase
+i.e., where ChEMBL cannot assign a clinical phase
+
+\end{description}
 
 \item {} 
 \sphinxAtStartPar
@@ -3084,12 +3104,14 @@ All three are grouped together into the annotation C0\_DT.
 \sphinxAtStartPar
 Compound\sphinxhyphen{}target pairs that were annotated with NDT,
 i.e., compound\sphinxhyphen{}target pairs that are not in the drug\_mechanisms table
-and for which the target was also not in the drug\_mechanisms table (not a comparator compound), are discarded.
+and for which the target was also not in the drug\_mechanisms table
+(not a comparator compound), are discarded.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{df\_combined}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound\sphinxhyphen{}target pairs based on activities AND drug\_mechanism table
+\sphinxstyleliteralstrong{\sphinxupquote{df\_combined}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound\sphinxhyphen{}target pairs
+based on activities AND drug\_mechanism table
 
 \item {} 
 \sphinxAtStartPar
@@ -3204,7 +3226,8 @@ Add RDKit\sphinxhyphen{}based compound descriptors (built\sphinxhyphen{}in and n
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
-Pandas DataFrame with added built\sphinxhyphen{}in RDKit compound descriptors and numbers of aromatic atoms
+Pandas DataFrame with added built\sphinxhyphen{}in RDKit compound descriptors
+and numbers of aromatic atoms
 
 \sphinxlineitem{Return type}
 \sphinxAtStartPar
@@ -3219,7 +3242,7 @@ pd.DataFrame
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{add_rdkit_compound_descriptors:add_rdkit_compound_descriptors.calculate_aromatic_atoms}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_rdkit\_compound\_descriptors.}}\sphinxbfcode{\sphinxupquote{calculate\_aromatic\_atoms}}}{\sphinxparam{\DUrole{n}{smiles\_set}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{set\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{add\_rdkit\_compound\_descriptors.}}\sphinxbfcode{\sphinxupquote{calculate\_aromatic\_atoms}}}{\sphinxparam{\DUrole{n}{smiles\_set}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{set\DUrole{p}{{[}}str\DUrole{p}{{]}}}}}{{ $\rightarrow$ tuple\DUrole{p}{{[}}dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}\DUrole{p}{{]}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
 Get dictionaries with number of aromatic atoms for each smiles.
@@ -3271,7 +3294,7 @@ SMILES \sphinxhyphen{}\textgreater{} \# aromatic hetero atoms
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{clean_dataset:clean_dataset.clean_dataset}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{clean\_dataset.}}\sphinxbfcode{\sphinxupquote{clean\_dataset}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_RDKit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{{ $\rightarrow$ DataFrame}}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{clean\_dataset.}}\sphinxbfcode{\sphinxupquote{clean\_dataset}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_rdkit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{{ $\rightarrow$ DataFrame}}
 \pysigstopsignatures
 \sphinxAtStartPar
 Clean the dataset by
@@ -3305,7 +3328,7 @@ sorting rows by cpd\_target\_pair\_mutation
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{calculate\_RDKit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if the DataFrame contains RDKit\sphinxhyphen{}based compound properties
+\sphinxstyleliteralstrong{\sphinxupquote{calculate\_rdkit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if the DataFrame contains RDKit\sphinxhyphen{}based compound properties
 
 \end{itemize}
 
@@ -3385,7 +3408,7 @@ pd.DataFrame
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{clean_dataset:clean_dataset.reorder_columns}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{clean\_dataset.}}\sphinxbfcode{\sphinxupquote{reorder\_columns}}}{\sphinxparam{\DUrole{n}{df\_combined}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_RDKit}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{clean\_dataset.}}\sphinxbfcode{\sphinxupquote{reorder\_columns}}}{\sphinxparam{\DUrole{n}{df\_combined}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_rdkit}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Reorder the columns in the DataFrame.
@@ -3410,7 +3433,7 @@ This does not apply to max\_phase.
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{clean_dataset:clean_dataset.set_types_to_int}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{clean\_dataset.}}\sphinxbfcode{\sphinxupquote{set\_types\_to\_int}}}{\sphinxparam{\DUrole{n}{df\_combined}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_RDKit}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{clean\_dataset.}}\sphinxbfcode{\sphinxupquote{set\_types\_to\_int}}}{\sphinxparam{\DUrole{n}{df\_combined}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_rdkit}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Set the type of relevant columns to Int64.
@@ -3447,8 +3470,10 @@ a subset of the initial dataset set on only binding assays (suffix ‘\_B’).
 \end{itemize}
 
 \sphinxAtStartPar
-Therefore, there are two columns for pchembl\_value\_mean, \_max, \_median, first\_publication\_cpd\_target\_pair and first\_publication\_cpd\_target\_pair\_w\_pchembl,
-one with the suffix ‘\_BF’ based on binding + functional data and one with the suffix ‘\_B’ based on only binding data.
+Therefore, there are two columns for pchembl\_value\_mean, \_max, \_median,
+first\_publication\_cpd\_target\_pair and first\_publication\_cpd\_target\_pair\_w\_pchembl,
+one with the suffix ‘\_BF’ based on binding + functional data
+and one with the suffix ‘\_B’ based on only binding data.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
@@ -3457,7 +3482,8 @@ one with the suffix ‘\_BF’ based on binding + functional data and one with t
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{limit\_to\_literature}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Include only literature sources if True. Include all available sources otherwise.
+\sphinxstyleliteralstrong{\sphinxupquote{limit\_to\_literature}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Include only literature sources if True.
+Include all available sources otherwise.
 
 \item {} 
 \sphinxAtStartPar
@@ -3467,7 +3493,8 @@ one with the suffix ‘\_BF’ based on binding + functional data and one with t
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
-Pandas Dataframe with compound\sphinxhyphen{}target pairs based on ChEMBL activity data aggregated into one entry per compound\sphinxhyphen{}target pair.
+Pandas Dataframe with compound\sphinxhyphen{}target pairs based on ChEMBL activity data
+aggregated into one entry per compound\sphinxhyphen{}target pair.
 
 \sphinxlineitem{Return type}
 \sphinxAtStartPar
@@ -3485,8 +3512,10 @@ pd.DataFrame
 \pysiglinewithargsret{\sphinxcode{\sphinxupquote{get\_activity\_ct\_pairs.}}\sphinxbfcode{\sphinxupquote{get\_average\_info}}}{\sphinxparam{\DUrole{n}{df}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{suffix}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}{{ $\rightarrow$ DataFrame}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Aggregate the information about compound\sphinxhyphen{}target pairs for which there is more than one entry into one entry.
-Compound\sphinxhyphen{}target pairs are considered equal if parent\_molregno (internal compound ID) and tid\_mutation (target ID + mutation annotations) are equal.
+Aggregate the information about compound\sphinxhyphen{}target pairs for which
+there is more than one entry into one entry.
+Compound\sphinxhyphen{}target pairs are considered equal if parent\_molregno (internal compound ID)
+and tid\_mutation (target ID + mutation annotations) are equal.
 
 \sphinxAtStartPar
 The following values are aggregated:
@@ -3540,11 +3569,13 @@ first publication in ChEMBL with this compound\sphinxhyphen{}target pair and an 
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{df}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound\sphinxhyphen{}target pairs for which the information should be aggregated.
+\sphinxstyleliteralstrong{\sphinxupquote{df}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound\sphinxhyphen{}target pairs for which
+the information should be aggregated.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{suffix}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Suffix indicating the type of the given DataFrame, e.g., \_B for binding assays, \_BF for binding+functional assays.
+\sphinxstyleliteralstrong{\sphinxupquote{suffix}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Suffix indicating the type of the given DataFrame,
+e.g., \_B for binding assays, \_BF for binding+functional assays.
 
 \end{itemize}
 
@@ -3568,10 +3599,12 @@ pd.DataFrame
 \pysiglinewithargsret{\sphinxcode{\sphinxupquote{get\_activity\_ct\_pairs.}}\sphinxbfcode{\sphinxupquote{get\_compound\_target\_pairs\_with\_pchembl}}}{\sphinxparam{\DUrole{n}{chembl\_con}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Connection}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit\_to\_literature}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{df\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{list\DUrole{p}{{[}}list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{{]}}}}}{{ $\rightarrow$ DataFrame}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Query ChEMBL activities and related assay for compound\sphinxhyphen{}target pairs with an associated pchembl value.
+Query ChEMBL activities and related assay for compound\sphinxhyphen{}target pairs
+with an associated pchembl value.
 Compound\sphinxhyphen{}target pairs are required to have a pchembl value.
 Salt forms of compounds are mapped to their parent form.
-If limit\_to\_literature is true, only literature sources will be considered. Otherwise, all sources are included.
+If limit\_to\_literature is true, only literature sources will be considered.
+Otherwise, all sources are included.
 Includes information about targets, mutations and year of publication (based on docs).
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
@@ -3581,7 +3614,8 @@ Includes information about targets, mutations and year of publication (based on 
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{limit\_to\_literature}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Include only literature sources if True. Include all available sources otherwise.
+\sphinxstyleliteralstrong{\sphinxupquote{limit\_to\_literature}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Include only literature sources if True.
+Include all available sources otherwise.
 
 \item {} 
 \sphinxAtStartPar
@@ -3611,7 +3645,7 @@ pd.DataFrame
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{get_dataset:get_dataset.get_ct_pair_dataset}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{get\_dataset.}}\sphinxbfcode{\sphinxupquote{get\_ct\_pair\_dataset}}}{\sphinxparam{\DUrole{n}{chembl\_con}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Connection}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_version}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit\_to\_literature}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_RDKit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_full\_dataset}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_BF}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_B}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{get\_dataset.}}\sphinxbfcode{\sphinxupquote{get\_ct\_pair\_dataset}}}{\sphinxparam{\DUrole{n}{chembl\_con}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Connection}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_version}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit\_to\_literature}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_rdkit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_full\_dataset}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_bf}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_b}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Calculate and output the compound\sphinxhyphen{}target pair dataset.
@@ -3631,11 +3665,12 @@ Calculate and output the compound\sphinxhyphen{}target pair dataset.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{limit\_to\_literature}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Include only literature sources if True. Include all available sources otherwise.
+\sphinxstyleliteralstrong{\sphinxupquote{limit\_to\_literature}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Include only literature sources if True.
+Include all available sources otherwise.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{calculate\_RDKit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if RDKit\sphinxhyphen{}based compound properties should be calculated
+\sphinxstyleliteralstrong{\sphinxupquote{calculate\_rdkit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if RDKit\sphinxhyphen{}based compound properties should be calculated
 
 \item {} 
 \sphinxAtStartPar
@@ -3655,11 +3690,11 @@ Calculate and output the compound\sphinxhyphen{}target pair dataset.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_BF}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if subsets based on binding+functional data should be written to output
+\sphinxstyleliteralstrong{\sphinxupquote{write\_bf}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if subsets based on binding+functional data should be written to output
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_B}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if subsets based on binding data only should be written to output
+\sphinxstyleliteralstrong{\sphinxupquote{write\_b}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if subsets based on binding data only should be written to output
 
 \end{itemize}
 
@@ -3690,7 +3725,8 @@ to match the information that is present in the compound\sphinxhyphen{}target pa
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{cpd\_target\_pairs}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound\sphinxhyphen{}target pairs from the drug\_mechanism table.
+\sphinxstyleliteralstrong{\sphinxupquote{cpd\_target\_pairs}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound\sphinxhyphen{}target pairs
+from the drug\_mechanism table.
 
 \end{itemize}
 
@@ -3711,12 +3747,14 @@ pd.DataFrame
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{get_drug_mechanism_ct_pairs:get_drug_mechanism_ct_pairs.add_drug_mechanism_ct_pairs}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{get\_drug\_mechanism\_ct\_pairs.}}\sphinxbfcode{\sphinxupquote{add\_drug\_mechanism\_ct\_pairs}}}{\sphinxparam{\DUrole{n}{df\_combined: \textasciitilde{}pandas.core.frame.DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con: \textasciitilde{}sqlite3.Connection) \sphinxhyphen{}\textgreater{} (\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}set\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}set\textquotesingle{}\textgreater{}}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{get\_drug\_mechanism\_ct\_pairs.}}\sphinxbfcode{\sphinxupquote{add\_drug\_mechanism\_ct\_pairs}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_con}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Connection}}}{{ $\rightarrow$ tuple\DUrole{p}{{[}}DataFrame\DUrole{p}{,}\DUrole{w}{ }set\DUrole{p}{,}\DUrole{w}{ }set\DUrole{p}{{]}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Add compound\sphinxhyphen{}target pairs from the drug\_mechanism table that are not in the dataset based on the initial ChEMBL query.
+Add compound\sphinxhyphen{}target pairs from the drug\_mechanism table
+that are not in the dataset based on the initial ChEMBL query.
 These are compound\sphinxhyphen{}target pairs for which there is no associated pchembl value data.
-Since the pairs are known interactions, they are added to the dataset despite not having a pchembl value.
+Since the pairs are known interactions,
+they are added to the dataset despite not having a pchembl value.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
@@ -3732,9 +3770,12 @@ Since the pairs are known interactions, they are added to the dataset despite no
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
 \begin{itemize}
-\item {} 
+\item {} \begin{description}
+\sphinxlineitem{Pandas DataFrame with compound\sphinxhyphen{}target pairs}
 \sphinxAtStartPar
-Pandas DataFrame with compound\sphinxhyphen{}target pairs based on activities AND drug\_mechanism table 
+based on activities AND drug\_mechanism table 
+
+\end{description}
 
 \item {} 
 \sphinxAtStartPar
@@ -3793,7 +3834,8 @@ pd.DataFrame
 \sphinxAtStartPar
 Extract the known compound\sphinxhyphen{}target interactions from the ChEMBL drug\_mechanisms table.
 Note: While the interactions are mostly between drugs and targets,
-the table also includes some known interactions between compounds with a max\_phase \textless{} 4 and their targets.
+the table also includes some known interactions between
+compounds with a max\_phase \textless{} 4 and their targets.
 
 \sphinxAtStartPar
 Only entries with a disease\_efficacy of 1 are taken into account,
@@ -3801,7 +3843,8 @@ i.e., the target is believed to play a role in the efficacy of the drug.
 
 \sphinxAtStartPar
 \sphinxstyleemphasis{disease\_efficacy: Flag to show whether the target assigned is believed
-to play a role in the efficacy of the drug in the indication(s) for which it is approved (1 = yes, 0 = no).}
+to play a role in the efficacy of the drug in the indication(s)
+for which it is approved (1 = yes, 0 = no).}
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
@@ -3809,7 +3852,8 @@ to play a role in the efficacy of the drug in the indication(s) for which it is 
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
-Pandas DataFrame with compound\sphinxhyphen{}target pairs from the drug\_mechanism table with disease relevance.
+Pandas DataFrame with compound\sphinxhyphen{}target pairs
+from the drug\_mechanism table with disease relevance.
 
 \sphinxlineitem{Return type}
 \sphinxAtStartPar
@@ -3827,7 +3871,8 @@ pd.DataFrame
 \pysiglinewithargsret{\sphinxcode{\sphinxupquote{get\_drug\_mechanism\_ct\_pairs.}}\sphinxbfcode{\sphinxupquote{get\_relevant\_tid\_mappings}}}{\sphinxparam{\DUrole{n}{chembl\_con}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Connection}}}{{ $\rightarrow$ DataFrame}}
 \pysigstopsignatures
 \sphinxAtStartPar
-Get DataFrame with mappings from target id to their related target ids based on the target\_relations table.
+Get DataFrame with mappings from target id to their related target ids
+based on the target\_relations table.
 The following mappings are considered:
 
 
@@ -3902,10 +3947,12 @@ single protein
 \sphinxattableend\end{savenotes}
 
 \sphinxAtStartPar
-These mappings can be used to increase the number of target ids for which there is data in the drug\_mechanisms table.
+These mappings can be used to increase the number of target ids
+for which there is data in the drug\_mechanisms table.
 For example, for \sphinxstyleemphasis{protein family \sphinxhyphen{}{[}superset of{]}\sphinxhyphen{}\textgreater{} single protein} this means:
 If there is a known relevant interaction between a compound and a protein family,
-interactions between the compound and single proteins of that protein family are considered to be known interactions as well.
+interactions between the compound and single proteins of that protein family
+are considered to be known interactions as well.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
@@ -3913,7 +3960,8 @@ interactions between the compound and single proteins of that protein family are
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
-Pandas DataFrame with mappings from tid to related tid for the defined subset of target relations.
+Pandas DataFrame with mappings from tid to related tid
+for the defined subset of target relations.
 
 \sphinxlineitem{Return type}
 \sphinxAtStartPar
@@ -4021,108 +4069,46 @@ list{[}list{[}str, str, int{]}{]}
 
 \end{fulllineitems}
 
-\index{output\_debug\_sizes() (in module get\_stats)@\spxentry{output\_debug\_sizes()}\spxextra{in module get\_stats}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{get_stats:get_stats.output_debug_sizes}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{get\_stats.}}\sphinxbfcode{\sphinxupquote{output\_debug\_sizes}}}{\sphinxparam{\DUrole{n}{df\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{list\DUrole{p}{{[}}list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}{}
-\pysigstopsignatures
-\sphinxAtStartPar
-Output counts at various points during calculating the final dataset for debugging.
-\begin{quote}\begin{description}
-\sphinxlineitem{Parameters}\begin{itemize}
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{df\_sizes}} (\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}) \textendash{} List of intermediate sized of the dataset used for debugging.
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{output\_path}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Path to write the dataset counts to
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_csv}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if counts should be written to csv
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_excel}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if counts should be written to excel
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{delimiter}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Delimiter in csv\sphinxhyphen{}output
-
-\end{itemize}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{output\_stats() (in module get\_stats)@\spxentry{output\_stats()}\spxextra{in module get\_stats}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{get_stats:get_stats.output_stats}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{get\_stats.}}\sphinxbfcode{\sphinxupquote{output\_stats}}}{\sphinxparam{\DUrole{n}{df}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_file}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}{}
-\pysigstopsignatures
-\sphinxAtStartPar
-Summarise and output the number of unique values in the following columns:
-\begin{itemize}
-\item {} 
-\sphinxAtStartPar
-parent\_molregno (compound ID)
-
-\item {} 
-\sphinxAtStartPar
-tid (target ID)
-
-\item {} 
-\sphinxAtStartPar
-tid\_mutation (target ID + mutation annotations)
-
-\item {} 
-\sphinxAtStartPar
-cpd\_target\_pair (compound\sphinxhyphen{}target pairs)
-
-\item {} 
-\sphinxAtStartPar
-cpd\_target\_pair\_mutation (compound\sphinxhyphen{}target pairs including mutation annotations)
-
-\end{itemize}
-\begin{quote}\begin{description}
-\sphinxlineitem{Parameters}\begin{itemize}
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{df}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas Dataframe for which the stats should be calculated
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{output\_file}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Path and filename to write the dataset stats to
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_csv}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if stats should be written to csv
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_excel}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if stats should be written to excel
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{delimiter}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Delimiter in csv\sphinxhyphen{}output
-
-\end{itemize}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 
 \sphinxstepscope
 
 
 \section{main module}
-\label{\detokenize{main:module-main}}\label{\detokenize{main:main-module}}\label{\detokenize{main::doc}}\index{module@\spxentry{module}!main@\spxentry{main}}\index{main@\spxentry{main}!module@\spxentry{module}}
+\label{\detokenize{main:module-main}}\label{\detokenize{main:main-module}}\label{\detokenize{main::doc}}\index{module@\spxentry{module}!main@\spxentry{main}}\index{main@\spxentry{main}!module@\spxentry{module}}\index{main() (in module main)@\spxentry{main()}\spxextra{in module main}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{main:main.main}}
+\pysigstartsignatures
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{main.}}\sphinxbfcode{\sphinxupquote{main}}}{}{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Call get\_ct\_pair\_dataset to get the compound\sphinxhyphen{}target dataset using the given arguments.
+
+\end{fulllineitems}
+
+\index{parse\_args() (in module main)@\spxentry{parse\_args()}\spxextra{in module main}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{main:main.parse_args}}
+\pysigstartsignatures
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{main.}}\sphinxbfcode{\sphinxupquote{parse\_args}}}{}{{ $\rightarrow$ Namespace}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Get arguments with argparse.
+\begin{quote}\begin{description}
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Populated argparse.Namespace
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+argparse.Namespace
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
 \sphinxstepscope
 
 
@@ -4184,7 +4170,8 @@ Check that there are no mixed types in columns with dtype=object.
 \sphinxAtStartPar
 Check that ligand efficiency metrics are only null
 when at least one of the values used to calculate them is null.
-Ligand efficiency metrics are only null when at least one of the values used to calculate them is null.
+Ligand efficiency metrics are only null when at least
+one of the values used to calculate them is null.
 
 \end{fulllineitems}
 
@@ -4208,9 +4195,11 @@ Check if any columns contain nan or null which aren’t recognised as null value
 \pysiglinewithargsret{\sphinxcode{\sphinxupquote{sanity\_checks.}}\sphinxbfcode{\sphinxupquote{check\_pairs\_without\_pchembl\_are\_in\_drug\_mechanisms}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
-Check that rows without a pchembl value based on binding+functional assays (pchembl\_x\_BF) are in the drug\_mechanism table.
+Check that rows without a pchembl value based on binding+functional assays (pchembl\_x\_BF)
+are in the drug\_mechanism table.
 Note that this is not true for the pchembl\_x\_B columns which are based on binding data only.
-They may be in the table because there is data based on functional assays but no data based on binding assays.
+They may be in the table because there is data based on functional assays
+but no data based on binding assays.
 All pchembl\_value\_x\_BF columns without a pchembl should be in the dm table.
 
 \end{fulllineitems}
@@ -4223,8 +4212,10 @@ All pchembl\_value\_x\_BF columns without a pchembl should be in the dm table.
 \pysiglinewithargsret{\sphinxcode{\sphinxupquote{sanity\_checks.}}\sphinxbfcode{\sphinxupquote{check\_rdkit\_props}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
-Check that columns set by the RDKit are only null if there is no canonical SMILES for the molecule.
-Scaffolds are excluded from this test because they can be None if the molecule is acyclic.
+Check that columns set by the RDKit are only null
+if there is no canonical SMILES for the molecule.
+Scaffolds are excluded from this test because
+they can be None if the molecule is acyclic.
 
 \end{fulllineitems}
 
@@ -4233,7 +4224,7 @@ Scaffolds are excluded from this test because they can be None if the molecule i
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{sanity_checks:sanity_checks.sanity_checks}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{sanity\_checks.}}\sphinxbfcode{\sphinxupquote{sanity\_checks}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{df\_cpd\_props}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{atc\_levels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target\_classes\_level1}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target\_classes\_level2}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_RDKit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{sanity\_checks.}}\sphinxbfcode{\sphinxupquote{sanity\_checks}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{df\_cpd\_props}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{atc\_levels}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target\_classes\_level1}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target\_classes\_level2}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_rdkit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Check basic assumptions about the finished dataset, specifically:
@@ -4246,25 +4237,40 @@ no columns contain nan or null values which aren’t recognised as null values
 \sphinxAtStartPar
 there are no mixed types in columns with dtype=object
 
-\item {} 
+\item {} \begin{description}
+\sphinxlineitem{rows without a pchembl value based on binding+functional assays (pchembl\_x\_BF)}
 \sphinxAtStartPar
-rows without a pchembl value based on binding+functional assays (pchembl\_x\_BF) are in the drug\_mechanism table
+are in the drug\_mechanism table
 
-\item {} 
-\sphinxAtStartPar
-ligand efficiency metrics are only null when at least one of the values used to calculate them is null
+\end{description}
 
-\item {} 
+\item {} \begin{description}
+\sphinxlineitem{ligand efficiency metrics are only null when at least one of the values}
 \sphinxAtStartPar
-compound props are only null if the compound is not in df\_cpd\_props or the value in that table is null
+used to calculate them is null
 
-\item {} 
-\sphinxAtStartPar
-atc\_level1 and target class information is only null if the parent\_molregno / target id is not in the respective table
+\end{description}
 
-\item {} 
+\item {} \begin{description}
+\sphinxlineitem{compound props are only null if the compound is not in df\_cpd\_props}
 \sphinxAtStartPar
-columns set by the RDKit are only null if there is no canonical SMILES for the molecule (excluding scaffolds)
+or the value in that table is null
+
+\end{description}
+
+\item {} \begin{description}
+\sphinxlineitem{atc\_level1 and target class information is only null if}
+\sphinxAtStartPar
+the parent\_molregno / target id is not in the respective table
+
+\end{description}
+
+\item {} \begin{description}
+\sphinxlineitem{columns set by the RDKit are only null if there is no canonical SMILES}
+\sphinxAtStartPar
+for the molecule (excluding scaffolds)
+
+\end{description}
 
 \end{itemize}
 \begin{quote}\begin{description}
@@ -4275,7 +4281,8 @@ columns set by the RDKit are only null if there is no canonical SMILES for the m
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{df\_cpd\_props}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL.
+\sphinxstyleliteralstrong{\sphinxupquote{df\_cpd\_props}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound properties
+and structures for all compound ids in ChEMBL.
 
 \item {} 
 \sphinxAtStartPar
@@ -4283,15 +4290,17 @@ columns set by the RDKit are only null if there is no canonical SMILES for the m
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{target\_classes\_level1}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with mapping from target id to level 1 target class
+\sphinxstyleliteralstrong{\sphinxupquote{target\_classes\_level1}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with mapping
+from target id to level 1 target class
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{target\_classes\_level2}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with mapping from target id to level 2 target class
+\sphinxstyleliteralstrong{\sphinxupquote{target\_classes\_level2}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with mapping
+from target id to level 2 target class
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{calculate\_RDKit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if the DataFrame contains RDKit\sphinxhyphen{}based compound properties
+\sphinxstyleliteralstrong{\sphinxupquote{calculate\_rdkit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if the DataFrame contains RDKit\sphinxhyphen{}based compound properties
 
 \end{itemize}
 
@@ -4304,7 +4313,7 @@ columns set by the RDKit are only null if there is no canonical SMILES for the m
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{sanity_checks:sanity_checks.test_equality}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{sanity\_checks.}}\sphinxbfcode{\sphinxupquote{test\_equality}}}{\sphinxparam{\DUrole{n}{current\_df}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{read\_file\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{assay\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{file\_type\_list}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{list\DUrole{p}{{[}}str\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_RDKit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{sanity\_checks.}}\sphinxbfcode{\sphinxupquote{test\_equality}}}{\sphinxparam{\DUrole{n}{current\_df}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{read\_file\_name}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{assay\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{file\_type\_list}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{list\DUrole{p}{{[}}str\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_rdkit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Check that the file that was written to \textless{}read\_file\_name\textgreater{}
@@ -4321,7 +4330,9 @@ is identical to the DataFrame \textless{}current\_df\textgreater{} it was based 
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{assay\_type}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Types of assays current\_df contains information about.         Options: “BF” (binding+functional), “B” (binding), “all” (contains both BF and B information)
+\sphinxstyleliteralstrong{\sphinxupquote{assay\_type}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Types of assays current\_df contains information about.         Options:    “BF” (binding+functional),
+“B” (binding),
+“all” (contains both BF and B information)
 
 \item {} 
 \sphinxAtStartPar
@@ -4329,7 +4340,7 @@ is identical to the DataFrame \textless{}current\_df\textgreater{} it was based 
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{calculate\_RDKit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} If True, current\_df contains RDKit\sphinxhyphen{}based columns
+\sphinxstyleliteralstrong{\sphinxupquote{calculate\_rdkit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} If True, current\_df contains RDKit\sphinxhyphen{}based columns
 
 \end{itemize}
 
@@ -4347,7 +4358,7 @@ is identical to the DataFrame \textless{}current\_df\textgreater{} it was based 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{write_subsets:write_subsets.get_data_subsets}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{get\_data\_subsets}}}{\sphinxparam{\DUrole{n}{data: \textasciitilde{}pandas.core.frame.DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{min\_nof\_cpds: int}}\sphinxparamcomma \sphinxparam{\DUrole{n}{desc: str) \sphinxhyphen{}\textgreater{} (\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textless{}class \textquotesingle{}pandas.core.frame.DataFrame\textquotesingle{}\textgreater{}}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{get\_data\_subsets}}}{\sphinxparam{\DUrole{n}{data}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{min\_nof\_cpds}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}}\sphinxparamcomma \sphinxparam{\DUrole{n}{desc}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}{{ $\rightarrow$ tuple\DUrole{p}{{[}}DataFrame\DUrole{p}{,}\DUrole{w}{ }DataFrame\DUrole{p}{,}\DUrole{w}{ }DataFrame\DUrole{p}{,}\DUrole{w}{ }DataFrame\DUrole{p}{{]}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
 Calculate and return the different subsets of interest.
@@ -4370,21 +4381,34 @@ Calculate and return the different subsets of interest.
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
 \begin{itemize}
-\item {} 
+\item {} \begin{description}
+\sphinxlineitem{data: Pandas DataFrame with compound\sphinxhyphen{}target pairs}
 \sphinxAtStartPar
-data: Pandas DataFrame with compound\sphinxhyphen{}target pairs without the annotations for the opposite desc,             e.g. if desc = “BF”, the average pchembl value based on binding data only is dropped
+without the annotations for the opposite desc,             e.g. if desc = “BF”, the average pchembl value based on
+binding data only is dropped
 
-\item {} 
-\sphinxAtStartPar
-df\_enough\_cpds: Pandas DataFrame with targets with at least \textless{}min\_nof\_cpds\textgreater{} compounds with a pchembl value,
+\end{description}
 
-\item {} 
+\item {} \begin{description}
+\sphinxlineitem{df\_enough\_cpds: Pandas DataFrame with targets}
 \sphinxAtStartPar
-df\_c\_dt\_d\_dt: As df\_enough\_cpds but with             at least one compound\sphinxhyphen{}target pair labelled as ‘D\_DT’, ‘C3\_DT’, ‘C2\_DT’, ‘C1\_DT’ or ‘C0\_DT’ (i.e., known interaction),
+with at least \textless{}min\_nof\_cpds\textgreater{} compounds with a pchembl value,
 
-\item {} 
+\end{description}
+
+\item {} \begin{description}
+\sphinxlineitem{df\_c\_dt\_d\_dt: As df\_enough\_cpds but with             at least one compound\sphinxhyphen{}target pair labelled as}
 \sphinxAtStartPar
-df\_d\_dt: As df\_enough\_cpds but with             at least one compound\sphinxhyphen{}target pair labelled as ‘D\_DT’ (i.e., known drug\sphinxhyphen{}target interaction)
+’D\_DT’, ‘C3\_DT’, ‘C2\_DT’, ‘C1\_DT’ or ‘C0\_DT’ (i.e., known interaction),
+
+\end{description}
+
+\item {} \begin{description}
+\sphinxlineitem{df\_d\_dt: As df\_enough\_cpds but with             at least one compound\sphinxhyphen{}target pair labelled as}
+\sphinxAtStartPar
+’D\_DT’ (i.e., known drug\sphinxhyphen{}target interaction)
+
+\end{description}
 
 \end{itemize}
 
@@ -4397,147 +4421,97 @@ df\_d\_dt: As df\_enough\_cpds but with             at least one compound\sphinx
 
 \end{fulllineitems}
 
-\index{write\_BF\_to\_file() (in module write\_subsets)@\spxentry{write\_BF\_to\_file()}\spxextra{in module write\_subsets}}
+\index{output\_debug\_sizes() (in module write\_subsets)@\spxentry{output\_debug\_sizes()}\spxextra{in module write\_subsets}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{write_subsets:write_subsets.write_BF_to_file}}
+\phantomsection\label{\detokenize{write_subsets:write_subsets.output_debug_sizes}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{write\_BF\_to\_file}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_version}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{min\_nof\_cpds\_BF}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_BF}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limited\_flag}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_RDKit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{df\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{list\DUrole{p}{{[}}list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{{]}}}}}{{ $\rightarrow$ DataFrame}}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{output\_debug\_sizes}}}{\sphinxparam{\DUrole{n}{df\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{list\DUrole{p}{{[}}list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
-Calculate relevant subsets for the portion of df\_combined that is based on binding+functional data.
-If write\_BF the subsets are written to output\_path.
-Independent of write\_BF, filtering columns for BF are added to df\_combined and returned.
+Output counts at various points during calculating the final dataset for debugging.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{df\_combined}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound\sphinxhyphen{}target pairs
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{chembl\_version}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Version of ChEMBL for output files
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{min\_nof\_cpds\_BF}} (\sphinxstyleliteralemphasis{\sphinxupquote{int}}) \textendash{} Miminum number of compounds per target
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{output\_path}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Path to write the output to
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_BF}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to files?
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_csv}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to csv?
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_excel}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to excel?
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{delimiter}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Delimiter for csv output
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{limited\_flag}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Document suffix indicating whether the dataset was limited to literature sources
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{calculate\_RDKit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Does df\_combined include RDKit\sphinxhyphen{}based columns?
-
-\item {} 
-\sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{df\_sizes}} (\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}) \textendash{} List of intermediate sized of the dataset used for debugging.
 
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{output\_path}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Path to write the dataset counts to
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_csv}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if counts should be written to csv
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_excel}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if counts should be written to excel
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{delimiter}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Delimiter in csv\sphinxhyphen{}output
+
 \end{itemize}
-
-\sphinxlineitem{Returns}
-\sphinxAtStartPar
-Pandas DataFrame with additional filtering columns for BF subsets
-
-\sphinxlineitem{Return type}
-\sphinxAtStartPar
-pd.Dataframe
 
 \end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{write\_B\_to\_file() (in module write\_subsets)@\spxentry{write\_B\_to\_file()}\spxextra{in module write\_subsets}}
+\index{output\_stats() (in module write\_subsets)@\spxentry{output\_stats()}\spxextra{in module write\_subsets}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{write_subsets:write_subsets.write_B_to_file}}
+\phantomsection\label{\detokenize{write_subsets:write_subsets.output_stats}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{write\_B\_to\_file}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{df\_combined\_annotated}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_version}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{min\_nof\_cpds\_B}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_B}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limited\_flag}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_RDKit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{df\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{list\DUrole{p}{{[}}list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{{]}}}}}{{ $\rightarrow$ DataFrame}}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{output\_stats}}}{\sphinxparam{\DUrole{n}{df}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_file}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
-Calculate relevant subsets for the portion of df\_combined that is based on binding data.
-If write\_B the subsets are written to output\_path.
-Independent of write\_B, filtering columns for B are added to df\_combined\_annotated.
+Summarise and output the number of unique values in the following columns:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+parent\_molregno (compound ID)
+
+\item {} 
+\sphinxAtStartPar
+tid (target ID)
+
+\item {} 
+\sphinxAtStartPar
+tid\_mutation (target ID + mutation annotations)
+
+\item {} 
+\sphinxAtStartPar
+cpd\_target\_pair (compound\sphinxhyphen{}target pairs)
+
+\item {} 
+\sphinxAtStartPar
+cpd\_target\_pair\_mutation (compound\sphinxhyphen{}target pairs including mutation annotations)
+
+\end{itemize}
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{df\_combined}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound\sphinxhyphen{}target pairs
+\sphinxstyleliteralstrong{\sphinxupquote{df}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas Dataframe for which the stats should be calculated
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{df\_combined\_annotated}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with additional filtering columns
+\sphinxstyleliteralstrong{\sphinxupquote{output\_file}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Path and filename to write the dataset stats to
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{chembl\_version}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Version of ChEMBL for output files
+\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_csv}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if stats should be written to csv
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{min\_nof\_cpds\_BF}} (\sphinxstyleliteralemphasis{\sphinxupquote{int}}) \textendash{} Miminum number of compounds per target
+\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_excel}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} True if stats should be written to excel
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{output\_path}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Path to write the output to
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_BF}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to files?
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_csv}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to csv?
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_excel}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to excel?
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{delimiter}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Delimiter for csv output
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{limited\_flag}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Document suffix indicating whether the dataset was limited to literature sources
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{calculate\_RDKit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Does df\_combined include RDKit\sphinxhyphen{}based columns?
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{df\_sizes}} (\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}) \textendash{} List of intermediate sized of the dataset used for debugging.
+\sphinxstyleliteralstrong{\sphinxupquote{delimiter}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Delimiter in csv\sphinxhyphen{}output
 
 \end{itemize}
-
-\sphinxlineitem{Returns}
-\sphinxAtStartPar
-Pandas DataFrame with additional filtering columns for B subsets
-
-\sphinxlineitem{Return type}
-\sphinxAtStartPar
-pd.Dataframe
 
 \end{description}\end{quote}
 
@@ -4548,7 +4522,7 @@ pd.Dataframe
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{write_subsets:write_subsets.write_and_check_output}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{write\_and\_check\_output}}}{\sphinxparam{\DUrole{n}{df}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{filename}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{assay\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_RDKit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{write\_and\_check\_output}}}{\sphinxparam{\DUrole{n}{df}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{filename}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{assay\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_rdkit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
 Write df to file and check that writing was successful.
@@ -4576,13 +4550,164 @@ Write df to file and check that writing was successful.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{assay\_type}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Types of assays current\_df contains information about.         Options: “BF” (binding+functional), “B” (binding), “all” (contains both BF and B information)
+\sphinxstyleliteralstrong{\sphinxupquote{assay\_type}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Types of assays current\_df contains information about.         Options: “BF” (binding+functional),
+“B” (binding),
+“all” (contains both BF and B information)
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{calculate\_RDKit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} If True, current\_df contains RDKit\sphinxhyphen{}based columns
+\sphinxstyleliteralstrong{\sphinxupquote{calculate\_rdkit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} If True, current\_df contains RDKit\sphinxhyphen{}based columns
 
 \end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{write\_b\_to\_file() (in module write\_subsets)@\spxentry{write\_b\_to\_file()}\spxextra{in module write\_subsets}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{write_subsets:write_subsets.write_b_to_file}}
+\pysigstartsignatures
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{write\_b\_to\_file}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{df\_combined\_annotated}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_version}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{min\_nof\_cpds\_b}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_b}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limited\_flag}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_rdkit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{df\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{list\DUrole{p}{{[}}list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{{]}}}}}{{ $\rightarrow$ DataFrame}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Calculate relevant subsets for the portion of df\_combined that is based on binding data.
+If write\_b the subsets are written to output\_path.
+Independent of write\_b, filtering columns for B are added to df\_combined\_annotated.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{df\_combined}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound\sphinxhyphen{}target pairs
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{df\_combined\_annotated}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with additional filtering columns
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{chembl\_version}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Version of ChEMBL for output files
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{min\_nof\_cpds\_b}} (\sphinxstyleliteralemphasis{\sphinxupquote{int}}) \textendash{} Miminum number of compounds per target
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{output\_path}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Path to write the output to
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{write\_b}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to files?
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_csv}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to csv?
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_excel}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to excel?
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{delimiter}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Delimiter for csv output
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{limited\_flag}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Document suffix indicating
+whether the dataset was limited to literature sources
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{calculate\_rdkit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Does df\_combined include RDKit\sphinxhyphen{}based columns?
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{df\_sizes}} (\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}) \textendash{} List of intermediate sized of the dataset used for debugging.
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Pandas DataFrame with additional filtering columns for B subsets
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+pd.Dataframe
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{write\_bf\_to\_file() (in module write\_subsets)@\spxentry{write\_bf\_to\_file()}\spxextra{in module write\_subsets}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{write_subsets:write_subsets.write_bf_to_file}}
+\pysigstartsignatures
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{write\_bf\_to\_file}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_version}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{min\_nof\_cpds\_bf}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_bf}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limited\_flag}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_rdkit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{df\_sizes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{list\DUrole{p}{{[}}list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }list\DUrole{p}{{[}}int\DUrole{p}{{]}}\DUrole{p}{{]}}}}}{{ $\rightarrow$ DataFrame}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Calculate relevant subsets for the portion of df\_combined
+that is based on binding+functional data.
+If write\_bf the subsets are written to output\_path.
+Independent of write\_bf, filtering columns for BF are added to df\_combined and returned.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{df\_combined}} (\sphinxstyleliteralemphasis{\sphinxupquote{pd.DataFrame}}) \textendash{} Pandas DataFrame with compound\sphinxhyphen{}target pairs
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{chembl\_version}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Version of ChEMBL for output files
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{min\_nof\_cpds\_bf}} (\sphinxstyleliteralemphasis{\sphinxupquote{int}}) \textendash{} Miminum number of compounds per target
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{output\_path}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Path to write the output to
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{write\_bf}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to files?
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_csv}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to csv?
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{write\_to\_excel}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Should the subsets be written to excel?
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{delimiter}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Delimiter for csv output
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{limited\_flag}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Document suffix indicating
+whether the dataset was limited to literature sources
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{calculate\_rdkit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Does df\_combined include RDKit\sphinxhyphen{}based columns?
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{df\_sizes}} (\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}) \textendash{} List of intermediate sized of the dataset used for debugging.
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Pandas DataFrame with additional filtering columns for BF subsets
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+pd.Dataframe
 
 \end{description}\end{quote}
 
@@ -4593,7 +4718,7 @@ Write df to file and check that writing was successful.
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{write_subsets:write_subsets.write_full_dataset_to_file}}
 \pysigstartsignatures
-\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{write\_full\_dataset\_to\_file}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_version}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_full\_dataset}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limited\_flag}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_RDKit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{}
+\pysiglinewithargsret{\sphinxcode{\sphinxupquote{write\_subsets.}}\sphinxbfcode{\sphinxupquote{write\_full\_dataset\_to\_file}}}{\sphinxparam{\DUrole{n}{df\_combined}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{DataFrame}}\sphinxparamcomma \sphinxparam{\DUrole{n}{chembl\_version}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{output\_path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_full\_dataset}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_csv}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{write\_to\_excel}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}\sphinxparamcomma \sphinxparam{\DUrole{n}{delimiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limited\_flag}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{calculate\_rdkit}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}}}{}
 \pysigstopsignatures
 \sphinxAtStartPar
 If write\_full\_dataset, write df\_combined with filtering columns to output\_path.
@@ -4629,11 +4754,12 @@ If write\_full\_dataset, write df\_combined with filtering columns to output\_pa
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{limited\_flag}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Document suffix indicating whether the dataset was limited to literature sources
+\sphinxstyleliteralstrong{\sphinxupquote{limited\_flag}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} Document suffix indicating
+whether the dataset was limited to literature sources
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{calculate\_RDKit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Does df\_combined include RDKit\sphinxhyphen{}based columns?
+\sphinxstyleliteralstrong{\sphinxupquote{calculate\_rdkit}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}) \textendash{} Does df\_combined include RDKit\sphinxhyphen{}based columns?
 
 \end{itemize}
 

@@ -1179,7 +1179,6 @@ INPUT /usr/local/texlive/2021/texmf-dist/tex/latex/txfonts/t1txtt.fd
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/txfonts/t1xtt.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/txfonts/t1xtt.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/txfonts/t1xbtt.tfm
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/tex-gyre/ts1-qtmri.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/txfonts/t1xttsl.tfm
 INPUT ./compound_target_pairs_dataset.ind
 INPUT compound_target_pairs_dataset.ind
@@ -1188,8 +1187,8 @@ INPUT compound_target_pairs_dataset.ind
 INPUT compound_target_pairs_dataset.aux
 INPUT ./compound_target_pairs_dataset.out
 INPUT ./compound_target_pairs_dataset.out
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/tex-gyre/q-ec.enc
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb

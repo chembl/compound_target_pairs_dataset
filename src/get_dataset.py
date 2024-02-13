@@ -190,7 +190,7 @@ def get_ct_pair_dataset(
     output_file = os.path.join(
         output_path, f"ChEMBL{chembl_version}_CTI_{limited_flag}_full_dataset_stats"
     )
-    get_stats.output_stats(
+    write_subsets.output_stats(
         df_combined_annotated, output_file, write_to_csv, write_to_excel, delimiter
     )
     if write_bf:
@@ -198,7 +198,7 @@ def get_ct_pair_dataset(
             output_path,
             f"ChEMBL{chembl_version}_CTI_{limited_flag}_BF_{min_nof_cpds_bf}_c_dt_d_dt_stats",
         )
-        get_stats.output_stats(
+        write_subsets.output_stats(
             df_combined_annotated[df_combined_annotated["BF_100_c_dt_d_dt"]],
             output_file,
             write_to_csv,
@@ -210,7 +210,7 @@ def get_ct_pair_dataset(
             output_path,
             f"ChEMBL{chembl_version}_CTI_{limited_flag}_B_{min_nof_cpds_b}_c_dt_d_dt_stats",
         )
-        get_stats.output_stats(
+        write_subsets.output_stats(
             df_combined_annotated[df_combined_annotated["B_100_c_dt_d_dt"]],
             output_file,
             write_to_csv,
@@ -219,6 +219,6 @@ def get_ct_pair_dataset(
         )
 
     if logging.DEBUG >= logging.root.level:
-        get_stats.output_debug_sizes(
+        write_subsets.output_debug_sizes(
             df_sizes, output_path, write_to_csv, write_to_excel, delimiter
         )

@@ -135,6 +135,7 @@ def get_data_subsets(
         .groupby(["tid_mutation"])["parent_molregno"]
         .count()
     )
+    # pylint: disable-next=unused-variable
     targets_w_enough_cpds = comparator_counts[
         comparator_counts >= min_nof_cpds
     ].index.tolist()
@@ -144,6 +145,7 @@ def get_data_subsets(
     # with at least one compound-target pair labelled as
     # 'D_DT', 'C3_DT', 'C2_DT', 'C1_DT' or 'C0_DT',
     # i.e., compound-target pairs with a known interactions.
+    # pylint: disable-next=unused-variable
     c_dt_d_dt_targets = set(
         df_enough_cpds[
             df_enough_cpds["DTI"].isin(["D_DT", "C3_DT", "C2_DT", "C1_DT", "C0_DT"])
@@ -154,6 +156,7 @@ def get_data_subsets(
     # Restrict the dataset further to targets with
     # at least one compound-target pair labelled as 'D_DT',
     # i.e., known drug-target interactions.
+    # pylint: disable-next=unused-variable
     d_dt_targets = set(
         df_enough_cpds[df_enough_cpds["DTI"] == "D_DT"].tid_mutation.to_list()
     )
@@ -502,3 +505,120 @@ def write_full_dataset_to_file(
             desc,
             calculate_rdkit,
         )
+
+
+def output_debug_sizes(
+    df_sizes: list[list[int], list[int]],
+    output_path: str,
+    write_to_csv: bool,
+    write_to_excel: bool,
+    delimiter: str,
+):
+    """
+    Output counts at various points during calculating the final dataset for debugging.
+
+    :param df_sizes: List of intermediate sized of the dataset used for debugging.
+    :type df_sizes: list[list[int], list[int]]
+    :param output_path: Path to write the dataset counts to
+    :type output_path: str
+    :param write_to_csv: True if counts should be written to csv
+    :type write_to_csv: bool
+    :param write_to_excel: True if counts should be written to excel
+    :type write_to_excel: bool
+    :param delimiter: Delimiter in csv-output
+    :type delimiter: str
+    """
+    column_names = [
+        "type",
+        "#mols",
+        "#drugs",
+        "#targets",
+        "#drug_ targets",
+        "#targets_ mutation",
+        "#drug_ targets_mutation",
+        "#cpd_tid_ pairs",
+        "#drug_tid_ pairs",
+        "#cpd_ tid_mutation_ pairs",
+        "#drug_ tid_mutation_ pairs",
+    ]
+
+    logging.debug("Size of full dataset at different points.")
+    full_df_sizes = pd.DataFrame(df_sizes[0], columns=column_names)
+    logging.debug(full_df_sizes)
+    name_full_df_sizes = os.path.join(output_path, "debug_full_df_sizes")
+    write_output(
+        full_df_sizes, name_full_df_sizes, write_to_csv, write_to_excel, delimiter
+    )
+
+    logging.debug("Size of dataset with any pchembl values at different points.")
+    logging.debug(
+        "This includes data for which we only have pchembl data \
+            for functional assays but not for binding assays."
+    )
+    df_pchembl_sizes = pd.DataFrame(df_sizes[1], columns=column_names)
+    logging.debug(df_pchembl_sizes)
+    name_pchembl_df_sizes = os.path.join(output_path, "debug_pchembl_df_sizes")
+    write_output(
+        full_df_sizes, name_pchembl_df_sizes, write_to_csv, write_to_excel, delimiter
+    )
+
+
+def output_stats(
+    df: pd.DataFrame,
+    output_file: str,
+    write_to_csv: bool,
+    write_to_excel: bool,
+    delimiter: str,
+):
+    """
+    Summarise and output the number of unique values in the following columns:
+
+    - parent_molregno (compound ID)
+    - tid (target ID)
+    - tid_mutation (target ID + mutation annotations)
+    - cpd_target_pair (compound-target pairs)
+    - cpd_target_pair_mutation (compound-target pairs including mutation annotations)
+
+    :param df: Pandas Dataframe for which the stats should be calculated
+    :type df: pd.DataFrame
+    :param output_file: Path and filename to write the dataset stats to
+    :type output_file: str
+    :param write_to_csv: True if stats should be written to csv
+    :type write_to_csv: bool
+    :param write_to_excel: True if stats should be written to excel
+    :type write_to_excel: bool
+    :param delimiter: Delimiter in csv-output
+    :type delimiter: str
+    """
+    df_columns = [
+        "parent_molregno",
+        "tid",
+        "tid_mutation",
+        "cpd_target_pair",
+        "cpd_target_pair_mutation",
+    ]
+    columns_descs = [
+        "compound ID",
+        "target ID",
+        "target ID with mutation annotations",
+        "compound-target pair",
+        "compound-target pair with mutation annotations",
+    ]
+
+    logging.debug("Stats for %s", output_file)
+    stats = []
+    for column, columns_desc in zip(df_columns, columns_descs):
+        logging.debug("Stats for column %s:", column)
+        column_stats = get_stats.get_stats_for_column(df, column, columns_desc)
+        stats += column_stats
+        for colum_stat in column_stats:
+            logging.debug(
+                "%20s %s",
+                colum_stat[2],
+                colum_stat[3],
+            )
+
+    df_stats = pd.DataFrame(
+        stats, columns=["column", "column_description", "subset_type", "counts"]
+    )
+    write_output(df_stats, output_file, write_to_csv, write_to_excel, delimiter)

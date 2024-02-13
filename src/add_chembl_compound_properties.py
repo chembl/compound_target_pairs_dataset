@@ -98,9 +98,9 @@ def add_ligand_efficiency_metrics(df_combined: pd.DataFrame) -> pd.DataFrame:
 
         LE &= \\frac{2.303 \\cdot 298 \\cdot 0.00199 \\cdot pchembl \\_ value} {heavy \\_ atoms}
 
-        BEI &= \\frac{pchembl \\_ mean \cdot 1000}{mw \\_ freebase}
+        BEI &= \\frac{pchembl \\_ mean \\cdot 1000}{mw \\_ freebase}
 
-        SEI &= \\frac{pchembl \\_ mean \cdot 100}{PSA}
+        SEI &= \\frac{pchembl \\_ mean \\cdot 100}{PSA}
 
         LLE &= pchembl \\_ mean - ALOGP
 

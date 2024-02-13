@@ -86,7 +86,7 @@
 <a class="viewcode-back" href="../add_rdkit_compound_descriptors.html#add_rdkit_compound_descriptors.add_built_in_descriptors">[docs]</a>
 <span class="k">def</span> <span class="nf">add_built_in_descriptors</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Add RDKit built-in compound descriptors. </span>
+<span class="sd">    Add RDKit built-in compound descriptors.</span>
 
 <span class="sd">    :param df_combined: Pandas DataFrame with compound-target pairs</span>
 <span class="sd">    :type df_combined: pd.DataFrame</span>
@@ -94,63 +94,112 @@
 <span class="sd">    :rtype: pd.DataFrame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># add a column with RDKit molecules, used to calculate the descriptors</span>
-    <span class="n">PandasTools</span><span class="o">.</span><span class="n">AddMoleculeColumnToFrame</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="s1">&#39;canonical_smiles&#39;</span><span class="p">,</span> <span class="s1">&#39;mol&#39;</span><span class="p">,</span> <span class="n">includeFingerprints</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">PandasTools</span><span class="o">.</span><span class="n">AddMoleculeColumnToFrame</span><span class="p">(</span>
+        <span class="n">df_combined</span><span class="p">,</span> <span class="s2">&quot;canonical_smiles&quot;</span><span class="p">,</span> <span class="s2">&quot;mol&quot;</span><span class="p">,</span> <span class="n">includeFingerprints</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
 
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;fraction_csp3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">FractionCSP3</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;ring_count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">RingCount</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_aliphatic_rings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAliphaticRings</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_aliphatic_carbocycles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAliphaticCarbocycles</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_aliphatic_heterocycles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAliphaticHeterocycles</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_aromatic_rings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAromaticRings</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_aromatic_carbocycles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAromaticCarbocycles</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_aromatic_heterocycles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAromaticHeterocycles</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_saturated_rings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">NumSaturatedRings</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_saturated_carbocycles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">NumSaturatedCarbocycles</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_saturated_heterocycles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">NumSaturatedHeterocycles</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_stereocentres&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">rdMolDescriptors</span><span class="o">.</span><span class="n">CalcNumAtomStereoCenters</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;num_heteroatoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">NumHeteroatoms</span><span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;fraction_csp3&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">FractionCSP3</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;ring_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">RingCount</span><span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_aliphatic_rings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAliphaticRings</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_aliphatic_carbocycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAliphaticCarbocycles</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_aliphatic_heterocycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAliphaticHeterocycles</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_aromatic_rings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAromaticRings</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_aromatic_carbocycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAromaticCarbocycles</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_aromatic_heterocycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumAromaticHeterocycles</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_saturated_rings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumSaturatedRings</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_saturated_carbocycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumSaturatedCarbocycles</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_saturated_heterocycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumSaturatedHeterocycles</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_stereocentres&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Chem</span><span class="o">.</span><span class="n">rdMolDescriptors</span><span class="o">.</span><span class="n">CalcNumAtomStereoCenters</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;num_heteroatoms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumHeteroatoms</span>
+    <span class="p">)</span>
 
     <span class="c1"># add scaffolds</span>
-    <span class="n">PandasTools</span><span class="o">.</span><span class="n">AddMurckoToFrame</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="s1">&#39;mol&#39;</span><span class="p">,</span> <span class="s1">&#39;scaffold_w_stereo&#39;</span><span class="p">)</span>
+    <span class="n">PandasTools</span><span class="o">.</span><span class="n">AddMurckoToFrame</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="s2">&quot;mol&quot;</span><span class="p">,</span> <span class="s2">&quot;scaffold_w_stereo&quot;</span><span class="p">)</span>
     <span class="c1"># remove stereo information of the molecule to add scaffolds without stereo information</span>
-    <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">RemoveStereochemistry</span><span class="p">)</span>
-    <span class="n">PandasTools</span><span class="o">.</span><span class="n">AddMurckoToFrame</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="s1">&#39;mol&#39;</span><span class="p">,</span> <span class="s1">&#39;scaffold_wo_stereo&#39;</span><span class="p">)</span>
+    <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;mol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">RemoveStereochemistry</span><span class="p">)</span>
+    <span class="n">PandasTools</span><span class="o">.</span><span class="n">AddMurckoToFrame</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="s2">&quot;mol&quot;</span><span class="p">,</span> <span class="s2">&quot;scaffold_wo_stereo&quot;</span><span class="p">)</span>
 
     <span class="c1"># drop the column with RDKit molecules</span>
-    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;mol&#39;</span><span class="p">]</span> <span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;mol&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">df_combined</span></div>
 
 
 
 <div class="viewcode-block" id="calculate_aromatic_atoms">
 <a class="viewcode-back" href="../add_rdkit_compound_descriptors.html#add_rdkit_compound_descriptors.calculate_aromatic_atoms">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_aromatic_atoms</span><span class="p">(</span><span class="n">smiles_set</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+<span class="k">def</span> <span class="nf">calculate_aromatic_atoms</span><span class="p">(</span>
+    <span class="n">smiles_set</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get dictionaries with number of aromatic atoms for each smiles.</span>
 
 <span class="sd">    :param smiles_set: Set of smiles to calculate the number of aromatic atoms for</span>
 <span class="sd">    :type smiles_set: set[str]</span>
-<span class="sd">    :return: Dictionaries with: </span>
+<span class="sd">    :return: Dictionaries with:</span>
 
-<span class="sd">        - SMILES -&gt; # aromatics atoms </span>
-<span class="sd">        - SMILES -&gt; # aromatic carbon atoms </span>
-<span class="sd">        - SMILES -&gt; # aromatic nitrogen atoms </span>
-<span class="sd">        - SMILES -&gt; # aromatic hetero atoms </span>
+<span class="sd">        - SMILES -&gt; # aromatics atoms</span>
+<span class="sd">        - SMILES -&gt; # aromatic carbon atoms</span>
+<span class="sd">        - SMILES -&gt; # aromatic nitrogen atoms</span>
+<span class="sd">        - SMILES -&gt; # aromatic hetero atoms</span>
 <span class="sd">    :rtype: (dict[str, int], dict[str, int], dict[str, int], dict[str, int])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">aromatic_atoms_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">aromatic_c_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">aromatic_n_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">aromatic_hetero_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    
+    <span class="n">aromatic_atoms_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">aromatic_c_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">aromatic_n_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">aromatic_hetero_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
     <span class="k">for</span> <span class="n">smiles</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">smiles_set</span><span class="p">):</span>
         <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
-        <span class="n">aromatic_atoms_dict</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">()))</span>
-        <span class="n">aromatic_c_dict</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">6</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">()))</span>
-        <span class="n">aromatic_n_dict</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">7</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">()))</span>
-        <span class="n">aromatic_hetero_dict</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">6</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">()))</span>
-        
+        <span class="n">aromatic_atoms_dict</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">())</span>
+        <span class="p">)</span>
+        <span class="n">aromatic_c_dict</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">6</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">())</span>
+        <span class="p">)</span>
+        <span class="n">aromatic_n_dict</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">7</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">())</span>
+        <span class="p">)</span>
+        <span class="n">aromatic_hetero_dict</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">6</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">())</span>
+        <span class="p">)</span>
+
     <span class="k">return</span> <span class="n">aromatic_atoms_dict</span><span class="p">,</span> <span class="n">aromatic_c_dict</span><span class="p">,</span> <span class="n">aromatic_n_dict</span><span class="p">,</span> <span class="n">aromatic_hetero_dict</span></div>
 
 
@@ -173,12 +222,18 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># use df_combined_w_smiles to exclude null values</span>
     <span class="n">smiles_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">])</span>
-    <span class="n">aromatic_atoms_dict</span><span class="p">,</span> <span class="n">aromatic_c_dict</span><span class="p">,</span> <span class="n">aromatic_n_dict</span><span class="p">,</span> <span class="n">aromatic_hetero_dict</span> <span class="o">=</span> <span class="n">calculate_aromatic_atoms</span><span class="p">(</span><span class="n">smiles_set</span><span class="p">)</span>
+    <span class="n">aromatic_atoms_dict</span><span class="p">,</span> <span class="n">aromatic_c_dict</span><span class="p">,</span> <span class="n">aromatic_n_dict</span><span class="p">,</span> <span class="n">aromatic_hetero_dict</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">calculate_aromatic_atoms</span><span class="p">(</span><span class="n">smiles_set</span><span class="p">)</span>
+    <span class="p">)</span>
 
-    <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;aromatic_atoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">aromatic_atoms_dict</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;aromatic_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">aromatic_c_dict</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;aromatic_n&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">aromatic_n_dict</span><span class="p">)</span>
-    <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;aromatic_hetero&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">aromatic_hetero_dict</span><span class="p">)</span>
+    <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;aromatic_atoms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="n">aromatic_atoms_dict</span>
+    <span class="p">)</span>
+    <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;aromatic_c&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">aromatic_c_dict</span><span class="p">)</span>
+    <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;aromatic_n&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">aromatic_n_dict</span><span class="p">)</span>
+    <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;aromatic_hetero&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="n">aromatic_hetero_dict</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">df_combined</span></div>
 
@@ -192,7 +247,8 @@
 
 <span class="sd">    :param df_combined: Pandas DataFrame with compound-target pairs</span>
 <span class="sd">    :type df_combined: pd.DataFrame</span>
-<span class="sd">    :return: Pandas DataFrame with added built-in RDKit compound descriptors and numbers of aromatic atoms</span>
+<span class="sd">    :return: Pandas DataFrame with added built-in RDKit compound descriptors</span>
+<span class="sd">        and numbers of aromatic atoms</span>
 <span class="sd">    :rtype: pd.DataFrame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df_combined</span> <span class="o">=</span> <span class="n">add_built_in_descriptors</span><span class="p">(</span><span class="n">df_combined</span><span class="p">)</span>
@@ -200,10 +256,6 @@
 
     <span class="k">return</span> <span class="n">df_combined</span></div>
 
-
-
-
-    
 </pre></div>
 
            </div>

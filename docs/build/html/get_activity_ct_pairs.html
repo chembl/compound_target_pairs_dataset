@@ -109,18 +109,22 @@ with pchembl and publication dates aggregated into one entry per pair.</p>
 <li><p>a subset of the initial dataset based on binding and functional assays (suffix ‘_BF’) and</p></li>
 <li><p>a subset of the initial dataset set on only binding assays (suffix ‘_B’).</p></li>
 </ul>
-<p>Therefore, there are two columns for pchembl_value_mean, _max, _median, first_publication_cpd_target_pair and first_publication_cpd_target_pair_w_pchembl,
-one with the suffix ‘_BF’ based on binding + functional data and one with the suffix ‘_B’ based on only binding data.</p>
+<p>Therefore, there are two columns for pchembl_value_mean, _max, _median,
+first_publication_cpd_target_pair and first_publication_cpd_target_pair_w_pchembl,
+one with the suffix ‘_BF’ based on binding + functional data
+and one with the suffix ‘_B’ based on only binding data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>chembl_con</strong> (<em>sqlite3.Connection</em>) – Sqlite3 connection to ChEMBL database.</p></li>
-<li><p><strong>limit_to_literature</strong> (<em>bool</em>) – Include only literature sources if True. Include all available sources otherwise.</p></li>
+<li><p><strong>limit_to_literature</strong> (<em>bool</em>) – Include only literature sources if True.
+Include all available sources otherwise.</p></li>
 <li><p><strong>df_sizes</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>, </em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – List of intermediate sized of the dataset used for debugging.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Pandas Dataframe with compound-target pairs based on ChEMBL activity data aggregated into one entry per compound-target pair.</p>
+<dd class="field-even"><p>Pandas Dataframe with compound-target pairs based on ChEMBL activity data
+aggregated into one entry per compound-target pair.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
@@ -131,8 +135,10 @@ one with the suffix ‘_BF’ based on binding + functional data and one with th
 <dl class="py function">
 <dt class="sig sig-object py" id="get_activity_ct_pairs.get_average_info">
 <span class="sig-prename descclassname"><span class="pre">get_activity_ct_pairs.</span></span><span class="sig-name descname"><span class="pre">get_average_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/get_activity_ct_pairs.html#get_average_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_activity_ct_pairs.get_average_info" title="Link to this definition"></a></dt>
-<dd><p>Aggregate the information about compound-target pairs for which there is more than one entry into one entry.
-Compound-target pairs are considered equal if parent_molregno (internal compound ID) and tid_mutation (target ID + mutation annotations) are equal.</p>
+<dd><p>Aggregate the information about compound-target pairs for which
+there is more than one entry into one entry.
+Compound-target pairs are considered equal if parent_molregno (internal compound ID)
+and tid_mutation (target ID + mutation annotations) are equal.</p>
 <p>The following values are aggregated:</p>
 <table class="docutils align-default">
 <tbody>
@@ -156,8 +162,10 @@ Compound-target pairs are considered equal if parent_molregno (internal compound
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with compound-target pairs for which the information should be aggregated.</p></li>
-<li><p><strong>suffix</strong> (<em>str</em>) – Suffix indicating the type of the given DataFrame, e.g., _B for binding assays, _BF for binding+functional assays.</p></li>
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with compound-target pairs for which
+the information should be aggregated.</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – Suffix indicating the type of the given DataFrame,
+e.g., _B for binding assays, _BF for binding+functional assays.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -172,16 +180,19 @@ Compound-target pairs are considered equal if parent_molregno (internal compound
 <dl class="py function">
 <dt class="sig sig-object py" id="get_activity_ct_pairs.get_compound_target_pairs_with_pchembl">
 <span class="sig-prename descclassname"><span class="pre">get_activity_ct_pairs.</span></span><span class="sig-name descname"><span class="pre">get_compound_target_pairs_with_pchembl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chembl_con</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_to_literature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/get_activity_ct_pairs.html#get_compound_target_pairs_with_pchembl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_activity_ct_pairs.get_compound_target_pairs_with_pchembl" title="Link to this definition"></a></dt>
-<dd><p>Query ChEMBL activities and related assay for compound-target pairs with an associated pchembl value.
+<dd><p>Query ChEMBL activities and related assay for compound-target pairs
+with an associated pchembl value.
 Compound-target pairs are required to have a pchembl value.
 Salt forms of compounds are mapped to their parent form.
-If limit_to_literature is true, only literature sources will be considered. Otherwise, all sources are included.
+If limit_to_literature is true, only literature sources will be considered.
+Otherwise, all sources are included.
 Includes information about targets, mutations and year of publication (based on docs).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>chembl_con</strong> (<em>sqlite3.Connection</em>) – Sqlite3 connection to ChEMBL database.</p></li>
-<li><p><strong>limit_to_literature</strong> (<em>bool</em>) – Include only literature sources if True. Include all available sources otherwise.</p></li>
+<li><p><strong>limit_to_literature</strong> (<em>bool</em>) – Include only literature sources if True.
+Include all available sources otherwise.</p></li>
 <li><p><strong>df_sizes</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>, </em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – List of intermediate sized of the dataset used for debugging.</p></li>
 </ul>
 </dd>

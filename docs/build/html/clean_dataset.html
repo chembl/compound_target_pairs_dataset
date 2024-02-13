@@ -104,7 +104,7 @@
 <span id="clean-dataset-module"></span><h1>clean_dataset module<a class="headerlink" href="#module-clean_dataset" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="clean_dataset.clean_dataset">
-<span class="sig-prename descclassname"><span class="pre">clean_dataset.</span></span><span class="sig-name descname"><span class="pre">clean_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_RDKit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/clean_dataset.html#clean_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clean_dataset.clean_dataset" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clean_dataset.</span></span><span class="sig-name descname"><span class="pre">clean_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_rdkit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/clean_dataset.html#clean_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clean_dataset.clean_dataset" title="Link to this definition"></a></dt>
 <dd><p>Clean the dataset by</p>
 <ul class="simple">
 <li><p>changing nan values and empty strings to None</p></li>
@@ -117,7 +117,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df_combined</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with compound-target pairs</p></li>
-<li><p><strong>calculate_RDKit</strong> (<em>bool</em>) – True if the DataFrame contains RDKit-based compound properties</p></li>
+<li><p><strong>calculate_rdkit</strong> (<em>bool</em>) – True if the DataFrame contains RDKit-based compound properties</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -163,7 +163,7 @@ the number of smiles with a dot is relatively low.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clean_dataset.reorder_columns">
-<span class="sig-prename descclassname"><span class="pre">clean_dataset.</span></span><span class="sig-name descname"><span class="pre">reorder_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_RDKit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clean_dataset.html#reorder_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clean_dataset.reorder_columns" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clean_dataset.</span></span><span class="sig-name descname"><span class="pre">reorder_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_rdkit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clean_dataset.html#reorder_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clean_dataset.reorder_columns" title="Link to this definition"></a></dt>
 <dd><p>Reorder the columns in the DataFrame.</p>
 </dd></dl>
 
@@ -176,7 +176,7 @@ This does not apply to max_phase.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clean_dataset.set_types_to_int">
-<span class="sig-prename descclassname"><span class="pre">clean_dataset.</span></span><span class="sig-name descname"><span class="pre">set_types_to_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_RDKit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clean_dataset.html#set_types_to_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clean_dataset.set_types_to_int" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clean_dataset.</span></span><span class="sig-name descname"><span class="pre">set_types_to_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_rdkit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clean_dataset.html#set_types_to_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clean_dataset.set_types_to_int" title="Link to this definition"></a></dt>
 <dd><p>Set the type of relevant columns to Int64.</p>
 </dd></dl>
 

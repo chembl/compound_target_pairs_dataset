@@ -85,7 +85,13 @@
 
 <div class="viewcode-block" id="write_output">
 <a class="viewcode-back" href="../write_subsets.html#write_subsets.write_output">[docs]</a>
-<span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write DataFrame df to output file named &lt;filename&gt;.</span>
 
@@ -105,13 +111,13 @@
     <span class="n">file_type_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">write_to_csv</span><span class="p">:</span>
         <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">delimiter</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">file_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;csv&#39;</span><span class="p">)</span>
+        <span class="n">file_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;csv&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">write_to_excel</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.xlsx&quot;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;xlsxwriter&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.xlsx&quot;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;xlsxwriter&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
                 <span class="n">writer</span><span class="o">.</span><span class="n">book</span><span class="o">.</span><span class="n">use_zip64</span><span class="p">()</span>
                 <span class="n">df</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">file_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;xlsx&#39;</span><span class="p">)</span>
+            <span class="n">file_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;xlsx&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># full dataset may be too large to write to excel</span>
             <span class="c1"># remove empty file in case of error to avoid confusion</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.xlsx&quot;</span><span class="p">):</span>
@@ -123,8 +129,15 @@
 
 <div class="viewcode-block" id="write_and_check_output">
 <a class="viewcode-back" href="../write_subsets.html#write_subsets.write_and_check_output">[docs]</a>
-<span class="k">def</span> <span class="nf">write_and_check_output</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                           <span class="n">assay_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">write_and_check_output</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">assay_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">calculate_rdkit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write df to file and check that writing was successful.</span>
 
@@ -139,21 +152,25 @@
 <span class="sd">    :param delimiter: Delimiter in csv-output</span>
 <span class="sd">    :type delimiter: str</span>
 <span class="sd">    :param assay_type: Types of assays current_df contains information about. \</span>
-<span class="sd">        Options: &quot;BF&quot; (binding+functional), &quot;B&quot; (binding), &quot;all&quot; (contains both BF and B information)</span>
+<span class="sd">        Options: &quot;BF&quot; (binding+functional), </span>
+<span class="sd">        &quot;B&quot; (binding), </span>
+<span class="sd">        &quot;all&quot; (contains both BF and B information)</span>
 <span class="sd">    :type assay_type: str</span>
-<span class="sd">    :param calculate_RDKit: If True, current_df contains RDKit-based columns</span>
-<span class="sd">    :type calculate_RDKit: bool</span>
+<span class="sd">    :param calculate_rdkit: If True, current_df contains RDKit-based columns</span>
+<span class="sd">    :type calculate_rdkit: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">file_type_list</span> <span class="o">=</span> <span class="n">write_output</span><span class="p">(</span>
-        <span class="n">df</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span>
+    <span class="n">file_type_list</span> <span class="o">=</span> <span class="n">write_output</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span>
     <span class="n">sanity_checks</span><span class="o">.</span><span class="n">test_equality</span><span class="p">(</span>
-        <span class="n">df</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">assay_type</span><span class="p">,</span> <span class="n">file_type_list</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span></div>
+        <span class="n">df</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">assay_type</span><span class="p">,</span> <span class="n">file_type_list</span><span class="p">,</span> <span class="n">calculate_rdkit</span>
+    <span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="get_data_subsets">
 <a class="viewcode-back" href="../write_subsets.html#write_subsets.get_data_subsets">[docs]</a>
-<span class="k">def</span> <span class="nf">get_data_subsets</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">min_nof_cpds</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_data_subsets</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">min_nof_cpds</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate and return the different subsets of interest.</span>
 
@@ -164,85 +181,118 @@
 <span class="sd">    :param desc: Types of assays current_df contains information about. \</span>
 <span class="sd">        Options: &quot;BF&quot; (binding+functional), &quot;B&quot; (binding)</span>
 <span class="sd">    :type desc: str</span>
-<span class="sd">    :return: - data: Pandas DataFrame with compound-target pairs without the annotations for the opposite desc, \</span>
-<span class="sd">            e.g. if desc = &quot;BF&quot;, the average pchembl value based on binding data only is dropped</span>
-<span class="sd">        - df_enough_cpds: Pandas DataFrame with targets with at least &lt;min_nof_cpds&gt; compounds with a pchembl value, </span>
+<span class="sd">    :return: </span>
+<span class="sd">        - data: Pandas DataFrame with compound-target pairs </span>
+<span class="sd">            without the annotations for the opposite desc, \</span>
+<span class="sd">            e.g. if desc = &quot;BF&quot;, the average pchembl value based on </span>
+<span class="sd">            binding data only is dropped</span>
+<span class="sd">        - df_enough_cpds: Pandas DataFrame with targets </span>
+<span class="sd">            with at least &lt;min_nof_cpds&gt; compounds with a pchembl value, </span>
 <span class="sd">        - df_c_dt_d_dt: As df_enough_cpds but with \</span>
-<span class="sd">            at least one compound-target pair labelled as &#39;D_DT&#39;, &#39;C3_DT&#39;, &#39;C2_DT&#39;, &#39;C1_DT&#39; or &#39;C0_DT&#39; (i.e., known interaction), </span>
+<span class="sd">            at least one compound-target pair labelled as </span>
+<span class="sd">            &#39;D_DT&#39;, &#39;C3_DT&#39;, &#39;C2_DT&#39;, &#39;C1_DT&#39; or &#39;C0_DT&#39; (i.e., known interaction), </span>
 <span class="sd">        - df_d_dt: As df_enough_cpds but with \</span>
-<span class="sd">            at least one compound-target pair labelled as &#39;D_DT&#39; (i.e., known drug-target interaction)</span>
+<span class="sd">            at least one compound-target pair labelled as </span>
+<span class="sd">            &#39;D_DT&#39; (i.e., known drug-target interaction)</span>
 <span class="sd">    :rtype: (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">desc</span> <span class="o">==</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span>
-        <span class="n">drop_desc</span> <span class="o">=</span> <span class="s1">&#39;BF&#39;</span>
+    <span class="k">if</span> <span class="n">desc</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+        <span class="n">drop_desc</span> <span class="o">=</span> <span class="s2">&quot;BF&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">drop_desc</span> <span class="o">=</span> <span class="s1">&#39;B&#39;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;pchembl_value_mean_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                              <span class="sa">f</span><span class="s2">&quot;pchembl_value_max_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                              <span class="sa">f</span><span class="s2">&quot;pchembl_value_median_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                              <span class="sa">f</span><span class="s2">&quot;first_publication_cpd_target_pair_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                              <span class="sa">f</span><span class="s2">&quot;first_publication_cpd_target_pair_w_pchembl_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                              <span class="sa">f</span><span class="s2">&quot;LE_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                              <span class="sa">f</span><span class="s2">&quot;BEI_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                              <span class="sa">f</span><span class="s2">&quot;SEI_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                              <span class="sa">f</span><span class="s2">&quot;LLE_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="n">drop_desc</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;pchembl_value_mean_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;pchembl_value_max_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;pchembl_value_median_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;first_publication_cpd_target_pair_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;first_publication_cpd_target_pair_w_pchembl_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;LE_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;BEI_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;SEI_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;LLE_</span><span class="si">{</span><span class="n">drop_desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
 
     <span class="c1"># Restrict the dataset to targets with at least *min_nof_cpds* compounds with a pchembl value.</span>
-    <span class="n">comparator_counts</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;pchembl_value_mean_</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
-        <span class="p">[</span><span class="s1">&#39;tid_mutation&#39;</span><span class="p">])[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-    <span class="n">targets_w_enough_cpds</span> <span class="o">=</span> <span class="n">comparator_counts</span><span class="p">[</span><span class="n">comparator_counts</span> <span class="o">&gt;=</span> <span class="n">min_nof_cpds</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">(</span>
+    <span class="n">comparator_counts</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;pchembl_value_mean_</span><span class="si">{</span><span class="n">desc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span>
+        <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;tid_mutation&quot;</span><span class="p">])[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]</span>
+        <span class="o">.</span><span class="n">count</span><span class="p">()</span>
     <span class="p">)</span>
-    <span class="n">df_enough_cpds</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;tid_mutation in @targets_w_enough_cpds&#39;</span><span class="p">)</span>
+    <span class="c1"># pylint: disable-next=unused-variable</span>
+    <span class="n">targets_w_enough_cpds</span> <span class="o">=</span> <span class="n">comparator_counts</span><span class="p">[</span>
+        <span class="n">comparator_counts</span> <span class="o">&gt;=</span> <span class="n">min_nof_cpds</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">df_enough_cpds</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;tid_mutation in @targets_w_enough_cpds&quot;</span><span class="p">)</span>
 
     <span class="c1"># Restrict the dataset further to targets</span>
-    <span class="c1"># with at least one compound-target pair labelled as &#39;D_DT&#39;, &#39;C3_DT&#39;, &#39;C2_DT&#39;, &#39;C1_DT&#39; or &#39;C0_DT&#39;,</span>
+    <span class="c1"># with at least one compound-target pair labelled as</span>
+    <span class="c1"># &#39;D_DT&#39;, &#39;C3_DT&#39;, &#39;C2_DT&#39;, &#39;C1_DT&#39; or &#39;C0_DT&#39;,</span>
     <span class="c1"># i.e., compound-target pairs with a known interactions.</span>
-    <span class="n">c_dt_d_dt_targets</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">df_enough_cpds</span><span class="p">[</span><span class="n">df_enough_cpds</span><span class="p">[</span><span class="s1">&#39;DTI&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
-        <span class="p">[</span><span class="s1">&#39;D_DT&#39;</span><span class="p">,</span> <span class="s1">&#39;C3_DT&#39;</span><span class="p">,</span> <span class="s1">&#39;C2_DT&#39;</span><span class="p">,</span> <span class="s1">&#39;C1_DT&#39;</span><span class="p">,</span> <span class="s1">&#39;C0_DT&#39;</span><span class="p">])]</span><span class="o">.</span><span class="n">tid_mutation</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
-    <span class="n">df_c_dt_d_dt</span> <span class="o">=</span> <span class="n">df_enough_cpds</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;tid_mutation in @c_dt_d_dt_targets&#39;</span><span class="p">)</span>
+    <span class="c1"># pylint: disable-next=unused-variable</span>
+    <span class="n">c_dt_d_dt_targets</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+        <span class="n">df_enough_cpds</span><span class="p">[</span>
+            <span class="n">df_enough_cpds</span><span class="p">[</span><span class="s2">&quot;DTI&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;D_DT&quot;</span><span class="p">,</span> <span class="s2">&quot;C3_DT&quot;</span><span class="p">,</span> <span class="s2">&quot;C2_DT&quot;</span><span class="p">,</span> <span class="s2">&quot;C1_DT&quot;</span><span class="p">,</span> <span class="s2">&quot;C0_DT&quot;</span><span class="p">])</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">tid_mutation</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">df_c_dt_d_dt</span> <span class="o">=</span> <span class="n">df_enough_cpds</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;tid_mutation in @c_dt_d_dt_targets&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Restrict the dataset further to targets with at least one compound-target pair labelled as &#39;D_DT&#39;,</span>
+    <span class="c1"># Restrict the dataset further to targets with</span>
+    <span class="c1"># at least one compound-target pair labelled as &#39;D_DT&#39;,</span>
     <span class="c1"># i.e., known drug-target interactions.</span>
+    <span class="c1"># pylint: disable-next=unused-variable</span>
     <span class="n">d_dt_targets</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-        <span class="n">df_enough_cpds</span><span class="p">[</span><span class="n">df_enough_cpds</span><span class="p">[</span><span class="s1">&#39;DTI&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;D_DT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tid_mutation</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
-    <span class="n">df_d_dt</span> <span class="o">=</span> <span class="n">df_enough_cpds</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;tid_mutation in @d_dt_targets&#39;</span><span class="p">)</span>
+        <span class="n">df_enough_cpds</span><span class="p">[</span><span class="n">df_enough_cpds</span><span class="p">[</span><span class="s2">&quot;DTI&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D_DT&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tid_mutation</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">df_d_dt</span> <span class="o">=</span> <span class="n">df_enough_cpds</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;tid_mutation in @d_dt_targets&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">df_enough_cpds</span><span class="p">,</span> <span class="n">df_c_dt_d_dt</span><span class="p">,</span> <span class="n">df_d_dt</span></div>
 
 
 
-<div class="viewcode-block" id="write_BF_to_file">
-<a class="viewcode-back" href="../write_subsets.html#write_subsets.write_BF_to_file">[docs]</a>
-<span class="k">def</span> <span class="nf">write_BF_to_file</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> 
-                     <span class="n">chembl_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">min_nof_cpds_BF</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                     <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">write_BF</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                     <span class="n">limited_flag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> 
-                     <span class="n">df_sizes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="write_bf_to_file">
+<a class="viewcode-back" href="../write_subsets.html#write_subsets.write_bf_to_file">[docs]</a>
+<span class="k">def</span> <span class="nf">write_bf_to_file</span><span class="p">(</span>
+    <span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">chembl_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">min_nof_cpds_bf</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">write_bf</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">limited_flag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">calculate_rdkit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">df_sizes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate relevant subsets for the portion of df_combined that is based on binding+functional data. </span>
-<span class="sd">    If write_BF the subsets are written to output_path.</span>
-<span class="sd">    Independent of write_BF, filtering columns for BF are added to df_combined and returned.</span>
+<span class="sd">    Calculate relevant subsets for the portion of df_combined</span>
+<span class="sd">    that is based on binding+functional data.</span>
+<span class="sd">    If write_bf the subsets are written to output_path.</span>
+<span class="sd">    Independent of write_bf, filtering columns for BF are added to df_combined and returned.</span>
 
 <span class="sd">    :param df_combined: Pandas DataFrame with compound-target pairs</span>
 <span class="sd">    :type df_combined: pd.DataFrame</span>
 <span class="sd">    :param chembl_version: Version of ChEMBL for output files</span>
 <span class="sd">    :type chembl_version: str</span>
-<span class="sd">    :param min_nof_cpds_BF: Miminum number of compounds per target</span>
-<span class="sd">    :type min_nof_cpds_BF: int</span>
+<span class="sd">    :param min_nof_cpds_bf: Miminum number of compounds per target</span>
+<span class="sd">    :type min_nof_cpds_bf: int</span>
 <span class="sd">    :param output_path: Path to write the output to</span>
 <span class="sd">    :type output_path: str</span>
-<span class="sd">    :param write_BF: Should the subsets be written to files?</span>
-<span class="sd">    :type write_BF: bool</span>
+<span class="sd">    :param write_bf: Should the subsets be written to files?</span>
+<span class="sd">    :type write_bf: bool</span>
 <span class="sd">    :param write_to_csv: Should the subsets be written to csv?</span>
 <span class="sd">    :type write_to_csv: bool</span>
 <span class="sd">    :param write_to_excel: Should the subsets be written to excel?</span>
 <span class="sd">    :type write_to_excel: bool</span>
 <span class="sd">    :param delimiter: Delimiter for csv output</span>
 <span class="sd">    :type delimiter: str</span>
-<span class="sd">    :param limited_flag: Document suffix indicating whether the dataset was limited to literature sources</span>
+<span class="sd">    :param limited_flag: Document suffix indicating</span>
+<span class="sd">        whether the dataset was limited to literature sources</span>
 <span class="sd">    :type limited_flag: str</span>
-<span class="sd">    :param calculate_RDKit: Does df_combined include RDKit-based columns? </span>
-<span class="sd">    :type calculate_RDKit: bool</span>
+<span class="sd">    :param calculate_rdkit: Does df_combined include RDKit-based columns?</span>
+<span class="sd">    :type calculate_rdkit: bool</span>
 <span class="sd">    :param df_sizes: List of intermediate sized of the dataset used for debugging.</span>
 <span class="sd">    :type df_sizes: list[list[int], list[int]]</span>
 <span class="sd">    :return: Pandas DataFrame with additional filtering columns for BF subsets</span>
@@ -250,73 +300,130 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># consider binding and functional assays</span>
     <span class="c1"># assay description = binding+functional</span>
-    <span class="n">desc</span> <span class="o">=</span> <span class="s1">&#39;BF&#39;</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;BF&quot;</span>
     <span class="c1"># df_combined with additional filtering columns</span>
     <span class="n">df_combined_annotated</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="c1"># df_combined without binding only data</span>
-    <span class="n">df_combined_BF</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">df_combined_BF</span><span class="p">,</span> <span class="n">df_combined_BF_enough_cpds</span><span class="p">,</span> <span class="n">df_combined_BF_c_dt_d_dt</span><span class="p">,</span> <span class="n">df_combined_BF_d_dt</span> <span class="o">=</span> <span class="n">get_data_subsets</span><span class="p">(</span>
-        <span class="n">df_combined_BF</span><span class="p">,</span> <span class="n">min_nof_cpds_BF</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span>
+    <span class="n">df_combined_bf</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="p">(</span>
+        <span class="n">df_combined_bf</span><span class="p">,</span>
+        <span class="n">df_combined_bf_enough_cpds</span><span class="p">,</span>
+        <span class="n">df_combined_bf_c_dt_d_dt</span><span class="p">,</span>
+        <span class="n">df_combined_bf_d_dt</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">get_data_subsets</span><span class="p">(</span><span class="n">df_combined_bf</span><span class="p">,</span> <span class="n">min_nof_cpds_bf</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span>
 
     <span class="c1"># add filtering columns to df_combined_annotated</span>
-    <span class="k">for</span> <span class="n">df</span><span class="p">,</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">df_combined_BF_enough_cpds</span><span class="p">,</span>
-                        <span class="n">df_combined_BF_c_dt_d_dt</span><span class="p">,</span>
-                        <span class="n">df_combined_BF_d_dt</span><span class="p">,</span>
-                         <span class="p">],</span>
-                        <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;BF_</span><span class="si">{</span><span class="n">min_nof_cpds_BF</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                        <span class="sa">f</span><span class="s2">&quot;BF_</span><span class="si">{</span><span class="n">min_nof_cpds_BF</span><span class="si">}</span><span class="s2">_c_dt_d_dt&quot;</span><span class="p">,</span>
-                        <span class="sa">f</span><span class="s2">&quot;BF_</span><span class="si">{</span><span class="n">min_nof_cpds_BF</span><span class="si">}</span><span class="s2">_d_dt&quot;</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">df</span><span class="p">,</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">df_combined_bf_enough_cpds</span><span class="p">,</span>
+            <span class="n">df_combined_bf_c_dt_d_dt</span><span class="p">,</span>
+            <span class="n">df_combined_bf_d_dt</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;BF_</span><span class="si">{</span><span class="n">min_nof_cpds_bf</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;BF_</span><span class="si">{</span><span class="n">min_nof_cpds_bf</span><span class="si">}</span><span class="s2">_c_dt_d_dt&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;BF_</span><span class="si">{</span><span class="n">min_nof_cpds_bf</span><span class="si">}</span><span class="s2">_d_dt&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">):</span>
         <span class="n">df_combined_annotated</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">df_combined_annotated</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span>
-            <span class="n">df_combined_annotated</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">df_combined_annotated</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">df_combined_annotated</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="n">col_name</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># check that filtering works</span>
-        <span class="k">assert</span> <span class="p">(</span><span class="n">df_combined_annotated</span><span class="p">[</span><span class="n">df_combined_annotated</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">df</span><span class="p">)),</span> \
-            <span class="sa">f</span><span class="s2">&quot;Filtering is not accurate for </span><span class="si">{</span><span class="n">col_name</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="k">assert</span> <span class="n">df_combined_annotated</span><span class="p">[</span><span class="n">df_combined_annotated</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">][</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Filtering is not accurate for </span><span class="si">{</span><span class="n">col_name</span><span class="si">}</span><span class="s2">.&quot;</span>
 
-    <span class="k">if</span> <span class="n">write_BF</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">write_bf</span><span class="p">:</span>
         <span class="c1"># NOTE: This is almost identical to the full dataset which will be saved later on.</span>
         <span class="c1"># However, the binding-related columns are dropped</span>
-        <span class="n">name_BF</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_BF&quot;</span><span class="p">)</span>
-        <span class="n">write_and_check_output</span><span class="p">(</span><span class="n">df_combined_BF</span><span class="p">,</span> <span class="n">name_BF</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">,</span>
-                               <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span>
+        <span class="n">name_bf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_BF&quot;</span>
+        <span class="p">)</span>
+        <span class="n">write_and_check_output</span><span class="p">(</span>
+            <span class="n">df_combined_bf</span><span class="p">,</span>
+            <span class="n">name_bf</span><span class="p">,</span>
+            <span class="n">write_to_csv</span><span class="p">,</span>
+            <span class="n">write_to_excel</span><span class="p">,</span>
+            <span class="n">delimiter</span><span class="p">,</span>
+            <span class="n">desc</span><span class="p">,</span>
+            <span class="n">calculate_rdkit</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="n">name_BF_100</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="n">output_path</span><span class="p">,</span>  <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_BF_</span><span class="si">{</span><span class="n">min_nof_cpds_BF</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">write_and_check_output</span><span class="p">(</span><span class="n">df_combined_BF_enough_cpds</span><span class="p">,</span> <span class="n">name_BF_100</span><span class="p">,</span>
-                               <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span>
+        <span class="n">name_bf_100</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">output_path</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_BF_</span><span class="si">{</span><span class="n">min_nof_cpds_bf</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">write_and_check_output</span><span class="p">(</span>
+            <span class="n">df_combined_bf_enough_cpds</span><span class="p">,</span>
+            <span class="n">name_bf_100</span><span class="p">,</span>
+            <span class="n">write_to_csv</span><span class="p">,</span>
+            <span class="n">write_to_excel</span><span class="p">,</span>
+            <span class="n">delimiter</span><span class="p">,</span>
+            <span class="n">desc</span><span class="p">,</span>
+            <span class="n">calculate_rdkit</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="n">name_BF_100_c_dt_d_dt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_BF_</span><span class="si">{</span><span class="n">min_nof_cpds_BF</span><span class="si">}</span><span class="s2">_c_dt_d_dt&quot;</span><span class="p">)</span>
-        <span class="n">write_and_check_output</span><span class="p">(</span><span class="n">df_combined_BF_c_dt_d_dt</span><span class="p">,</span> <span class="n">name_BF_100_c_dt_d_dt</span><span class="p">,</span>
-                               <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span>
+        <span class="n">name_bf_100_c_dt_d_dt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">output_path</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_BF_</span><span class="si">{</span><span class="n">min_nof_cpds_bf</span><span class="si">}</span><span class="s2">_c_dt_d_dt&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">write_and_check_output</span><span class="p">(</span>
+            <span class="n">df_combined_bf_c_dt_d_dt</span><span class="p">,</span>
+            <span class="n">name_bf_100_c_dt_d_dt</span><span class="p">,</span>
+            <span class="n">write_to_csv</span><span class="p">,</span>
+            <span class="n">write_to_excel</span><span class="p">,</span>
+            <span class="n">delimiter</span><span class="p">,</span>
+            <span class="n">desc</span><span class="p">,</span>
+            <span class="n">calculate_rdkit</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="n">name_BF_100_d_dt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_BF_</span><span class="si">{</span><span class="n">min_nof_cpds_BF</span><span class="si">}</span><span class="s2">_d_dt&quot;</span><span class="p">)</span>
-        <span class="n">write_and_check_output</span><span class="p">(</span><span class="n">df_combined_BF_d_dt</span><span class="p">,</span> <span class="n">name_BF_100_d_dt</span><span class="p">,</span>
-                               <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span>
-        
+        <span class="n">name_bf_100_d_dt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">output_path</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_BF_</span><span class="si">{</span><span class="n">min_nof_cpds_bf</span><span class="si">}</span><span class="s2">_d_dt&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">write_and_check_output</span><span class="p">(</span>
+            <span class="n">df_combined_bf_d_dt</span><span class="p">,</span>
+            <span class="n">name_bf_100_d_dt</span><span class="p">,</span>
+            <span class="n">write_to_csv</span><span class="p">,</span>
+            <span class="n">write_to_excel</span><span class="p">,</span>
+            <span class="n">delimiter</span><span class="p">,</span>
+            <span class="n">desc</span><span class="p">,</span>
+            <span class="n">calculate_rdkit</span><span class="p">,</span>
+        <span class="p">)</span>
+
     <span class="k">if</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="o">&gt;=</span> <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
-        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_BF</span><span class="p">,</span> <span class="s2">&quot;binding + functional&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
-        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_BF_enough_cpds</span><span class="p">,</span> <span class="s2">&quot;BF, &gt;= 100&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
-        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_BF_c_dt_d_dt</span><span class="p">,</span> <span class="s2">&quot;BF, &gt;= 100, c_dt and d_dt&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
-        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_BF_d_dt</span><span class="p">,</span> <span class="s2">&quot;BF, &gt;= 100, d_dt&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
-        
+        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_bf</span><span class="p">,</span> <span class="s2">&quot;binding + functional&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
+        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_bf_enough_cpds</span><span class="p">,</span> <span class="s2">&quot;BF, &gt;= 100&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
+        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span>
+            <span class="n">df_combined_bf_c_dt_d_dt</span><span class="p">,</span> <span class="s2">&quot;BF, &gt;= 100, c_dt and d_dt&quot;</span><span class="p">,</span> <span class="n">df_sizes</span>
+        <span class="p">)</span>
+        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_bf_d_dt</span><span class="p">,</span> <span class="s2">&quot;BF, &gt;= 100, d_dt&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">df_combined_annotated</span></div>
 
 
 
-<div class="viewcode-block" id="write_B_to_file">
-<a class="viewcode-back" href="../write_subsets.html#write_subsets.write_B_to_file">[docs]</a>
-<span class="k">def</span> <span class="nf">write_B_to_file</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df_combined_annotated</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-                    <span class="n">chembl_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">min_nof_cpds_B</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                    <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">write_B</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                    <span class="n">limited_flag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> 
-                    <span class="n">df_sizes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="write_b_to_file">
+<a class="viewcode-back" href="../write_subsets.html#write_subsets.write_b_to_file">[docs]</a>
+<span class="k">def</span> <span class="nf">write_b_to_file</span><span class="p">(</span>
+    <span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">df_combined_annotated</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">chembl_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">min_nof_cpds_b</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">write_b</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">limited_flag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">calculate_rdkit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">df_sizes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate relevant subsets for the portion of df_combined that is based on binding data. </span>
-<span class="sd">    If write_B the subsets are written to output_path.</span>
-<span class="sd">    Independent of write_B, filtering columns for B are added to df_combined_annotated.</span>
+<span class="sd">    Calculate relevant subsets for the portion of df_combined that is based on binding data.</span>
+<span class="sd">    If write_b the subsets are written to output_path.</span>
+<span class="sd">    Independent of write_b, filtering columns for B are added to df_combined_annotated.</span>
 
 <span class="sd">    :param df_combined: Pandas DataFrame with compound-target pairs</span>
 <span class="sd">    :type df_combined: pd.DataFrame</span>
@@ -324,22 +431,23 @@
 <span class="sd">    :type df_combined_annotated: pd.DataFrame</span>
 <span class="sd">    :param chembl_version: Version of ChEMBL for output files</span>
 <span class="sd">    :type chembl_version: str</span>
-<span class="sd">    :param min_nof_cpds_BF: Miminum number of compounds per target</span>
-<span class="sd">    :type min_nof_cpds_BF: int</span>
+<span class="sd">    :param min_nof_cpds_b: Miminum number of compounds per target</span>
+<span class="sd">    :type min_nof_cpds_b: int</span>
 <span class="sd">    :param output_path: Path to write the output to</span>
 <span class="sd">    :type output_path: str</span>
-<span class="sd">    :param write_BF: Should the subsets be written to files?</span>
-<span class="sd">    :type write_BF: bool</span>
+<span class="sd">    :param write_b: Should the subsets be written to files?</span>
+<span class="sd">    :type write_b: bool</span>
 <span class="sd">    :param write_to_csv: Should the subsets be written to csv?</span>
 <span class="sd">    :type write_to_csv: bool</span>
 <span class="sd">    :param write_to_excel: Should the subsets be written to excel?</span>
 <span class="sd">    :type write_to_excel: bool</span>
 <span class="sd">    :param delimiter: Delimiter for csv output</span>
 <span class="sd">    :type delimiter: str</span>
-<span class="sd">    :param limited_flag: Document suffix indicating whether the dataset was limited to literature sources</span>
+<span class="sd">    :param limited_flag: Document suffix indicating</span>
+<span class="sd">        whether the dataset was limited to literature sources</span>
 <span class="sd">    :type limited_flag: str</span>
-<span class="sd">    :param calculate_RDKit: Does df_combined include RDKit-based columns? </span>
-<span class="sd">    :type calculate_RDKit: bool</span>
+<span class="sd">    :param calculate_rdkit: Does df_combined include RDKit-based columns?</span>
+<span class="sd">    :type calculate_rdkit: bool</span>
 <span class="sd">    :param df_sizes: List of intermediate sized of the dataset used for debugging.</span>
 <span class="sd">    :type df_sizes: list[list[int], list[int]]</span>
 <span class="sd">    :return: Pandas DataFrame with additional filtering columns for B subsets</span>
@@ -347,50 +455,95 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># consider only binding assays</span>
     <span class="c1"># assay description = binding</span>
-    <span class="n">desc</span> <span class="o">=</span> <span class="s1">&#39;B&#39;</span>
-    <span class="n">df_combined_B</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;keep_for_binding&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">df_combined_B</span><span class="p">,</span> <span class="n">df_combined_B_enough_cpds</span><span class="p">,</span> <span class="n">df_combined_B_c_dt_d_dt</span><span class="p">,</span> <span class="n">df_combined_B_d_dt</span> <span class="o">=</span> <span class="n">get_data_subsets</span><span class="p">(</span>
-        <span class="n">df_combined_B</span><span class="p">,</span> <span class="n">min_nof_cpds_B</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+    <span class="n">df_combined_b</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;keep_for_binding&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="p">(</span>
+        <span class="n">df_combined_b</span><span class="p">,</span>
+        <span class="n">df_combined_b_enough_cpds</span><span class="p">,</span>
+        <span class="n">df_combined_b_c_dt_d_dt</span><span class="p">,</span>
+        <span class="n">df_combined_b_d_dt</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">get_data_subsets</span><span class="p">(</span><span class="n">df_combined_b</span><span class="p">,</span> <span class="n">min_nof_cpds_b</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span>
 
     <span class="c1"># add filtering columns to df_combined_annotated</span>
-    <span class="k">for</span> <span class="n">df</span><span class="p">,</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">df_combined_B_enough_cpds</span><span class="p">,</span>
-                             <span class="n">df_combined_B_c_dt_d_dt</span><span class="p">,</span>
-                             <span class="n">df_combined_B_d_dt</span>
-                             <span class="p">],</span>
-                             <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;B_</span><span class="si">{</span><span class="n">min_nof_cpds_B</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                              <span class="sa">f</span><span class="s2">&quot;B_</span><span class="si">{</span><span class="n">min_nof_cpds_B</span><span class="si">}</span><span class="s2">_c_dt_d_dt&quot;</span><span class="p">,</span>
-                              <span class="sa">f</span><span class="s2">&quot;B_</span><span class="si">{</span><span class="n">min_nof_cpds_B</span><span class="si">}</span><span class="s2">_d_dt&quot;</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">df</span><span class="p">,</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">df_combined_b_enough_cpds</span><span class="p">,</span> <span class="n">df_combined_b_c_dt_d_dt</span><span class="p">,</span> <span class="n">df_combined_b_d_dt</span><span class="p">],</span>
+        <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;B_</span><span class="si">{</span><span class="n">min_nof_cpds_b</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;B_</span><span class="si">{</span><span class="n">min_nof_cpds_b</span><span class="si">}</span><span class="s2">_c_dt_d_dt&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;B_</span><span class="si">{</span><span class="n">min_nof_cpds_b</span><span class="si">}</span><span class="s2">_d_dt&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">):</span>
         <span class="n">df_combined_annotated</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">df_combined_annotated</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_combined_annotated</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">df_combined_annotated</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">df_combined_annotated</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="n">col_name</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># check that filtering works</span>
-        <span class="k">assert</span> <span class="p">(</span><span class="n">df_combined_annotated</span><span class="p">[</span><span class="n">df_combined_annotated</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">][</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">df</span><span class="p">)),</span> \
-            <span class="sa">f</span><span class="s2">&quot;Filtering is not accurate for </span><span class="si">{</span><span class="n">col_name</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="k">assert</span> <span class="n">df_combined_annotated</span><span class="p">[</span><span class="n">df_combined_annotated</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">][</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Filtering is not accurate for </span><span class="si">{</span><span class="n">col_name</span><span class="si">}</span><span class="s2">.&quot;</span>
 
-    <span class="k">if</span> <span class="n">write_B</span><span class="p">:</span>
-        <span class="n">name_B</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_B&quot;</span><span class="p">)</span>
-        <span class="n">write_and_check_output</span><span class="p">(</span><span class="n">df_combined_B</span><span class="p">,</span> <span class="n">name_B</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">,</span>
-                               <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">write_b</span><span class="p">:</span>
+        <span class="n">name_b</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_B&quot;</span>
+        <span class="p">)</span>
+        <span class="n">write_and_check_output</span><span class="p">(</span>
+            <span class="n">df_combined_b</span><span class="p">,</span>
+            <span class="n">name_b</span><span class="p">,</span>
+            <span class="n">write_to_csv</span><span class="p">,</span>
+            <span class="n">write_to_excel</span><span class="p">,</span>
+            <span class="n">delimiter</span><span class="p">,</span>
+            <span class="n">desc</span><span class="p">,</span>
+            <span class="n">calculate_rdkit</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="n">name_B_100</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_B_</span><span class="si">{</span><span class="n">min_nof_cpds_B</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">write_and_check_output</span><span class="p">(</span><span class="n">df_combined_B_enough_cpds</span><span class="p">,</span> <span class="n">name_B_100</span><span class="p">,</span>
-                               <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span>
+        <span class="n">name_b_100</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_B_</span><span class="si">{</span><span class="n">min_nof_cpds_b</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">write_and_check_output</span><span class="p">(</span>
+            <span class="n">df_combined_b_enough_cpds</span><span class="p">,</span>
+            <span class="n">name_b_100</span><span class="p">,</span>
+            <span class="n">write_to_csv</span><span class="p">,</span>
+            <span class="n">write_to_excel</span><span class="p">,</span>
+            <span class="n">delimiter</span><span class="p">,</span>
+            <span class="n">desc</span><span class="p">,</span>
+            <span class="n">calculate_rdkit</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="n">name_B_100_c_dt_d_dt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="n">output_path</span><span class="p">,</span>  <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_B_</span><span class="si">{</span><span class="n">min_nof_cpds_B</span><span class="si">}</span><span class="s2">_c_dt_d_dt&quot;</span><span class="p">)</span>
-        <span class="n">write_and_check_output</span><span class="p">(</span><span class="n">df_combined_B_c_dt_d_dt</span><span class="p">,</span> <span class="n">name_B_100_c_dt_d_dt</span><span class="p">,</span>
-                               <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span>
+        <span class="n">name_b_100_c_dt_d_dt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">output_path</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_B_</span><span class="si">{</span><span class="n">min_nof_cpds_b</span><span class="si">}</span><span class="s2">_c_dt_d_dt&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">write_and_check_output</span><span class="p">(</span>
+            <span class="n">df_combined_b_c_dt_d_dt</span><span class="p">,</span>
+            <span class="n">name_b_100_c_dt_d_dt</span><span class="p">,</span>
+            <span class="n">write_to_csv</span><span class="p">,</span>
+            <span class="n">write_to_excel</span><span class="p">,</span>
+            <span class="n">delimiter</span><span class="p">,</span>
+            <span class="n">desc</span><span class="p">,</span>
+            <span class="n">calculate_rdkit</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="n">name_B_100_d_dt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_B_</span><span class="si">{</span><span class="n">min_nof_cpds_B</span><span class="si">}</span><span class="s2">_d_dt&quot;</span><span class="p">)</span>
-        <span class="n">write_and_check_output</span><span class="p">(</span><span class="n">df_combined_B_d_dt</span><span class="p">,</span> <span class="n">name_B_100_d_dt</span><span class="p">,</span>
-                               <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span>
+        <span class="n">name_b_100_d_dt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">output_path</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_B_</span><span class="si">{</span><span class="n">min_nof_cpds_b</span><span class="si">}</span><span class="s2">_d_dt&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">write_and_check_output</span><span class="p">(</span>
+            <span class="n">df_combined_b_d_dt</span><span class="p">,</span>
+            <span class="n">name_b_100_d_dt</span><span class="p">,</span>
+            <span class="n">write_to_csv</span><span class="p">,</span>
+            <span class="n">write_to_excel</span><span class="p">,</span>
+            <span class="n">delimiter</span><span class="p">,</span>
+            <span class="n">desc</span><span class="p">,</span>
+            <span class="n">calculate_rdkit</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="o">&gt;=</span> <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
-        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_B</span><span class="p">,</span> <span class="s2">&quot;binding&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
-        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_B_enough_cpds</span><span class="p">,</span> <span class="s2">&quot;B, &gt;= 100&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
-        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_B_c_dt_d_dt</span><span class="p">,</span> <span class="s2">&quot;B, &gt;= 100, c_dt and d_dt&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
-        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_B_d_dt</span><span class="p">,</span> <span class="s2">&quot;B, &gt;= 100, d_dt&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
+        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_b</span><span class="p">,</span> <span class="s2">&quot;binding&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
+        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_b_enough_cpds</span><span class="p">,</span> <span class="s2">&quot;B, &gt;= 100&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
+        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span>
+            <span class="n">df_combined_b_c_dt_d_dt</span><span class="p">,</span> <span class="s2">&quot;B, &gt;= 100, c_dt and d_dt&quot;</span><span class="p">,</span> <span class="n">df_sizes</span>
+        <span class="p">)</span>
+        <span class="n">get_stats</span><span class="o">.</span><span class="n">add_dataset_sizes</span><span class="p">(</span><span class="n">df_combined_b_d_dt</span><span class="p">,</span> <span class="s2">&quot;B, &gt;= 100, d_dt&quot;</span><span class="p">,</span> <span class="n">df_sizes</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">df_combined_annotated</span></div>
 
@@ -398,10 +551,17 @@
 
 <div class="viewcode-block" id="write_full_dataset_to_file">
 <a class="viewcode-back" href="../write_subsets.html#write_subsets.write_full_dataset_to_file">[docs]</a>
-<span class="k">def</span> <span class="nf">write_full_dataset_to_file</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> 
-                               <span class="n">chembl_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
-                               <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">write_full_dataset</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                               <span class="n">limited_flag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">write_full_dataset_to_file</span><span class="p">(</span>
+    <span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">chembl_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">write_full_dataset</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">limited_flag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">calculate_rdkit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    If write_full_dataset, write df_combined with filtering columns to output_path.</span>
 
@@ -419,16 +579,153 @@
 <span class="sd">    :type write_to_excel: bool</span>
 <span class="sd">    :param delimiter: Delimiter for csv output</span>
 <span class="sd">    :type delimiter: str</span>
-<span class="sd">    :param limited_flag: Document suffix indicating whether the dataset was limited to literature sources</span>
+<span class="sd">    :param limited_flag: Document suffix indicating</span>
+<span class="sd">        whether the dataset was limited to literature sources</span>
 <span class="sd">    :type limited_flag: str</span>
-<span class="sd">    :param calculate_RDKit: Does df_combined include RDKit-based columns? </span>
-<span class="sd">    :type calculate_RDKit: bool</span>
+<span class="sd">    :param calculate_rdkit: Does df_combined include RDKit-based columns?</span>
+<span class="sd">    :type calculate_rdkit: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
     <span class="k">if</span> <span class="n">write_full_dataset</span><span class="p">:</span>
-        <span class="n">name_all</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_full_dataset&quot;</span><span class="p">)</span>
-        <span class="n">write_and_check_output</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">name_all</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">,</span>
-                               <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span></div>
+        <span class="n">name_all</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ChEMBL</span><span class="si">{</span><span class="n">chembl_version</span><span class="si">}</span><span class="s2">_CTI_</span><span class="si">{</span><span class="n">limited_flag</span><span class="si">}</span><span class="s2">_full_dataset&quot;</span>
+        <span class="p">)</span>
+        <span class="n">write_and_check_output</span><span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">,</span>
+            <span class="n">name_all</span><span class="p">,</span>
+            <span class="n">write_to_csv</span><span class="p">,</span>
+            <span class="n">write_to_excel</span><span class="p">,</span>
+            <span class="n">delimiter</span><span class="p">,</span>
+            <span class="n">desc</span><span class="p">,</span>
+            <span class="n">calculate_rdkit</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="output_debug_sizes">
+<a class="viewcode-back" href="../write_subsets.html#write_subsets.output_debug_sizes">[docs]</a>
+<span class="k">def</span> <span class="nf">output_debug_sizes</span><span class="p">(</span>
+    <span class="n">df_sizes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Output counts at various points during calculating the final dataset for debugging.</span>
+
+<span class="sd">    :param df_sizes: List of intermediate sized of the dataset used for debugging.</span>
+<span class="sd">    :type df_sizes: list[list[int], list[int]]</span>
+<span class="sd">    :param output_path: Path to write the dataset counts to</span>
+<span class="sd">    :type output_path: str</span>
+<span class="sd">    :param write_to_csv: True if counts should be written to csv</span>
+<span class="sd">    :type write_to_csv: bool</span>
+<span class="sd">    :param write_to_excel: True if counts should be written to excel</span>
+<span class="sd">    :type write_to_excel: bool</span>
+<span class="sd">    :param delimiter: Delimiter in csv-output</span>
+<span class="sd">    :type delimiter: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#mols&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#drugs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#targets&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#drug_ targets&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#targets_ mutation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#drug_ targets_mutation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#cpd_tid_ pairs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#drug_tid_ pairs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#cpd_ tid_mutation_ pairs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#drug_ tid_mutation_ pairs&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Size of full dataset at different points.&quot;</span><span class="p">)</span>
+    <span class="n">full_df_sizes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_names</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">full_df_sizes</span><span class="p">)</span>
+    <span class="n">name_full_df_sizes</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;debug_full_df_sizes&quot;</span><span class="p">)</span>
+    <span class="n">write_output</span><span class="p">(</span>
+        <span class="n">full_df_sizes</span><span class="p">,</span> <span class="n">name_full_df_sizes</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span>
+    <span class="p">)</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Size of dataset with any pchembl values at different points.&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;This includes data for which we only have pchembl data </span><span class="se">\</span>
+<span class="s2">            for functional assays but not for binding assays.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">df_pchembl_sizes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_sizes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_names</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">df_pchembl_sizes</span><span class="p">)</span>
+    <span class="n">name_pchembl_df_sizes</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;debug_pchembl_df_sizes&quot;</span><span class="p">)</span>
+    <span class="n">write_output</span><span class="p">(</span>
+        <span class="n">full_df_sizes</span><span class="p">,</span> <span class="n">name_pchembl_df_sizes</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="output_stats">
+<a class="viewcode-back" href="../write_subsets.html#write_subsets.output_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">output_stats</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">write_to_csv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">write_to_excel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Summarise and output the number of unique values in the following columns:</span>
+
+<span class="sd">    - parent_molregno (compound ID)</span>
+<span class="sd">    - tid (target ID)</span>
+<span class="sd">    - tid_mutation (target ID + mutation annotations)</span>
+<span class="sd">    - cpd_target_pair (compound-target pairs)</span>
+<span class="sd">    - cpd_target_pair_mutation (compound-target pairs including mutation annotations)</span>
+
+<span class="sd">    :param df: Pandas Dataframe for which the stats should be calculated</span>
+<span class="sd">    :type df: pd.DataFrame</span>
+<span class="sd">    :param output_file: Path and filename to write the dataset stats to</span>
+<span class="sd">    :type output_file: str</span>
+<span class="sd">    :param write_to_csv: True if stats should be written to csv</span>
+<span class="sd">    :type write_to_csv: bool</span>
+<span class="sd">    :param write_to_excel: True if stats should be written to excel</span>
+<span class="sd">    :type write_to_excel: bool</span>
+<span class="sd">    :param delimiter: Delimiter in csv-output</span>
+<span class="sd">    :type delimiter: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df_columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;parent_molregno&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tid&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tid_mutation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cpd_target_pair&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cpd_target_pair_mutation&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">columns_descs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;compound ID&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;target ID&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;target ID with mutation annotations&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;compound-target pair&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;compound-target pair with mutation annotations&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Stats for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">columns_desc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">df_columns</span><span class="p">,</span> <span class="n">columns_descs</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Stats for column </span><span class="si">%s</span><span class="s2">:&quot;</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
+        <span class="n">column_stats</span> <span class="o">=</span> <span class="n">get_stats</span><span class="o">.</span><span class="n">get_stats_for_column</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">columns_desc</span><span class="p">)</span>
+        <span class="n">stats</span> <span class="o">+=</span> <span class="n">column_stats</span>
+        <span class="k">for</span> <span class="n">colum_stat</span> <span class="ow">in</span> <span class="n">column_stats</span><span class="p">:</span>
+            <span class="c1"># TODO remove</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%20s</span><span class="s2"> </span><span class="si">%20s</span><span class="s2"> </span><span class="si">%20s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">colum_stat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">colum_stat</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">colum_stat</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="n">colum_stat</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="c1"># logging.debug(f&quot;{colum_stat[1] : &lt;40} {colum_stat[3]}&quot;)</span>
+
+    <span class="n">df_stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">stats</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;column&quot;</span><span class="p">,</span> <span class="s2">&quot;column_description&quot;</span><span class="p">,</span> <span class="s2">&quot;subset_type&quot;</span><span class="p">,</span> <span class="s2">&quot;counts&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">write_output</span><span class="p">(</span><span class="n">df_stats</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">write_to_csv</span><span class="p">,</span> <span class="n">write_to_excel</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span></div>
 
 </pre></div>
 

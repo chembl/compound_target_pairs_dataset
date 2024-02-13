@@ -63,9 +63,11 @@
 <li class="toctree-l2"><a class="reference internal" href="sanity_checks.html">sanity_checks module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">write_subsets module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#write_subsets.get_data_subsets"><code class="docutils literal notranslate"><span class="pre">get_data_subsets()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#write_subsets.write_BF_to_file"><code class="docutils literal notranslate"><span class="pre">write_BF_to_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#write_subsets.write_B_to_file"><code class="docutils literal notranslate"><span class="pre">write_B_to_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#write_subsets.output_debug_sizes"><code class="docutils literal notranslate"><span class="pre">output_debug_sizes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#write_subsets.output_stats"><code class="docutils literal notranslate"><span class="pre">output_stats()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#write_subsets.write_and_check_output"><code class="docutils literal notranslate"><span class="pre">write_and_check_output()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#write_subsets.write_b_to_file"><code class="docutils literal notranslate"><span class="pre">write_b_to_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#write_subsets.write_bf_to_file"><code class="docutils literal notranslate"><span class="pre">write_bf_to_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#write_subsets.write_full_dataset_to_file"><code class="docutils literal notranslate"><span class="pre">write_full_dataset_to_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#write_subsets.write_output"><code class="docutils literal notranslate"><span class="pre">write_output()</span></code></a></li>
 </ul>
@@ -103,7 +105,7 @@
 <span id="write-subsets-module"></span><h1>write_subsets module<a class="headerlink" href="#module-write_subsets" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="write_subsets.get_data_subsets">
-<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">get_data_subsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_nof_cpds:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/write_subsets.html#get_data_subsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.get_data_subsets" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">get_data_subsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_nof_cpds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/write_subsets.html#get_data_subsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.get_data_subsets" title="Link to this definition"></a></dt>
 <dd><p>Calculate and return the different subsets of interest.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -115,10 +117,27 @@
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p>data: Pandas DataFrame with compound-target pairs without the annotations for the opposite desc,             e.g. if desc = “BF”, the average pchembl value based on binding data only is dropped</p></li>
-<li><p>df_enough_cpds: Pandas DataFrame with targets with at least &lt;min_nof_cpds&gt; compounds with a pchembl value,</p></li>
-<li><p>df_c_dt_d_dt: As df_enough_cpds but with             at least one compound-target pair labelled as ‘D_DT’, ‘C3_DT’, ‘C2_DT’, ‘C1_DT’ or ‘C0_DT’ (i.e., known interaction),</p></li>
-<li><p>df_d_dt: As df_enough_cpds but with             at least one compound-target pair labelled as ‘D_DT’ (i.e., known drug-target interaction)</p></li>
+<li><dl class="simple">
+<dt>data: Pandas DataFrame with compound-target pairs</dt><dd><p>without the annotations for the opposite desc,             e.g. if desc = “BF”, the average pchembl value based on
+binding data only is dropped</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>df_enough_cpds: Pandas DataFrame with targets</dt><dd><p>with at least &lt;min_nof_cpds&gt; compounds with a pchembl value,</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>df_c_dt_d_dt: As df_enough_cpds but with             at least one compound-target pair labelled as</dt><dd><p>’D_DT’, ‘C3_DT’, ‘C2_DT’, ‘C1_DT’ or ‘C0_DT’ (i.e., known interaction),</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>df_d_dt: As df_enough_cpds but with             at least one compound-target pair labelled as</dt><dd><p>’D_DT’ (i.e., known drug-target interaction)</p>
+</dd>
+</dl>
+</li>
 </ul>
 </p>
 </dd>
@@ -129,56 +148,88 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="write_subsets.write_BF_to_file">
-<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">write_BF_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chembl_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_nof_cpds_BF</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_BF</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limited_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_RDKit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/write_subsets.html#write_BF_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.write_BF_to_file" title="Link to this definition"></a></dt>
-<dd><p>Calculate relevant subsets for the portion of df_combined that is based on binding+functional data.
-If write_BF the subsets are written to output_path.
-Independent of write_BF, filtering columns for BF are added to df_combined and returned.</p>
+<dt class="sig sig-object py" id="write_subsets.output_debug_sizes">
+<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">output_debug_sizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/write_subsets.html#output_debug_sizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.output_debug_sizes" title="Link to this definition"></a></dt>
+<dd><p>Output counts at various points during calculating the final dataset for debugging.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df_combined</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with compound-target pairs</p></li>
-<li><p><strong>chembl_version</strong> (<em>str</em>) – Version of ChEMBL for output files</p></li>
-<li><p><strong>min_nof_cpds_BF</strong> (<em>int</em>) – Miminum number of compounds per target</p></li>
-<li><p><strong>output_path</strong> (<em>str</em>) – Path to write the output to</p></li>
-<li><p><strong>write_BF</strong> (<em>bool</em>) – Should the subsets be written to files?</p></li>
-<li><p><strong>write_to_csv</strong> (<em>bool</em>) – Should the subsets be written to csv?</p></li>
-<li><p><strong>write_to_excel</strong> (<em>bool</em>) – Should the subsets be written to excel?</p></li>
-<li><p><strong>delimiter</strong> (<em>str</em>) – Delimiter for csv output</p></li>
-<li><p><strong>limited_flag</strong> (<em>str</em>) – Document suffix indicating whether the dataset was limited to literature sources</p></li>
-<li><p><strong>calculate_RDKit</strong> (<em>bool</em>) – Does df_combined include RDKit-based columns?</p></li>
 <li><p><strong>df_sizes</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>, </em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – List of intermediate sized of the dataset used for debugging.</p></li>
+<li><p><strong>output_path</strong> (<em>str</em>) – Path to write the dataset counts to</p></li>
+<li><p><strong>write_to_csv</strong> (<em>bool</em>) – True if counts should be written to csv</p></li>
+<li><p><strong>write_to_excel</strong> (<em>bool</em>) – True if counts should be written to excel</p></li>
+<li><p><strong>delimiter</strong> (<em>str</em>) – Delimiter in csv-output</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Pandas DataFrame with additional filtering columns for BF subsets</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pd.Dataframe</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="write_subsets.write_B_to_file">
-<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">write_B_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_combined_annotated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chembl_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_nof_cpds_B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limited_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_RDKit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/write_subsets.html#write_B_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.write_B_to_file" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="write_subsets.output_stats">
+<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">output_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/write_subsets.html#output_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.output_stats" title="Link to this definition"></a></dt>
+<dd><p>Summarise and output the number of unique values in the following columns:</p>
+<ul class="simple">
+<li><p>parent_molregno (compound ID)</p></li>
+<li><p>tid (target ID)</p></li>
+<li><p>tid_mutation (target ID + mutation annotations)</p></li>
+<li><p>cpd_target_pair (compound-target pairs)</p></li>
+<li><p>cpd_target_pair_mutation (compound-target pairs including mutation annotations)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Pandas Dataframe for which the stats should be calculated</p></li>
+<li><p><strong>output_file</strong> (<em>str</em>) – Path and filename to write the dataset stats to</p></li>
+<li><p><strong>write_to_csv</strong> (<em>bool</em>) – True if stats should be written to csv</p></li>
+<li><p><strong>write_to_excel</strong> (<em>bool</em>) – True if stats should be written to excel</p></li>
+<li><p><strong>delimiter</strong> (<em>str</em>) – Delimiter in csv-output</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="write_subsets.write_and_check_output">
+<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">write_and_check_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assay_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_rdkit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/write_subsets.html#write_and_check_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.write_and_check_output" title="Link to this definition"></a></dt>
+<dd><p>Write df to file and check that writing was successful.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Pandas Dataframe to write to output file.</p></li>
+<li><p><strong>filename</strong> (<em>bool</em>) – Filename to write the output to</p></li>
+<li><p><strong>write_to_csv</strong> (<em>bool</em>) – True if output should be written to csv</p></li>
+<li><p><strong>write_to_excel</strong> (<em>bool</em>) – True if output should be written to excel</p></li>
+<li><p><strong>delimiter</strong> (<em>str</em>) – Delimiter in csv-output</p></li>
+<li><p><strong>assay_type</strong> (<em>str</em>) – Types of assays current_df contains information about.         Options: “BF” (binding+functional),
+“B” (binding),
+“all” (contains both BF and B information)</p></li>
+<li><p><strong>calculate_rdkit</strong> (<em>bool</em>) – If True, current_df contains RDKit-based columns</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="write_subsets.write_b_to_file">
+<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">write_b_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_combined_annotated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chembl_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_nof_cpds_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limited_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_rdkit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/write_subsets.html#write_b_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.write_b_to_file" title="Link to this definition"></a></dt>
 <dd><p>Calculate relevant subsets for the portion of df_combined that is based on binding data.
-If write_B the subsets are written to output_path.
-Independent of write_B, filtering columns for B are added to df_combined_annotated.</p>
+If write_b the subsets are written to output_path.
+Independent of write_b, filtering columns for B are added to df_combined_annotated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df_combined</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with compound-target pairs</p></li>
 <li><p><strong>df_combined_annotated</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with additional filtering columns</p></li>
 <li><p><strong>chembl_version</strong> (<em>str</em>) – Version of ChEMBL for output files</p></li>
-<li><p><strong>min_nof_cpds_BF</strong> (<em>int</em>) – Miminum number of compounds per target</p></li>
+<li><p><strong>min_nof_cpds_b</strong> (<em>int</em>) – Miminum number of compounds per target</p></li>
 <li><p><strong>output_path</strong> (<em>str</em>) – Path to write the output to</p></li>
-<li><p><strong>write_BF</strong> (<em>bool</em>) – Should the subsets be written to files?</p></li>
+<li><p><strong>write_b</strong> (<em>bool</em>) – Should the subsets be written to files?</p></li>
 <li><p><strong>write_to_csv</strong> (<em>bool</em>) – Should the subsets be written to csv?</p></li>
 <li><p><strong>write_to_excel</strong> (<em>bool</em>) – Should the subsets be written to excel?</p></li>
 <li><p><strong>delimiter</strong> (<em>str</em>) – Delimiter for csv output</p></li>
-<li><p><strong>limited_flag</strong> (<em>str</em>) – Document suffix indicating whether the dataset was limited to literature sources</p></li>
-<li><p><strong>calculate_RDKit</strong> (<em>bool</em>) – Does df_combined include RDKit-based columns?</p></li>
+<li><p><strong>limited_flag</strong> (<em>str</em>) – Document suffix indicating
+whether the dataset was limited to literature sources</p></li>
+<li><p><strong>calculate_rdkit</strong> (<em>bool</em>) – Does df_combined include RDKit-based columns?</p></li>
 <li><p><strong>df_sizes</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>, </em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – List of intermediate sized of the dataset used for debugging.</p></li>
 </ul>
 </dd>
@@ -192,27 +243,41 @@ Independent of write_B, filtering columns for B are added to df_combined_annotat
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="write_subsets.write_and_check_output">
-<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">write_and_check_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assay_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_RDKit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/write_subsets.html#write_and_check_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.write_and_check_output" title="Link to this definition"></a></dt>
-<dd><p>Write df to file and check that writing was successful.</p>
+<dt class="sig sig-object py" id="write_subsets.write_bf_to_file">
+<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">write_bf_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chembl_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_nof_cpds_bf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_bf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limited_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_rdkit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/write_subsets.html#write_bf_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.write_bf_to_file" title="Link to this definition"></a></dt>
+<dd><p>Calculate relevant subsets for the portion of df_combined
+that is based on binding+functional data.
+If write_bf the subsets are written to output_path.
+Independent of write_bf, filtering columns for BF are added to df_combined and returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Pandas Dataframe to write to output file.</p></li>
-<li><p><strong>filename</strong> (<em>bool</em>) – Filename to write the output to</p></li>
-<li><p><strong>write_to_csv</strong> (<em>bool</em>) – True if output should be written to csv</p></li>
-<li><p><strong>write_to_excel</strong> (<em>bool</em>) – True if output should be written to excel</p></li>
-<li><p><strong>delimiter</strong> (<em>str</em>) – Delimiter in csv-output</p></li>
-<li><p><strong>assay_type</strong> (<em>str</em>) – Types of assays current_df contains information about.         Options: “BF” (binding+functional), “B” (binding), “all” (contains both BF and B information)</p></li>
-<li><p><strong>calculate_RDKit</strong> (<em>bool</em>) – If True, current_df contains RDKit-based columns</p></li>
+<li><p><strong>df_combined</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with compound-target pairs</p></li>
+<li><p><strong>chembl_version</strong> (<em>str</em>) – Version of ChEMBL for output files</p></li>
+<li><p><strong>min_nof_cpds_bf</strong> (<em>int</em>) – Miminum number of compounds per target</p></li>
+<li><p><strong>output_path</strong> (<em>str</em>) – Path to write the output to</p></li>
+<li><p><strong>write_bf</strong> (<em>bool</em>) – Should the subsets be written to files?</p></li>
+<li><p><strong>write_to_csv</strong> (<em>bool</em>) – Should the subsets be written to csv?</p></li>
+<li><p><strong>write_to_excel</strong> (<em>bool</em>) – Should the subsets be written to excel?</p></li>
+<li><p><strong>delimiter</strong> (<em>str</em>) – Delimiter for csv output</p></li>
+<li><p><strong>limited_flag</strong> (<em>str</em>) – Document suffix indicating
+whether the dataset was limited to literature sources</p></li>
+<li><p><strong>calculate_rdkit</strong> (<em>bool</em>) – Does df_combined include RDKit-based columns?</p></li>
+<li><p><strong>df_sizes</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>, </em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – List of intermediate sized of the dataset used for debugging.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pandas DataFrame with additional filtering columns for BF subsets</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.Dataframe</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="write_subsets.write_full_dataset_to_file">
-<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">write_full_dataset_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chembl_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_full_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limited_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_RDKit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/write_subsets.html#write_full_dataset_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.write_full_dataset_to_file" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">write_subsets.</span></span><span class="sig-name descname"><span class="pre">write_full_dataset_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chembl_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_full_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_excel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limited_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate_rdkit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/write_subsets.html#write_full_dataset_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_subsets.write_full_dataset_to_file" title="Link to this definition"></a></dt>
 <dd><p>If write_full_dataset, write df_combined with filtering columns to output_path.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -224,8 +289,9 @@ Independent of write_B, filtering columns for B are added to df_combined_annotat
 <li><p><strong>write_to_csv</strong> (<em>bool</em>) – Should the subsets be written to csv?</p></li>
 <li><p><strong>write_to_excel</strong> (<em>bool</em>) – Should the subsets be written to excel?</p></li>
 <li><p><strong>delimiter</strong> (<em>str</em>) – Delimiter for csv output</p></li>
-<li><p><strong>limited_flag</strong> (<em>str</em>) – Document suffix indicating whether the dataset was limited to literature sources</p></li>
-<li><p><strong>calculate_RDKit</strong> (<em>bool</em>) – Does df_combined include RDKit-based columns?</p></li>
+<li><p><strong>limited_flag</strong> (<em>str</em>) – Document suffix indicating
+whether the dataset was limited to literature sources</p></li>
+<li><p><strong>calculate_rdkit</strong> (<em>bool</em>) – Does df_combined include RDKit-based columns?</p></li>
 </ul>
 </dd>
 </dl>

@@ -6,7 +6,14 @@ import chembl_downloader
 
 import get_dataset
 
-if __name__ == "__main__":
+
+def parse_args() -> argparse.Namespace:
+    """
+    Get arguments with argparse.
+
+    :return: Populated argparse.Namespace
+    :rtype: argparse.Namespace
+    """
     parser = argparse.ArgumentParser(
         description="Extract the compound-target pairs dataset from ChEMBL. \
             The full dataset plus filtering columns for binding vs. binding+functional data \
@@ -77,6 +84,15 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    return args
+
+
+def main():
+    """
+    Call get_ct_pair_dataset to get the compound-target dataset using the given arguments.
+    """
+    args = parse_args()
+
     # Set arguments that are always true.
     # Write the results to csv.
     csv = True
@@ -126,3 +142,7 @@ if __name__ == "__main__":
                 args.BF,
                 args.B,
             )
+
+
+if __name__ == "__main__":
+    main()

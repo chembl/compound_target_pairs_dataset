@@ -10,7 +10,7 @@
   \item \spxentry{add\_annotations\_to\_drug\_mechanisms\_cti()}\spxextra{in module get\_drug\_mechanism\_ct\_pairs}, 
 		\hyperpage{24}
   \item \spxentry{add\_aromaticity\_descriptors()}\spxextra{in module add\_rdkit\_compound\_descriptors}, 
-		\hyperpage{20}
+		\hyperpage{19}
   \item \spxentry{add\_atc\_classification()}\spxextra{in module add\_chembl\_compound\_properties}, 
 		\hyperpage{15}
   \item \spxentry{add\_built\_in\_descriptors()}\spxextra{in module add\_rdkit\_compound\_descriptors}, 
@@ -27,15 +27,15 @@
   \item \spxentry{add\_drug\_mechanism\_ct\_pairs()}\spxextra{in module get\_drug\_mechanism\_ct\_pairs}, 
 		\hyperpage{24}
   \item \spxentry{add\_dti\_annotations}
-    \subitem \spxentry{module}, \hyperpage{19}
+    \subitem \spxentry{module}, \hyperpage{18}
   \item \spxentry{add\_dti\_annotations()}\spxextra{in module add\_dti\_annotations}, 
-		\hyperpage{19}
+		\hyperpage{18}
   \item \spxentry{add\_first\_publication\_date()}\spxextra{in module add\_chembl\_compound\_properties}, 
 		\hyperpage{16}
   \item \spxentry{add\_ligand\_efficiency\_metrics()}\spxextra{in module add\_chembl\_compound\_properties}, 
-		\hyperpage{17}
+		\hyperpage{16}
   \item \spxentry{add\_rdkit\_compound\_descriptors}
-    \subitem \spxentry{module}, \hyperpage{20}
+    \subitem \spxentry{module}, \hyperpage{19}
   \item \spxentry{add\_rdkit\_compound\_descriptors()}\spxextra{in module add\_rdkit\_compound\_descriptors}, 
 		\hyperpage{20}
 
@@ -45,15 +45,15 @@
 		\hyperpage{20}
   \item \spxentry{calculate\_dataset\_sizes()}\spxextra{in module get\_stats}, \hyperpage{26}
   \item \spxentry{check\_atc\_and\_target\_classes()}\spxextra{in module sanity\_checks}, 
-		\hyperpage{28}
-  \item \spxentry{check\_compound\_props()}\spxextra{in module sanity\_checks}, \hyperpage{28}
-  \item \spxentry{check\_for\_mixed\_types()}\spxextra{in module sanity\_checks}, \hyperpage{28}
+		\hyperpage{27}
+  \item \spxentry{check\_compound\_props()}\spxextra{in module sanity\_checks}, \hyperpage{27}
+  \item \spxentry{check\_for\_mixed\_types()}\spxextra{in module sanity\_checks}, \hyperpage{27}
   \item \spxentry{check\_ligand\_efficiency\_metrics()}\spxextra{in module sanity\_checks}, 
-		\hyperpage{28}
-  \item \spxentry{check\_null\_values()}\spxextra{in module sanity\_checks}, \hyperpage{28}
+		\hyperpage{27}
+  \item \spxentry{check\_null\_values()}\spxextra{in module sanity\_checks}, \hyperpage{27}
   \item \spxentry{check\_pairs\_without\_pchembl\_are\_in\_drug\_mechanisms()}\spxextra{in module sanity\_checks}, 
-		\hyperpage{28}
-  \item \spxentry{check\_rdkit\_props()}\spxextra{in module sanity\_checks}, \hyperpage{28}
+		\hyperpage{27}
+  \item \spxentry{check\_rdkit\_props()}\spxextra{in module sanity\_checks}, \hyperpage{27}
   \item \spxentry{clean\_dataset}
     \subitem \spxentry{module}, \hyperpage{21}
   \item \spxentry{clean\_dataset()}\spxextra{in module clean\_dataset}, \hyperpage{21}
@@ -69,14 +69,14 @@
 		\hyperpage{22}
   \item \spxentry{get\_compound\_target\_pairs\_with\_pchembl()}\spxextra{in module get\_activity\_ct\_pairs}, 
 		\hyperpage{23}
-  \item \spxentry{get\_ct\_pair\_dataset()}\spxextra{in module get\_dataset}, \hyperpage{24}
-  \item \spxentry{get\_data\_subsets()}\spxextra{in module write\_subsets}, \hyperpage{29}
+  \item \spxentry{get\_ct\_pair\_dataset()}\spxextra{in module get\_dataset}, \hyperpage{23}
+  \item \spxentry{get\_data\_subsets()}\spxextra{in module write\_subsets}, \hyperpage{28}
   \item \spxentry{get\_dataset}
-    \subitem \spxentry{module}, \hyperpage{24}
+    \subitem \spxentry{module}, \hyperpage{23}
   \item \spxentry{get\_drug\_mechanism\_ct\_pairs}
     \subitem \spxentry{module}, \hyperpage{24}
   \item \spxentry{get\_drug\_mechanism\_ct\_pairs()}\spxextra{in module get\_drug\_mechanism\_ct\_pairs}, 
-		\hyperpage{25}
+		\hyperpage{24}
   \item \spxentry{get\_drug\_mechanisms\_interactions()}\spxextra{in module get\_drug\_mechanism\_ct\_pairs}, 
 		\hyperpage{25}
   \item \spxentry{get\_relevant\_tid\_mappings()}\spxextra{in module get\_drug\_mechanism\_ct\_pairs}, 
@@ -90,53 +90,58 @@
   \indexspace
   \bigletter M
   \item \spxentry{main}
-    \subitem \spxentry{module}, \hyperpage{28}
+    \subitem \spxentry{module}, \hyperpage{26}
+  \item \spxentry{main()}\spxextra{in module main}, \hyperpage{26}
   \item \spxentry{module}
     \subitem \spxentry{add\_chembl\_compound\_properties}, \hyperpage{15}
     \subitem \spxentry{add\_chembl\_target\_class\_annotations}, \hyperpage{17}
-    \subitem \spxentry{add\_dti\_annotations}, \hyperpage{19}
-    \subitem \spxentry{add\_rdkit\_compound\_descriptors}, \hyperpage{20}
+    \subitem \spxentry{add\_dti\_annotations}, \hyperpage{18}
+    \subitem \spxentry{add\_rdkit\_compound\_descriptors}, \hyperpage{19}
     \subitem \spxentry{clean\_dataset}, \hyperpage{21}
     \subitem \spxentry{get\_activity\_ct\_pairs}, \hyperpage{22}
-    \subitem \spxentry{get\_dataset}, \hyperpage{24}
+    \subitem \spxentry{get\_dataset}, \hyperpage{23}
     \subitem \spxentry{get\_drug\_mechanism\_ct\_pairs}, \hyperpage{24}
     \subitem \spxentry{get\_stats}, \hyperpage{26}
-    \subitem \spxentry{main}, \hyperpage{28}
-    \subitem \spxentry{sanity\_checks}, \hyperpage{28}
-    \subitem \spxentry{write\_subsets}, \hyperpage{29}
+    \subitem \spxentry{main}, \hyperpage{26}
+    \subitem \spxentry{sanity\_checks}, \hyperpage{27}
+    \subitem \spxentry{write\_subsets}, \hyperpage{28}
 
   \indexspace
   \bigletter O
-  \item \spxentry{output\_debug\_sizes()}\spxextra{in module get\_stats}, \hyperpage{27}
-  \item \spxentry{output\_stats()}\spxextra{in module get\_stats}, \hyperpage{27}
+  \item \spxentry{output\_debug\_sizes()}\spxextra{in module write\_subsets}, \hyperpage{29}
+  \item \spxentry{output\_stats()}\spxextra{in module write\_subsets}, \hyperpage{29}
+
+  \indexspace
+  \bigletter P
+  \item \spxentry{parse\_args()}\spxextra{in module main}, \hyperpage{26}
 
   \indexspace
   \bigletter R
   \item \spxentry{remove\_compounds\_without\_smiles\_and\_mixtures()}\spxextra{in module clean\_dataset}, 
 		\hyperpage{21}
-  \item \spxentry{reorder\_columns()}\spxextra{in module clean\_dataset}, \hyperpage{22}
-  \item \spxentry{round\_floats()}\spxextra{in module clean\_dataset}, \hyperpage{22}
+  \item \spxentry{reorder\_columns()}\spxextra{in module clean\_dataset}, \hyperpage{21}
+  \item \spxentry{round\_floats()}\spxextra{in module clean\_dataset}, \hyperpage{21}
 
   \indexspace
   \bigletter S
   \item \spxentry{sanity\_checks}
-    \subitem \spxentry{module}, \hyperpage{28}
-  \item \spxentry{sanity\_checks()}\spxextra{in module sanity\_checks}, \hyperpage{28}
-  \item \spxentry{set\_types\_to\_int()}\spxextra{in module clean\_dataset}, \hyperpage{22}
+    \subitem \spxentry{module}, \hyperpage{27}
+  \item \spxentry{sanity\_checks()}\spxextra{in module sanity\_checks}, \hyperpage{27}
+  \item \spxentry{set\_types\_to\_int()}\spxextra{in module clean\_dataset}, \hyperpage{21}
 
   \indexspace
   \bigletter T
-  \item \spxentry{test\_equality()}\spxextra{in module sanity\_checks}, \hyperpage{29}
+  \item \spxentry{test\_equality()}\spxextra{in module sanity\_checks}, \hyperpage{28}
 
   \indexspace
   \bigletter W
-  \item \spxentry{write\_and\_check\_output()}\spxextra{in module write\_subsets}, \hyperpage{31}
-  \item \spxentry{write\_B\_to\_file()}\spxextra{in module write\_subsets}, \hyperpage{30}
-  \item \spxentry{write\_BF\_to\_file()}\spxextra{in module write\_subsets}, \hyperpage{30}
+  \item \spxentry{write\_and\_check\_output()}\spxextra{in module write\_subsets}, \hyperpage{29}
+  \item \spxentry{write\_b\_to\_file()}\spxextra{in module write\_subsets}, \hyperpage{30}
+  \item \spxentry{write\_bf\_to\_file()}\spxextra{in module write\_subsets}, \hyperpage{30}
   \item \spxentry{write\_full\_dataset\_to\_file()}\spxextra{in module write\_subsets}, 
 		\hyperpage{31}
-  \item \spxentry{write\_output()}\spxextra{in module write\_subsets}, \hyperpage{32}
+  \item \spxentry{write\_output()}\spxextra{in module write\_subsets}, \hyperpage{31}
   \item \spxentry{write\_subsets}
-    \subitem \spxentry{module}, \hyperpage{29}
+    \subitem \spxentry{module}, \hyperpage{28}
 
 \end{sphinxtheindex}

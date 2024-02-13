@@ -76,20 +76,23 @@
              
   <h1>Source code for clean_dataset</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">sqlite3</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
 <div class="viewcode-block" id="remove_compounds_without_smiles_and_mixtures">
 <a class="viewcode-back" href="../clean_dataset.html#clean_dataset.remove_compounds_without_smiles_and_mixtures">[docs]</a>
-<span class="k">def</span> <span class="nf">remove_compounds_without_smiles_and_mixtures</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">chembl_con</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">remove_compounds_without_smiles_and_mixtures</span><span class="p">(</span>
+    <span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">chembl_con</span><span class="p">:</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Remove </span>
+<span class="sd">    Remove</span>
 
-<span class="sd">    - compounds without a smiles </span>
+<span class="sd">    - compounds without a smiles</span>
 <span class="sd">    - compounds with smiles containing a dot (mixtures and salts).</span>
 
-<span class="sd">    Since compound information is aggregated for the parents of salts, </span>
+<span class="sd">    Since compound information is aggregated for the parents of salts,</span>
 <span class="sd">    the number of smiles with a dot is relatively low.</span>
 
 <span class="sd">    :param df_combined: Pandas DataFrame with compound-target pairs</span>
@@ -101,53 +104,68 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Double-check that rows with a SMILES containing a &#39;.&#39; are the parent structures,</span>
     <span class="c1"># i.e., there was no error in using salt information instead of parent information.</span>
-    <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="s1">    SELECT DISTINCT mh.molregno as salt_molregno, mh.parent_molregno</span>
-<span class="s1">    FROM molecule_hierarchy mh</span>
-<span class="s1">    &#39;&#39;&#39;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    SELECT DISTINCT mh.molregno as salt_molregno, mh.parent_molregno</span>
+<span class="s2">    FROM molecule_hierarchy mh</span>
+<span class="s2">    &quot;&quot;&quot;</span>
     <span class="n">df_hierarchy</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">chembl_con</span><span class="p">)</span>
 
-    <span class="n">smiles_with_dot</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span>
-    <span class="p">)</span> <span class="o">&amp;</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">False</span><span class="p">)][[</span>
-        <span class="s1">&#39;canonical_smiles&#39;</span><span class="p">,</span> <span class="s1">&#39;parent_molregno&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+    <span class="n">smiles_with_dot</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span>
+        <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()</span>
+        <span class="o">&amp;</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">][[</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">,</span> <span class="s2">&quot;parent_molregno&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
 
-    <span class="k">for</span> <span class="n">parent_molregno</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">smiles_with_dot</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]):</span>
-        <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_hierarchy</span><span class="p">[</span><span class="n">df_hierarchy</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">parent_molregno</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span> \
-            <span class="sa">f</span><span class="s2">&quot;The compound with the parent_moregno </span><span class="si">{</span><span class="n">parent_molregno</span><span class="si">}</span><span class="s2"> does not occur </span><span class="se">\</span>
+    <span class="k">for</span> <span class="n">parent_molregno</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">smiles_with_dot</span><span class="p">[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]):</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">df_hierarchy</span><span class="p">[</span><span class="n">df_hierarchy</span><span class="p">[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">parent_molregno</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;The compound with the parent_moregno </span><span class="si">{</span><span class="n">parent_molregno</span><span class="si">}</span><span class="s2"> does not occur </span><span class="se">\</span>
 <span class="s2">                as a parent_molregno in the molecule_hierarchy.&quot;</span>
-        <span class="n">df_salt_molregno</span> <span class="o">=</span> <span class="n">df_hierarchy</span><span class="p">[</span><span class="n">df_hierarchy</span><span class="p">[</span><span class="s1">&#39;salt_molregno&#39;</span><span class="p">]</span>
-                                        <span class="o">==</span> <span class="n">parent_molregno</span><span class="p">]</span>
-        <span class="k">assert</span> <span class="p">(</span><span class="n">df_salt_molregno</span><span class="p">[</span><span class="s1">&#39;salt_molregno&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">df_salt_molregno</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">])),</span> \
-            <span class="sa">f</span><span class="s2">&quot;The compound with the parent_moregno </span><span class="si">{</span><span class="n">parent_molregno</span><span class="si">}</span><span class="s2"> occurs as a salt </span><span class="se">\</span>
+        <span class="n">df_salt_molregno</span> <span class="o">=</span> <span class="n">df_hierarchy</span><span class="p">[</span>
+            <span class="n">df_hierarchy</span><span class="p">[</span><span class="s2">&quot;salt_molregno&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">parent_molregno</span>
+        <span class="p">]</span>
+        <span class="k">assert</span> <span class="n">df_salt_molregno</span><span class="p">[</span><span class="s2">&quot;salt_molregno&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span>
+            <span class="n">df_salt_molregno</span><span class="p">[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;The compound with the parent_moregno </span><span class="si">{</span><span class="n">parent_molregno</span><span class="si">}</span><span class="s2"> occurs as a salt </span><span class="se">\</span>
 <span class="s2">                but has a different parent in the molecule_hierarchy.&quot;</span>
 
     <span class="c1"># Double-check that the SMILES is indeed the SMILES for the parent structure.</span>
-    <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="s1">    SELECT DISTINCT mh.parent_molregno, struct.canonical_smiles</span>
-<span class="s1">    FROM molecule_hierarchy mh</span>
-<span class="s1">    INNER JOIN compound_structures struct</span>
-<span class="s1">        ON mh.parent_molregno = struct.molregno</span>
-<span class="s1">    &#39;&#39;&#39;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    SELECT DISTINCT mh.parent_molregno, struct.canonical_smiles</span>
+<span class="s2">    FROM molecule_hierarchy mh</span>
+<span class="s2">    INNER JOIN compound_structures struct</span>
+<span class="s2">        ON mh.parent_molregno = struct.molregno</span>
+<span class="s2">    &quot;&quot;&quot;</span>
     <span class="n">df_parent_smiles</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">chembl_con</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">parent_molregno</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">smiles_with_dot</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]):</span>
-        <span class="n">parent_smiles_in_chembl</span> <span class="o">=</span> <span class="n">df_parent_smiles</span><span class="p">[</span><span class="n">df_parent_smiles</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]</span>
-                                                   <span class="o">==</span> <span class="n">parent_molregno</span><span class="p">][</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-        <span class="n">parent_smiles_in_df</span> <span class="o">=</span> <span class="n">smiles_with_dot</span><span class="p">[</span><span class="n">smiles_with_dot</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]</span>
-                                              <span class="o">==</span> <span class="n">parent_molregno</span><span class="p">][</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-        <span class="k">assert</span> <span class="p">(</span><span class="n">parent_smiles_in_chembl</span> <span class="o">==</span> <span class="n">parent_smiles_in_df</span><span class="p">),</span> \
-            <span class="sa">f</span><span class="s2">&quot;The smiles for the compound </span><span class="si">{</span><span class="n">parent_molregno</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">parent_smiles_in_df</span><span class="si">}</span><span class="s2">) </span><span class="se">\</span>
+    <span class="k">for</span> <span class="n">parent_molregno</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">smiles_with_dot</span><span class="p">[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]):</span>
+        <span class="n">parent_smiles_in_chembl</span> <span class="o">=</span> <span class="n">df_parent_smiles</span><span class="p">[</span>
+            <span class="n">df_parent_smiles</span><span class="p">[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">parent_molregno</span>
+        <span class="p">][</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">parent_smiles_in_df</span> <span class="o">=</span> <span class="n">smiles_with_dot</span><span class="p">[</span>
+            <span class="n">smiles_with_dot</span><span class="p">[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">parent_molregno</span>
+        <span class="p">][</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="n">parent_smiles_in_chembl</span> <span class="o">==</span> <span class="n">parent_smiles_in_df</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;The smiles for the compound </span><span class="si">{</span><span class="n">parent_molregno</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">parent_smiles_in_df</span><span class="si">}</span><span class="s2">) </span><span class="se">\</span>
 <span class="s2">                in the dataframe is not the same as </span><span class="se">\</span>
 <span class="s2">                the smiles for the compound in ChEMBL (</span><span class="si">{</span><span class="n">parent_smiles_in_chembl</span><span class="si">}</span><span class="s2">).&quot;</span>
 
     <span class="c1"># Remove rows that contain a SMILES with a dot or that don&#39;t have a SMILES.</span>
-    <span class="n">len_missing_smiles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()])</span>
-    <span class="n">len_smiles_w_dot</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">smiles_with_dot</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]))])</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#Compounds without a SMILES: </span><span class="si">{</span><span class="n">len_missing_smiles</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#SMILES with a dot: </span><span class="si">{</span><span class="n">len_smiles_w_dot</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">len_missing_smiles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()])</span>
+    <span class="n">len_smiles_w_dot</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
+        <span class="n">df_combined</span><span class="p">[</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">smiles_with_dot</span><span class="p">[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]))</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;#Compounds without a SMILES: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">len_missing_smiles</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;#SMILES with a dot: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">len_smiles_w_dot</span><span class="p">)</span>
 
-    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">())</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span>
-        <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">smiles_with_dot</span><span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">])))]</span>
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span>
+        <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">())</span>
+        <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">smiles_with_dot</span><span class="p">[</span><span class="s2">&quot;parent_molregno&quot;</span><span class="p">]))</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
 
     <span class="k">return</span> <span class="n">df_combined</span></div>
 
@@ -162,7 +180,7 @@
     <span class="c1"># Change all None / nan values to None</span>
     <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">df_combined</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
     <span class="c1"># replace empty strings with None</span>
-    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">df_combined</span></div>
 
@@ -170,48 +188,52 @@
 
 <div class="viewcode-block" id="set_types_to_int">
 <a class="viewcode-back" href="../clean_dataset.html#clean_dataset.set_types_to_int">[docs]</a>
-<span class="k">def</span> <span class="nf">set_types_to_int</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">set_types_to_int</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">calculate_rdkit</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set the type of relevant columns to Int64.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span>
-        <span class="s1">&#39;first_approval&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;usan_year&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;first_publication_cpd_target_pair_BF&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;first_publication_cpd_target_pair_w_pchembl_BF&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;first_publication_cpd_target_pair_B&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;first_publication_cpd_target_pair_w_pchembl_B&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;first_publication_cpd&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;hba&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;hbd&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;rtb&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;num_ro5_violations&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;aromatic_rings&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;heavy_atoms&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;hba_lipinski&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;hbd_lipinski&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;num_lipinski_ro5_violations&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span>
-    <span class="p">})</span>
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;first_approval&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;usan_year&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;first_publication_cpd_target_pair_BF&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;first_publication_cpd_target_pair_w_pchembl_BF&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;first_publication_cpd_target_pair_B&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;first_publication_cpd_target_pair_w_pchembl_B&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;first_publication_cpd&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;hba&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;hbd&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;rtb&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;num_ro5_violations&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;aromatic_rings&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;heavy_atoms&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;hba_lipinski&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;hbd_lipinski&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;num_lipinski_ro5_violations&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">calculate_RDKit</span><span class="p">:</span>
-        <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span>
-            <span class="s1">&#39;num_aliphatic_carbocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_aliphatic_heterocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_aliphatic_rings&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_aromatic_carbocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_aromatic_heterocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_aromatic_rings&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_heteroatoms&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_saturated_carbocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_saturated_heterocycles&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_saturated_rings&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;ring_count&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_stereocentres&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;aromatic_atoms&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;aromatic_c&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;aromatic_n&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;aromatic_hetero&#39;</span><span class="p">:</span> <span class="s1">&#39;Int64&#39;</span>
-        <span class="p">})</span>
+    <span class="k">if</span> <span class="n">calculate_rdkit</span><span class="p">:</span>
+        <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;num_aliphatic_carbocycles&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_aliphatic_heterocycles&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_aliphatic_rings&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_aromatic_carbocycles&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_aromatic_heterocycles&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_aromatic_rings&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_heteroatoms&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_saturated_carbocycles&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_saturated_heterocycles&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_saturated_rings&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ring_count&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_stereocentres&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;aromatic_atoms&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;aromatic_c&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;aromatic_n&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;aromatic_hetero&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">df_combined</span></div>
 
@@ -225,7 +247,7 @@
 <span class="sd">    This does not apply to max_phase.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_combined</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-        <span class="k">if</span> <span class="p">((</span><span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;float64&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;Float64&#39;</span><span class="p">))</span> <span class="ow">and</span> <span class="n">col</span> <span class="o">!=</span> <span class="s1">&#39;max_phase&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">,</span> <span class="s2">&quot;Float64&quot;</span><span class="p">))</span> <span class="ow">and</span> <span class="n">col</span> <span class="o">!=</span> <span class="s2">&quot;max_phase&quot;</span><span class="p">:</span>
             <span class="n">df_combined</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="n">decimal_places</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">df_combined</span></div>
@@ -234,67 +256,144 @@
 
 <div class="viewcode-block" id="reorder_columns">
 <a class="viewcode-back" href="../clean_dataset.html#clean_dataset.reorder_columns">[docs]</a>
-<span class="k">def</span> <span class="nf">reorder_columns</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">reorder_columns</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">calculate_rdkit</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reorder the columns in the DataFrame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">len_columns_before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
-    <span class="n">compound_target_pair_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;parent_molregno&#39;</span><span class="p">,</span> <span class="s1">&#39;parent_chemblid&#39;</span><span class="p">,</span> <span class="s1">&#39;parent_pref_name&#39;</span><span class="p">,</span>
-                                    <span class="s1">&#39;max_phase&#39;</span><span class="p">,</span> <span class="s1">&#39;first_approval&#39;</span><span class="p">,</span> <span class="s1">&#39;usan_year&#39;</span><span class="p">,</span> <span class="s1">&#39;black_box_warning&#39;</span><span class="p">,</span>
-                                    <span class="s1">&#39;prodrug&#39;</span><span class="p">,</span> <span class="s1">&#39;oral&#39;</span><span class="p">,</span> <span class="s1">&#39;parenteral&#39;</span><span class="p">,</span> <span class="s1">&#39;topical&#39;</span><span class="p">,</span>
-                                    <span class="s1">&#39;tid&#39;</span><span class="p">,</span> <span class="s1">&#39;mutation&#39;</span><span class="p">,</span> <span class="s1">&#39;target_chembl_id&#39;</span><span class="p">,</span> <span class="s1">&#39;target_pref_name&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">,</span>
-                                    <span class="s1">&#39;organism&#39;</span><span class="p">,</span> <span class="s1">&#39;tid_mutation&#39;</span><span class="p">,</span>
-                                    <span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">,</span> <span class="s1">&#39;cpd_target_pair_mutation&#39;</span><span class="p">]</span>
-    <span class="n">aggregated_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pchembl_value_mean_BF&#39;</span><span class="p">,</span> <span class="s1">&#39;pchembl_value_max_BF&#39;</span><span class="p">,</span> <span class="s1">&#39;pchembl_value_median_BF&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;first_publication_cpd_target_pair_BF&#39;</span><span class="p">,</span> <span class="s1">&#39;first_publication_cpd_target_pair_w_pchembl_BF&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;pchembl_value_mean_B&#39;</span><span class="p">,</span> <span class="s1">&#39;pchembl_value_max_B&#39;</span><span class="p">,</span> <span class="s1">&#39;pchembl_value_median_B&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;first_publication_cpd_target_pair_B&#39;</span><span class="p">,</span> <span class="s1">&#39;first_publication_cpd_target_pair_w_pchembl_B&#39;</span><span class="p">]</span>
-    <span class="n">DTI_annotations</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;therapeutic_target&#39;</span><span class="p">,</span> <span class="s1">&#39;DTI&#39;</span><span class="p">]</span>
-    <span class="n">first_publication_cpd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;first_publication_cpd&#39;</span><span class="p">]</span>
-    <span class="n">chembl_compound_props</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mw_freebase&#39;</span><span class="p">,</span> <span class="s1">&#39;alogp&#39;</span><span class="p">,</span> <span class="s1">&#39;hba&#39;</span><span class="p">,</span> <span class="s1">&#39;hbd&#39;</span><span class="p">,</span> <span class="s1">&#39;psa&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;rtb&#39;</span><span class="p">,</span> <span class="s1">&#39;ro3_pass&#39;</span><span class="p">,</span> <span class="s1">&#39;num_ro5_violations&#39;</span><span class="p">,</span> <span class="s1">&#39;cx_most_apka&#39;</span><span class="p">,</span> <span class="s1">&#39;cx_most_bpka&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;cx_logp&#39;</span><span class="p">,</span> <span class="s1">&#39;cx_logd&#39;</span><span class="p">,</span> <span class="s1">&#39;molecular_species&#39;</span><span class="p">,</span> <span class="s1">&#39;full_mwt&#39;</span><span class="p">,</span> <span class="s1">&#39;aromatic_rings&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;heavy_atoms&#39;</span><span class="p">,</span> <span class="s1">&#39;qed_weighted&#39;</span><span class="p">,</span> <span class="s1">&#39;mw_monoisotopic&#39;</span><span class="p">,</span> <span class="s1">&#39;full_molformula&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;hba_lipinski&#39;</span><span class="p">,</span> <span class="s1">&#39;hbd_lipinski&#39;</span><span class="p">,</span> <span class="s1">&#39;num_lipinski_ro5_violations&#39;</span><span class="p">]</span>
-    <span class="n">chembl_structures</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;standard_inchi&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;standard_inchi_key&#39;</span><span class="p">,</span> <span class="s1">&#39;canonical_smiles&#39;</span><span class="p">]</span>
-    <span class="n">ligand_efficieny_metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LE_B&#39;</span><span class="p">,</span> <span class="s1">&#39;BEI_B&#39;</span><span class="p">,</span> <span class="s1">&#39;SEI_B&#39;</span><span class="p">,</span> <span class="s1">&#39;LLE_B&#39;</span><span class="p">,</span>
-                                <span class="s1">&#39;LE_BF&#39;</span><span class="p">,</span> <span class="s1">&#39;BEI_BF&#39;</span><span class="p">,</span> <span class="s1">&#39;SEI_BF&#39;</span><span class="p">,</span> <span class="s1">&#39;LLE_BF&#39;</span><span class="p">]</span>
-    <span class="n">chembl_target_annotations</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;atc_level1&#39;</span><span class="p">,</span>
-                                 <span class="s1">&#39;target_class_l1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_class_l2&#39;</span><span class="p">]</span>
-    <span class="n">rdkit_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fraction_csp3&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;ring_count&#39;</span><span class="p">,</span> 
-                     <span class="s1">&#39;num_aliphatic_rings&#39;</span><span class="p">,</span> <span class="s1">&#39;num_aliphatic_carbocycles&#39;</span><span class="p">,</span> <span class="s1">&#39;num_aliphatic_heterocycles&#39;</span><span class="p">,</span> 
-                     <span class="s1">&#39;num_aromatic_rings&#39;</span><span class="p">,</span> <span class="s1">&#39;num_aromatic_carbocycles&#39;</span><span class="p">,</span> <span class="s1">&#39;num_aromatic_heterocycles&#39;</span><span class="p">,</span> 
-                     <span class="s1">&#39;num_saturated_rings&#39;</span><span class="p">,</span> <span class="s1">&#39;num_saturated_carbocycles&#39;</span><span class="p">,</span> <span class="s1">&#39;num_saturated_heterocycles&#39;</span><span class="p">,</span> 
-                     <span class="s1">&#39;num_stereocentres&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;num_heteroatoms&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;aromatic_atoms&#39;</span><span class="p">,</span> <span class="s1">&#39;aromatic_c&#39;</span><span class="p">,</span> <span class="s1">&#39;aromatic_n&#39;</span><span class="p">,</span> <span class="s1">&#39;aromatic_hetero&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;scaffold_w_stereo&#39;</span><span class="p">,</span> <span class="s1">&#39;scaffold_wo_stereo&#39;</span><span class="p">]</span>
-    <span class="n">filtering_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pair_mutation_in_dm_table&#39;</span><span class="p">,</span> <span class="s1">&#39;pair_in_dm_table&#39;</span><span class="p">,</span> <span class="s1">&#39;keep_for_binding&#39;</span><span class="p">]</span>
+    <span class="n">compound_target_pair_columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;parent_molregno&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;parent_chemblid&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;parent_pref_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;max_phase&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;first_approval&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;usan_year&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;black_box_warning&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;prodrug&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;oral&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;parenteral&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;topical&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tid&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mutation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;target_chembl_id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;target_pref_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;target_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;organism&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tid_mutation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cpd_target_pair&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cpd_target_pair_mutation&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">aggregated_values</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;pchembl_value_mean_BF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pchembl_value_max_BF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pchembl_value_median_BF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;first_publication_cpd_target_pair_BF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;first_publication_cpd_target_pair_w_pchembl_BF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pchembl_value_mean_B&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pchembl_value_max_B&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pchembl_value_median_B&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;first_publication_cpd_target_pair_B&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;first_publication_cpd_target_pair_w_pchembl_B&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">dti_annotations</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;therapeutic_target&quot;</span><span class="p">,</span> <span class="s2">&quot;DTI&quot;</span><span class="p">]</span>
+    <span class="n">first_publication_cpd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;first_publication_cpd&quot;</span><span class="p">]</span>
+    <span class="n">chembl_compound_props</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;mw_freebase&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alogp&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hba&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hbd&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;psa&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rtb&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ro3_pass&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_ro5_violations&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cx_most_apka&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cx_most_bpka&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cx_logp&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cx_logd&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;molecular_species&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;full_mwt&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;aromatic_rings&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;heavy_atoms&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;qed_weighted&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mw_monoisotopic&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;full_molformula&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hba_lipinski&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hbd_lipinski&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_lipinski_ro5_violations&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">chembl_structures</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;standard_inchi&quot;</span><span class="p">,</span> <span class="s2">&quot;standard_inchi_key&quot;</span><span class="p">,</span> <span class="s2">&quot;canonical_smiles&quot;</span><span class="p">]</span>
+    <span class="n">ligand_efficieny_metrics</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;LE_B&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BEI_B&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SEI_B&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LLE_B&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LE_BF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BEI_BF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SEI_BF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LLE_BF&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">chembl_target_annotations</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;atc_level1&quot;</span><span class="p">,</span> <span class="s2">&quot;target_class_l1&quot;</span><span class="p">,</span> <span class="s2">&quot;target_class_l2&quot;</span><span class="p">]</span>
+    <span class="n">rdkit_columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;fraction_csp3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ring_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_aliphatic_rings&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_aliphatic_carbocycles&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_aliphatic_heterocycles&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_aromatic_rings&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_aromatic_carbocycles&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_aromatic_heterocycles&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_saturated_rings&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_saturated_carbocycles&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_saturated_heterocycles&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_stereocentres&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_heteroatoms&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;aromatic_atoms&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;aromatic_c&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;aromatic_n&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;aromatic_hetero&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;scaffold_w_stereo&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;scaffold_wo_stereo&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">filtering_columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;pair_mutation_in_dm_table&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pair_in_dm_table&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;keep_for_binding&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">calculate_RDKit</span><span class="p">:</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="n">compound_target_pair_columns</span> <span class="o">+</span> \
-            <span class="n">aggregated_values</span> <span class="o">+</span> <span class="n">DTI_annotations</span> <span class="o">+</span> <span class="n">first_publication_cpd</span> <span class="o">+</span> \
-            <span class="n">chembl_compound_props</span> <span class="o">+</span> <span class="n">chembl_structures</span> <span class="o">+</span> \
-            <span class="n">ligand_efficieny_metrics</span> <span class="o">+</span> \
-            <span class="n">chembl_target_annotations</span> <span class="o">+</span> \
-            <span class="n">rdkit_columns</span> <span class="o">+</span> \
-            <span class="n">filtering_columns</span>
+    <span class="k">if</span> <span class="n">calculate_rdkit</span><span class="p">:</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">compound_target_pair_columns</span>
+            <span class="o">+</span> <span class="n">aggregated_values</span>
+            <span class="o">+</span> <span class="n">dti_annotations</span>
+            <span class="o">+</span> <span class="n">first_publication_cpd</span>
+            <span class="o">+</span> <span class="n">chembl_compound_props</span>
+            <span class="o">+</span> <span class="n">chembl_structures</span>
+            <span class="o">+</span> <span class="n">ligand_efficieny_metrics</span>
+            <span class="o">+</span> <span class="n">chembl_target_annotations</span>
+            <span class="o">+</span> <span class="n">rdkit_columns</span>
+            <span class="o">+</span> <span class="n">filtering_columns</span>
+        <span class="p">)</span>
         <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="n">compound_target_pair_columns</span> <span class="o">+</span> \
-            <span class="n">aggregated_values</span> <span class="o">+</span> <span class="n">DTI_annotations</span> <span class="o">+</span> <span class="n">first_publication_cpd</span> <span class="o">+</span> \
-            <span class="n">chembl_compound_props</span> <span class="o">+</span> <span class="n">chembl_structures</span> <span class="o">+</span> \
-            <span class="n">ligand_efficieny_metrics</span> <span class="o">+</span> \
-            <span class="n">chembl_target_annotations</span> <span class="o">+</span> \
-            <span class="n">filtering_columns</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">compound_target_pair_columns</span>
+            <span class="o">+</span> <span class="n">aggregated_values</span>
+            <span class="o">+</span> <span class="n">dti_annotations</span>
+            <span class="o">+</span> <span class="n">first_publication_cpd</span>
+            <span class="o">+</span> <span class="n">chembl_compound_props</span>
+            <span class="o">+</span> <span class="n">chembl_structures</span>
+            <span class="o">+</span> <span class="n">ligand_efficieny_metrics</span>
+            <span class="o">+</span> <span class="n">chembl_target_annotations</span>
+            <span class="o">+</span> <span class="n">filtering_columns</span>
+        <span class="p">)</span>
         <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>
 
     <span class="n">len_columns_after</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="p">(</span><span class="n">len_columns_before</span> <span class="o">==</span>
-            <span class="n">len_columns_after</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Different number of columns after reordering (before: </span><span class="si">{</span><span class="n">len_columns_before</span><span class="si">}</span><span class="s2">, after: </span><span class="si">{</span><span class="n">len_columns_after</span><span class="si">}</span><span class="s2">).&quot;</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">len_columns_before</span> <span class="o">==</span> <span class="n">len_columns_after</span>
+    <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Different number of columns after reordering </span><span class="se">\</span>
+<span class="s2">        (before: </span><span class="si">{</span><span class="n">len_columns_before</span><span class="si">}</span><span class="s2">, after: </span><span class="si">{</span><span class="n">len_columns_after</span><span class="si">}</span><span class="s2">).&quot;</span>
 
     <span class="k">return</span> <span class="n">df_combined</span></div>
 
@@ -302,9 +401,9 @@
 
 <div class="viewcode-block" id="clean_dataset">
 <a class="viewcode-back" href="../clean_dataset.html#clean_dataset.clean_dataset">[docs]</a>
-<span class="k">def</span> <span class="nf">clean_dataset</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">clean_dataset</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">calculate_rdkit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Clean the dataset by </span>
+<span class="sd">    Clean the dataset by</span>
 
 <span class="sd">    - changing nan values and empty strings to None</span>
 <span class="sd">    - setting the type of relevant columns to Int64</span>
@@ -314,16 +413,18 @@
 
 <span class="sd">    :param df_combined: Pandas DataFrame with compound-target pairs</span>
 <span class="sd">    :type df_combined: pd.DataFrame</span>
-<span class="sd">    :param calculate_RDKit: True if the DataFrame contains RDKit-based compound properties</span>
-<span class="sd">    :type calculate_RDKit: bool</span>
+<span class="sd">    :param calculate_rdkit: True if the DataFrame contains RDKit-based compound properties</span>
+<span class="sd">    :type calculate_rdkit: bool</span>
 <span class="sd">    :return: Cleaned pandas DataFrame with compound-target pairs</span>
 <span class="sd">    :rtype: pd.DataFrame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df_combined</span> <span class="o">=</span> <span class="n">clean_none_values</span><span class="p">(</span><span class="n">df_combined</span><span class="p">)</span>
-    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">set_types_to_int</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span>
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">set_types_to_int</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">calculate_rdkit</span><span class="p">)</span>
     <span class="n">df_combined</span> <span class="o">=</span> <span class="n">round_floats</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">decimal_places</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">reorder_columns</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">calculate_RDKit</span><span class="p">)</span>
-    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cpd_target_pair_mutation&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">reorder_columns</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">calculate_rdkit</span><span class="p">)</span>
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cpd_target_pair_mutation&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span>
+        <span class="n">drop</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">df_combined</span></div>
 
 </pre></div>

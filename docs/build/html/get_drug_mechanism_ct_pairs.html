@@ -110,7 +110,8 @@ to match the information that is present in the compound-target pairs table base
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>chembl_con</strong> (<em>sqlite3.Connection</em>) – Sqlite3 connection to ChEMBL database.</p></li>
-<li><p><strong>cpd_target_pairs</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with compound-target pairs from the drug_mechanism table.</p></li>
+<li><p><strong>cpd_target_pairs</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with compound-target pairs
+from the drug_mechanism table.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -124,10 +125,12 @@ to match the information that is present in the compound-target pairs table base
 
 <dl class="py function">
 <dt class="sig sig-object py" id="get_drug_mechanism_ct_pairs.add_drug_mechanism_ct_pairs">
-<span class="sig-prename descclassname"><span class="pre">get_drug_mechanism_ct_pairs.</span></span><span class="sig-name descname"><span class="pre">add_drug_mechanism_ct_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chembl_con:</span> <span class="pre">~sqlite3.Connection)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'pandas.core.frame.DataFrame'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'set'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'set'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_drug_mechanism_ct_pairs.html#add_drug_mechanism_ct_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_drug_mechanism_ct_pairs.add_drug_mechanism_ct_pairs" title="Link to this definition"></a></dt>
-<dd><p>Add compound-target pairs from the drug_mechanism table that are not in the dataset based on the initial ChEMBL query.
+<span class="sig-prename descclassname"><span class="pre">get_drug_mechanism_ct_pairs.</span></span><span class="sig-name descname"><span class="pre">add_drug_mechanism_ct_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_combined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chembl_con</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/get_drug_mechanism_ct_pairs.html#add_drug_mechanism_ct_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_drug_mechanism_ct_pairs.add_drug_mechanism_ct_pairs" title="Link to this definition"></a></dt>
+<dd><p>Add compound-target pairs from the drug_mechanism table
+that are not in the dataset based on the initial ChEMBL query.
 These are compound-target pairs for which there is no associated pchembl value data.
-Since the pairs are known interactions, they are added to the dataset despite not having a pchembl value.</p>
+Since the pairs are known interactions,
+they are added to the dataset despite not having a pchembl value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -137,7 +140,11 @@ Since the pairs are known interactions, they are added to the dataset despite no
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p>Pandas DataFrame with compound-target pairs based on activities AND drug_mechanism table </p></li>
+<li><dl class="simple">
+<dt>Pandas DataFrame with compound-target pairs</dt><dd><p>based on activities AND drug_mechanism table </p>
+</dd>
+</dl>
+</li>
 <li><p>set of compound-target pairs in the drug_mechanism table </p></li>
 <li><p>set of targets in the drug_mechanism table</p></li>
 </ul>
@@ -173,17 +180,20 @@ Relevant mappings of target ids to related target ids are taken into account.</p
 <span class="sig-prename descclassname"><span class="pre">get_drug_mechanism_ct_pairs.</span></span><span class="sig-name descname"><span class="pre">get_drug_mechanisms_interactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chembl_con</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/get_drug_mechanism_ct_pairs.html#get_drug_mechanisms_interactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_drug_mechanism_ct_pairs.get_drug_mechanisms_interactions" title="Link to this definition"></a></dt>
 <dd><p>Extract the known compound-target interactions from the ChEMBL drug_mechanisms table.
 Note: While the interactions are mostly between drugs and targets,
-the table also includes some known interactions between compounds with a max_phase &lt; 4 and their targets.</p>
+the table also includes some known interactions between
+compounds with a max_phase &lt; 4 and their targets.</p>
 <p>Only entries with a disease_efficacy of 1 are taken into account,
 i.e., the target is believed to play a role in the efficacy of the drug.</p>
 <p><em>disease_efficacy: Flag to show whether the target assigned is believed
-to play a role in the efficacy of the drug in the indication(s) for which it is approved (1 = yes, 0 = no).</em></p>
+to play a role in the efficacy of the drug in the indication(s)
+for which it is approved (1 = yes, 0 = no).</em></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>chembl_con</strong> (<em>sqlite3.Connection</em>) – Sqlite3 connection to ChEMBL database.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Pandas DataFrame with compound-target pairs from the drug_mechanism table with disease relevance.</p>
+<dd class="field-even"><p>Pandas DataFrame with compound-target pairs
+from the drug_mechanism table with disease relevance.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
@@ -194,7 +204,8 @@ to play a role in the efficacy of the drug in the indication(s) for which it is 
 <dl class="py function">
 <dt class="sig sig-object py" id="get_drug_mechanism_ct_pairs.get_relevant_tid_mappings">
 <span class="sig-prename descclassname"><span class="pre">get_drug_mechanism_ct_pairs.</span></span><span class="sig-name descname"><span class="pre">get_relevant_tid_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chembl_con</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/get_drug_mechanism_ct_pairs.html#get_relevant_tid_mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_drug_mechanism_ct_pairs.get_relevant_tid_mappings" title="Link to this definition"></a></dt>
-<dd><p>Get DataFrame with mappings from target id to their related target ids based on the target_relations table.
+<dd><p>Get DataFrame with mappings from target id to their related target ids
+based on the target_relations table.
 The following mappings are considered:</p>
 <table class="docutils align-default">
 <tbody>
@@ -224,16 +235,19 @@ The following mappings are considered:</p>
 </tr>
 </tbody>
 </table>
-<p>These mappings can be used to increase the number of target ids for which there is data in the drug_mechanisms table.
+<p>These mappings can be used to increase the number of target ids
+for which there is data in the drug_mechanisms table.
 For example, for <em>protein family -[superset of]-&gt; single protein</em> this means:
 If there is a known relevant interaction between a compound and a protein family,
-interactions between the compound and single proteins of that protein family are considered to be known interactions as well.</p>
+interactions between the compound and single proteins of that protein family
+are considered to be known interactions as well.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>chembl_con</strong> (<em>sqlite3.Connection</em>) – Sqlite3 connection to ChEMBL database.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Pandas DataFrame with mappings from tid to related tid for the defined subset of target relations.</p>
+<dd class="field-even"><p>Pandas DataFrame with mappings from tid to related tid
+for the defined subset of target relations.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>

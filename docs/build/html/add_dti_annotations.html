@@ -103,17 +103,21 @@
 <dd><p>Every compound-target pair is assigned a DTI (drug target interaction) annotation.</p>
 <p>The assignment is based on three questions:</p>
 <ul class="simple">
-<li><p>Is the compound-target pair in the drug_mechanisms table? = Is it a known relevant compound-target interaction?</p></li>
+<li><dl class="simple">
+<dt>Is the compound-target pair in the drug_mechanisms table? =</dt><dd><p>Is it a known relevant compound-target interaction?</p>
+</dd>
+</dl>
+</li>
 <li><p>What is the max_phase of the compound? = Is it a drug / clinical compound?</p></li>
 <li><p>Is the target in the drug_mechanisms table = Is it a therapeutic target?</p></li>
 </ul>
 <p>The assigments are based on the following table:</p>
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>in drug_mechanisms table?</p></th>
+<tr class="row-odd"><th class="head"><p>in DM table?</p></th>
 <th class="head"><p>max_phase?</p></th>
-<th class="head"><p>therapeutic target?</p></th>
-<th class="head"><p>DTI annotation</p></th>
+<th class="head"><p>th. target?</p></th>
+<th class="head"><p>DTI</p></th>
 <th class="head"><p>explanation</p></th>
 </tr>
 </thead>
@@ -121,7 +125,7 @@
 <tr class="row-even"><td><p>yes</p></td>
 <td><p>4</p></td>
 <td><p>–</p></td>
-<td><p>D_DT [1]</p></td>
+<td><p>D_DT <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
 <td><p>drug - drug target</p></td>
 </tr>
 <tr class="row-odd"><td><p>yes</p></td>
@@ -146,7 +150,7 @@
 <td><p>&lt;1</p></td>
 <td><p>–</p></td>
 <td><p>C0_DT</p></td>
-<td><p>compound in unknown clinical phase [2] - drug target</p></td>
+<td><p>compound in unknown phase <a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> - drug target</p></td>
 </tr>
 <tr class="row-odd"><td><p>no</p></td>
 <td><p>–</p></td>
@@ -162,22 +166,37 @@
 </tr>
 </tbody>
 </table>
-<p>[1] The annotation D_DT instead of C4_DT was chosen to be consistent with the annotations in a previous version of the dataset. For the same reason the column is named DTI (drug-target interaction) instead of CTI (compound-target interaction)
-despite having specific annotations for clinical canidates.</p>
-<p>[2] Since ChEMBL32 there are three possible annotations in ChEMBL with a max_phase value not between 1 and 4:</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>The annotation D_DT instead of C4_DT was chosen to be consistent     with the annotations in a previous version of the dataset.     For the same reason the column is named DTI (drug-target interaction)     instead of CTI (compound-target interaction)     despite having specific annotations for clinical canidates.</p>
+</aside>
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>C0_DT groups together all compounds with a max_phase not between 1 and 4.</p>
+</aside>
+</aside>
+<p>Since ChEMBL32 there are three possible annotations in ChEMBL
+with a max_phase value not between 1 and 4:</p>
 <ul class="simple">
 <li><p>0.5 = early phase 1 clinical trials</p></li>
-<li><p>-1 = clinical phase unknown for drug or clinical candidate drug, i.e., where ChEMBL cannot assign a clinical phase</p></li>
+<li><dl class="simple">
+<dt>-1 = clinical phase unknown for drug or clinical candidate drug,</dt><dd><p>i.e., where ChEMBL cannot assign a clinical phase</p>
+</dd>
+</dl>
+</li>
 <li><p>NULL = preclinical compounds with bioactivity data</p></li>
 </ul>
 <p>All three are grouped together into the annotation C0_DT.</p>
 <p>Compound-target pairs that were annotated with NDT,
 i.e., compound-target pairs that are not in the drug_mechanisms table
-and for which the target was also not in the drug_mechanisms table (not a comparator compound), are discarded.</p>
+and for which the target was also not in the drug_mechanisms table
+(not a comparator compound), are discarded.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df_combined</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with compound-target pairs based on activities AND drug_mechanism table</p></li>
+<li><p><strong>df_combined</strong> (<em>pd.DataFrame</em>) – Pandas DataFrame with compound-target pairs
+based on activities AND drug_mechanism table</p></li>
 <li><p><strong>drug_mechanism_pairs_set</strong> (<em>set</em>) – set of compound-target pairs in the drug_mechanism table</p></li>
 <li><p><strong>drug_mechanism_targets_set</strong> (<em>set</em>) – set of targets in the drug_mechanism table</p></li>
 </ul>

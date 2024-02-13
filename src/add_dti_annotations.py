@@ -22,7 +22,7 @@ def add_dti_annotations(
     +------------+----------+-----------+-----------+---------------------------------------------+
     |in DM table?|max_phase?|th. target?|DTI        |explanation                                  |
     +============+==========+===========+===========+=============================================+
-    | yes        | 4        | --        | D_DT \[1\]| drug - drug target                          |
+    | yes        | 4        | --        | D_DT [#]_ | drug - drug target                          |
     +------------+----------+-----------+-----------+---------------------------------------------+
     | yes        | 3        | --        | C3_DT     | clinical candidate in phase 3 - drug target |
     +------------+----------+-----------+-----------+---------------------------------------------+
@@ -30,20 +30,22 @@ def add_dti_annotations(
     +------------+----------+-----------+-----------+---------------------------------------------+
     | yes        | 1        | --        | C1_DT     | clinical candidate in phase 1 - drug target |
     +------------+----------+-----------+-----------+---------------------------------------------+
-    | yes        | <1       | --        | C0_DT     |compound in unknown phase \[2\] - drug target|
+    | yes        | <1       | --        | C0_DT     |compound in unknown phase [#]_ - drug target |
     +------------+----------+-----------+-----------+---------------------------------------------+
     | no         | --       | yes       | DT        | drug target                                 |
     +------------+----------+-----------+-----------+---------------------------------------------+
     | no         | --       | no        | NDT       | not drug target                             |
     +------------+----------+-----------+-----------+---------------------------------------------+
 
-    \[1\] The annotation D_DT instead of C4_DT was chosen to be consistent 
-    with the annotations in a previous version of the dataset. \\
-    For the same reason the column is named DTI (drug-target interaction) 
-    instead of CTI (compound-target interaction) 
-    despite having specific annotations for clinical canidates. 
+    .. [#] The annotation D_DT instead of C4_DT was chosen to be consistent \
+    with the annotations in a previous version of the dataset. \\ \
+    For the same reason the column is named DTI (drug-target interaction) \
+    instead of CTI (compound-target interaction) \
+    despite having specific annotations for clinical canidates.
 
-    \[2\] Since ChEMBL32 there are three possible annotations in ChEMBL 
+    .. [#] C0_DT groups together all compounds with a max_phase not between 1 and 4. 
+    
+    Since ChEMBL32 there are three possible annotations in ChEMBL 
     with a max_phase value not between 1 and 4:
 
     - 0.5 = early phase 1 clinical trials  

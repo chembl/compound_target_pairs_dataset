@@ -77,56 +77,70 @@
   <h1>Source code for add_dti_annotations</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
+
 <span class="c1">########### CTI (Compound-Target Interaction) Annotations ###########</span>
 <div class="viewcode-block" id="add_dti_annotations">
 <a class="viewcode-back" href="../add_dti_annotations.html#add_dti_annotations.add_dti_annotations">[docs]</a>
-<span class="k">def</span> <span class="nf">add_dti_annotations</span><span class="p">(</span><span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">drug_mechanism_pairs_set</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span> <span class="n">drug_mechanism_targets_set</span><span class="p">:</span> <span class="nb">set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">add_dti_annotations</span><span class="p">(</span>
+    <span class="n">df_combined</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">drug_mechanism_pairs_set</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span>
+    <span class="n">drug_mechanism_targets_set</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Every compound-target pair is assigned a DTI (drug target interaction) annotation.  </span>
 
 <span class="sd">    The assignment is based on three questions:</span>
 
-<span class="sd">    - Is the compound-target pair in the drug_mechanisms table? = Is it a known relevant compound-target interaction?</span>
+<span class="sd">    - Is the compound-target pair in the drug_mechanisms table? = </span>
+<span class="sd">        Is it a known relevant compound-target interaction?</span>
 <span class="sd">    - What is the max_phase of the compound? = Is it a drug / clinical compound?</span>
 <span class="sd">    - Is the target in the drug_mechanisms table = Is it a therapeutic target?</span>
 
 <span class="sd">    The assigments are based on the following table:</span>
 
-<span class="sd">    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+</span>
-<span class="sd">    |in drug_mechanisms table?  |max_phase? |therapeutic target?    |DTI annotation |explanation                                            |</span>
-<span class="sd">    +===========================+===========+=======================+===============+=======================================================+</span>
-<span class="sd">    | yes                       | 4         | --                    | D_DT \[1\]    | drug - drug target                                    |</span>
-<span class="sd">    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+</span>
-<span class="sd">    | yes                       | 3         | --                    | C3_DT         | clinical candidate in phase 3 - drug target           |</span>
-<span class="sd">    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+</span>
-<span class="sd">    | yes                       | 2         | --                    | C2_DT         | clinical candidate in phase 2 - drug target           |</span>
-<span class="sd">    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+</span>
-<span class="sd">    | yes                       | 1         | --                    | C1_DT         | clinical candidate in phase 1 - drug target           |</span>
-<span class="sd">    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+</span>
-<span class="sd">    | yes                       | &lt;1        | --                    | C0_DT         | compound in unknown clinical phase \[2\] - drug target|</span>
-<span class="sd">    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+</span>
-<span class="sd">    | no                        | --        | yes                   | DT            | drug target                                           |</span>
-<span class="sd">    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+</span>
-<span class="sd">    | no                        | --        | no                    | NDT           | not drug target                                       |</span>
-<span class="sd">    +---------------------------+-----------+-----------------------+---------------+-------------------------------------------------------+</span>
+<span class="sd">    +------------+----------+-----------+-----------+---------------------------------------------+</span>
+<span class="sd">    |in DM table?|max_phase?|th. target?|DTI        |explanation                                  |</span>
+<span class="sd">    +============+==========+===========+===========+=============================================+</span>
+<span class="sd">    | yes        | 4        | --        | D_DT [#]_ | drug - drug target                          |</span>
+<span class="sd">    +------------+----------+-----------+-----------+---------------------------------------------+</span>
+<span class="sd">    | yes        | 3        | --        | C3_DT     | clinical candidate in phase 3 - drug target |</span>
+<span class="sd">    +------------+----------+-----------+-----------+---------------------------------------------+</span>
+<span class="sd">    | yes        | 2        | --        | C2_DT     | clinical candidate in phase 2 - drug target |</span>
+<span class="sd">    +------------+----------+-----------+-----------+---------------------------------------------+</span>
+<span class="sd">    | yes        | 1        | --        | C1_DT     | clinical candidate in phase 1 - drug target |</span>
+<span class="sd">    +------------+----------+-----------+-----------+---------------------------------------------+</span>
+<span class="sd">    | yes        | &lt;1       | --        | C0_DT     |compound in unknown phase [#]_ - drug target |</span>
+<span class="sd">    +------------+----------+-----------+-----------+---------------------------------------------+</span>
+<span class="sd">    | no         | --       | yes       | DT        | drug target                                 |</span>
+<span class="sd">    +------------+----------+-----------+-----------+---------------------------------------------+</span>
+<span class="sd">    | no         | --       | no        | NDT       | not drug target                             |</span>
+<span class="sd">    +------------+----------+-----------+-----------+---------------------------------------------+</span>
 
-<span class="sd">    \[1\] The annotation D_DT instead of C4_DT was chosen to be consistent with the annotations in a previous version of the dataset. \\</span>
-<span class="sd">    For the same reason the column is named DTI (drug-target interaction) instead of CTI (compound-target interaction) </span>
-<span class="sd">    despite having specific annotations for clinical canidates. </span>
+<span class="sd">    .. [#] The annotation D_DT instead of C4_DT was chosen to be consistent \</span>
+<span class="sd">    with the annotations in a previous version of the dataset. \\ \</span>
+<span class="sd">    For the same reason the column is named DTI (drug-target interaction) \</span>
+<span class="sd">    instead of CTI (compound-target interaction) \</span>
+<span class="sd">    despite having specific annotations for clinical canidates.</span>
 
-<span class="sd">    \[2\] Since ChEMBL32 there are three possible annotations in ChEMBL with a max_phase value not between 1 and 4:</span>
+<span class="sd">    .. [#] C0_DT groups together all compounds with a max_phase not between 1 and 4. </span>
+<span class="sd">    </span>
+<span class="sd">    Since ChEMBL32 there are three possible annotations in ChEMBL </span>
+<span class="sd">    with a max_phase value not between 1 and 4:</span>
 
 <span class="sd">    - 0.5 = early phase 1 clinical trials  </span>
-<span class="sd">    - -1 = clinical phase unknown for drug or clinical candidate drug, i.e., where ChEMBL cannot assign a clinical phase</span>
+<span class="sd">    - -1 = clinical phase unknown for drug or clinical candidate drug, </span>
+<span class="sd">            i.e., where ChEMBL cannot assign a clinical phase</span>
 <span class="sd">    - NULL = preclinical compounds with bioactivity data</span>
 
 <span class="sd">    All three are grouped together into the annotation C0_DT.</span>
 
 <span class="sd">    Compound-target pairs that were annotated with NDT, </span>
 <span class="sd">    i.e., compound-target pairs that are not in the drug_mechanisms table </span>
-<span class="sd">    and for which the target was also not in the drug_mechanisms table (not a comparator compound), are discarded.</span>
+<span class="sd">    and for which the target was also not in the drug_mechanisms table </span>
+<span class="sd">    (not a comparator compound), are discarded.</span>
 
-<span class="sd">    :param df_combined: Pandas DataFrame with compound-target pairs based on activities AND drug_mechanism table</span>
+<span class="sd">    :param df_combined: Pandas DataFrame with compound-target pairs </span>
+<span class="sd">        based on activities AND drug_mechanism table</span>
 <span class="sd">    :type df_combined: pd.DataFrame</span>
 <span class="sd">    :param drug_mechanism_pairs_set: set of compound-target pairs in the drug_mechanism table</span>
 <span class="sd">    :type drug_mechanism_pairs_set: set</span>
@@ -135,38 +149,77 @@
 <span class="sd">    :return: Pandas DataFrame with all compound-target pairs and their DTI annotations.</span>
 <span class="sd">    :rtype: pd.DataFrame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Add a new column *therapeutic_target* which is set to True if the target is in the drug_mechanism table</span>
-    <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;therapeutic_target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;tid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_targets_set</span><span class="p">)</span>
+    <span class="c1"># Add a new column *therapeutic_target* which is set to True</span>
+    <span class="c1"># if the target is in the drug_mechanism table</span>
+    <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;therapeutic_target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;tid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+        <span class="n">drug_mechanism_targets_set</span>
+    <span class="p">)</span>
 
     <span class="c1"># Assign the annotations based on the table.</span>
     <span class="c1"># Compound-target pairs from the drug mechanism table</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;max_phase&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)),</span> <span class="s1">&#39;DTI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;D_DT&quot;</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;max_phase&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)),</span> <span class="s1">&#39;DTI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C3_DT&quot;</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;max_phase&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)),</span> <span class="s1">&#39;DTI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C2_DT&quot;</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;max_phase&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)),</span> <span class="s1">&#39;DTI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C1_DT&quot;</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;cpd_target_pair&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;max_phase&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;DTI&quot;</span><span class="p">,</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;D_DT&quot;</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;cpd_target_pair&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;max_phase&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;DTI&quot;</span><span class="p">,</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C3_DT&quot;</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;cpd_target_pair&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;max_phase&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;DTI&quot;</span><span class="p">,</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C2_DT&quot;</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;cpd_target_pair&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;max_phase&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;DTI&quot;</span><span class="p">,</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C1_DT&quot;</span>
     <span class="c1"># Compounds that are in the drug_mechanism table but don&#39;t have a known phase between 1-4:</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)</span> <span class="o">&amp;</span> 
-                    <span class="p">(</span><span class="o">~</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;max_phase&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))),</span> <span class="s1">&#39;DTI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C0_DT&quot;</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;cpd_target_pair&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;max_phase&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;DTI&quot;</span><span class="p">,</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C0_DT&quot;</span>
 
     <span class="c1"># Target is in the drug mechanism table</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[((</span><span class="o">~</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">))</span> 
-                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;therapeutic_target&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)),</span> <span class="s1">&#39;DTI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;DT&quot;</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="o">~</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;cpd_target_pair&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">))</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;therapeutic_target&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;DTI&quot;</span><span class="p">,</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;DT&quot;</span>
 
     <span class="c1"># Other compound-target pairs</span>
     <span class="c1"># if target is not a therapeutic target, &#39;cpd_target_pair&#39; cannot be in DTIs_set</span>
     <span class="c1"># (~df_combined[&#39;cpd_target_pair&#39;].isin(DTIs_set)) is included for clarity</span>
-    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[((</span><span class="o">~</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;cpd_target_pair&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">))</span> 
-                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;therapeutic_target&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)),</span> <span class="s1">&#39;DTI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;NDT&quot;</span>
+    <span class="n">df_combined</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="o">~</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;cpd_target_pair&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drug_mechanism_pairs_set</span><span class="p">))</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;therapeutic_target&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;DTI&quot;</span><span class="p">,</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;NDT&quot;</span>
 
     <span class="c1"># Discard NDT rows</span>
-    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[(</span><span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;DTI&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;D_DT&#39;</span><span class="p">,</span> <span class="s1">&#39;C3_DT&#39;</span><span class="p">,</span> <span class="s1">&#39;C2_DT&#39;</span><span class="p">,</span> <span class="s1">&#39;C1_DT&#39;</span><span class="p">,</span> <span class="s1">&#39;C0_DT&#39;</span><span class="p">,</span> <span class="s1">&#39;DT&#39;</span><span class="p">]))]</span>
-    
+    <span class="n">df_combined</span> <span class="o">=</span> <span class="n">df_combined</span><span class="p">[</span>
+        <span class="p">(</span><span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;DTI&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;D_DT&quot;</span><span class="p">,</span> <span class="s2">&quot;C3_DT&quot;</span><span class="p">,</span> <span class="s2">&quot;C2_DT&quot;</span><span class="p">,</span> <span class="s2">&quot;C1_DT&quot;</span><span class="p">,</span> <span class="s2">&quot;C0_DT&quot;</span><span class="p">,</span> <span class="s2">&quot;DT&quot;</span><span class="p">]))</span>
+    <span class="p">]</span>
+
     <span class="k">return</span> <span class="n">df_combined</span></div>
-
-
-
-
-
 
 </pre></div>
 
