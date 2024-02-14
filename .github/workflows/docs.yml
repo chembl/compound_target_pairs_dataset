@@ -1,21 +1,14 @@
 name: Docs
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "documentation"
-  documentation:
-    # The type of runner that the job will run on
+  build_docs:
+    name: Build docs
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -36,3 +29,18 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/build/html
+
+  publish_docs:
+    name: Publish docs
+    needs: build_docs
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
