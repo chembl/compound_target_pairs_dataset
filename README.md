@@ -41,4 +41,5 @@ An overview of the available arguments to modify the output is available by call
 python main.py --help
 ```
 
-
+## Documentation
+The full documentation is available [here](https://chembl.github.io/compound_target_pairs_dataset/).
