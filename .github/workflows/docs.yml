@@ -27,7 +27,12 @@ jobs:
           pip install .
           pip install 'compound_target_pairs_dataset[dev]'
       - name: Build documentation
+        timeout-minutes: 5
         run: |
           cd docs
           make clean
           make html
+      - name: Upload docs as artefact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/build/html
