@@ -26,3 +26,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install .
           pip install 'compound_target_pairs_dataset[dev]'
+      - name: Build documentation
+        run: |
+          cd docs
+          make clean
+          make html
