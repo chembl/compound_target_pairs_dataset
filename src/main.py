@@ -1,103 +1,17 @@
-import argparse
 import logging
 import sqlite3
 
 import chembl_downloader
 
+import arguments
 import get_dataset
-
-
-def parse_args() -> argparse.Namespace:
-    """
-    Get arguments with argparse.
-
-    :return: Populated argparse.Namespace
-    :rtype: argparse.Namespace
-    """
-    parser = argparse.ArgumentParser(
-        description="Extract the compound-target pairs dataset from ChEMBL. \
-            The full dataset plus filtering columns for binding vs. binding+functional data \
-            will always be written to csv. \
-            Additional outputs and output types can be chosen with the parameters below."
-    )
-
-    parser.add_argument(
-        "--chembl",
-        "-v",
-        metavar="<version>",
-        type=str,
-        default=None,
-        help="ChEMBL version. \
-            Latest version if None. \
-            Required if a path to a SQLite database is provided, \
-            i.e., if --sqlite is set. (default: None)",
-    )
-    parser.add_argument(
-        "--sqlite",
-        "-s",
-        metavar="<path>",
-        type=str,
-        default=None,
-        help="Path to SQLite database. \
-            ChEMBL is downloaded as an SQLite database \
-            and handled by chembl_downloader if None. (default: None)",
-    )
-    parser.add_argument(
-        "--output",
-        "-o",
-        metavar="<path>",
-        type=str,
-        required=True,
-        help="Path to write the output file(s) to. (required)",
-    )
-    parser.add_argument(
-        "--delimiter",
-        "-d",
-        metavar="<delimiter>",
-        type=str,
-        default=";",
-        help="Delimiter in output csv-files.  (default: ;)",
-    )
-    parser.add_argument(
-        "--all_sources",
-        action="store_true",
-        help="If this is set, the dataset is calculated based on all sources in ChEMBL. \
-            This includes data from BindingDB which may skew the results. \
-            Default (not set): the dataset is calculated based on only literature data.",
-    )
-    parser.add_argument(
-        "--rdkit",
-        action="store_true",
-        help="Calculate RDKit-based compound properties.",
-    )
-    parser.add_argument(
-        "--excel",
-        action="store_true",
-        help="Write the results to excel. Note: this may fail if the output is too large.",
-    )
-    parser.add_argument(
-        "--BF", action="store_true", help="Write binding+functional data subsets."
-    )
-    parser.add_argument("--B", action="store_true", help="Write binding data subsets.")
-    parser.add_argument(
-        "--debug", action="store_true", help="Log additional debugging information."
-    )
-    args = parser.parse_args()
-
-    return args
 
 
 def main():
     """
     Call get_ct_pair_dataset to get the compound-target dataset using the given arguments.
     """
-    args = parse_args()
-
-    # Set arguments that are always true.
-    # Write the results to csv.
-    csv = True
-    # Write the full dataset plus filtering columns for binding vs. binding+functional data.
-    full_df = True
+    args, calc_args, output_args = arguments.get_args()
 
     log_level = "DEBUG" if args.debug else "INFO"
     numeric_log_level = getattr(logging, log_level, None)
@@ -112,35 +26,19 @@ def main():
         with sqlite3.connect(args.sqlite) as chembl_con:
             get_dataset.get_ct_pair_dataset(
                 chembl_con,
-                args.chembl,
-                args.output,
-                not args.all_sources,
-                args.rdkit,
-                csv,
-                args.excel,
-                args.delimiter,
-                full_df,
-                args.BF,
-                args.B,
+                calc_args,
+                output_args,
             )
     else:
         logging.info("Using chembl_downloader to connect to ChEMBL.")
-        if args.chembl is None:
-            args.chembl = chembl_downloader.latest()
+        if args.chembl_version is None:
+            args.chembl_version = chembl_downloader.latest()
 
-        with chembl_downloader.connect(version=args.chembl) as chembl_con:
+        with chembl_downloader.connect(version=args.chembl_version) as chembl_con:
             get_dataset.get_ct_pair_dataset(
                 chembl_con,
-                args.chembl,
-                args.output,
-                not args.all_sources,
-                args.rdkit,
-                csv,
-                args.excel,
-                args.delimiter,
-                full_df,
-                args.BF,
-                args.B,
+                calc_args,
+                output_args,
             )
 
 

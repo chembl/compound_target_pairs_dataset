@@ -1,17 +1,13 @@
-import logging
 import sqlite3
 
 import numpy as np
 import pandas as pd
-
-import get_stats
 
 
 ########### Get Initial Compound-Target Data From ChEMBL ###########
 def get_compound_target_pairs_with_pchembl(
     chembl_con: sqlite3.Connection,
     limit_to_literature: bool,
-    df_sizes: list[list[int], list[int]],
 ) -> pd.DataFrame:
     """
     Query ChEMBL activities and related assay for compound-target pairs
@@ -27,8 +23,6 @@ def get_compound_target_pairs_with_pchembl(
     :param limit_to_literature: Include only literature sources if True.
         Include all available sources otherwise.
     :type limit_to_literature: bool
-    :param df_sizes: List of intermediate sized of the dataset used for debugging.
-    :type df_sizes: list[list[int], list[int]]
     :return: Pandas DataFrame with compound-target pairs with a pchembl value.
     :rtype: pd.DataFrame
     """
@@ -83,9 +77,6 @@ def get_compound_target_pairs_with_pchembl(
     df_mols["cpd_target_pair_mutation"] = [
         f"{a}_{b}" for a, b in zip(df_mols["parent_molregno"], df_mols["tid_mutation"])
     ]
-
-    if logging.DEBUG >= logging.root.level:
-        get_stats.add_dataset_sizes(df_mols, "initial query", df_sizes)
 
     return df_mols
 
@@ -173,7 +164,6 @@ def get_average_info(df: pd.DataFrame, suffix: str) -> pd.DataFrame:
 def get_aggregated_activity_ct_pairs(
     chembl_con: sqlite3.Connection,
     limit_to_literature: bool,
-    df_sizes: list[list[int], list[int]],
 ) -> pd.DataFrame:
     """
     Get dataset of compound target-pairs with an associated pchembl value
@@ -194,14 +184,13 @@ def get_aggregated_activity_ct_pairs(
     :param limit_to_literature: Include only literature sources if True.
         Include all available sources otherwise.
     :type limit_to_literature: bool
-    :param df_sizes: List of intermediate sized of the dataset used for debugging.
-    :type df_sizes: list[list[int], list[int]]
     :return: Pandas Dataframe with compound-target pairs based on ChEMBL activity data
         aggregated into one entry per compound-target pair.
     :rtype: pd.DataFrame
     """
     df_mols = get_compound_target_pairs_with_pchembl(
-        chembl_con, limit_to_literature, df_sizes
+        chembl_con,
+        limit_to_literature,
     )
 
     # Summarise the information for binding and functional assays

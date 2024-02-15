@@ -5,6 +5,7 @@ import sqlite3
 import pandas as pd
 
 import write_subsets
+from arguments import OutputArgs, CalculationArgs
 
 
 ########### Add Target Class Annotations Based on ChEMBL Data ###########
@@ -81,12 +82,8 @@ def get_target_class_table(
 def add_chembl_target_class_annotations(
     df_combined: pd.DataFrame,
     chembl_con: sqlite3.Connection,
-    output_path: str,
-    write_to_csv: bool,
-    write_to_excel: bool,
-    delimiter: str,
-    chembl_version: str,
-    limited_flag: str,
+    args: CalculationArgs,
+    out: OutputArgs,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Add level 1 and 2 target class annotations. 
@@ -101,19 +98,10 @@ def add_chembl_target_class_annotations(
     :type df_combined: pd.DataFrame
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
-    :param output_path: Path to write the targets with more than one target class assignment to
-    :type output_path: str
-    :param write_to_csv: True if output should be written to csv
-    :type write_to_csv: bool
-    :param write_to_excel: True if output should be written to excel
-    :type write_to_excel: bool
-    :param delimiter: Delimiter in csv-output
-    :type delimiter: str
-    :param chembl_version: Version of ChEMBL for output files
-    :type chembl_version: str
-    :param limited_flag: Document suffix indicating 
-        whether the dataset was limited to literature sources
-    :type limited_flag: str
+    :param args: Arguments related to how to calculate the dataset
+    :type args: CalculationArgs
+    :param out: Arguments related to how to output the dataset
+    :type out: OutputArgs
     :return: - Pandas DataFrame with added target class annotations \\
         - Pandas DataFrame with mapping from target id to level 1 target class \\
         - Pandas DataFrame with mapping from target id to level 2 target class
@@ -199,15 +187,14 @@ def add_chembl_target_class_annotations(
     )
 
     name_more_than_one_tclass = os.path.join(
-        output_path,
-        f"ChEMBL{chembl_version}_CTI_{limited_flag}_targets_w_more_than_one_tclass",
+        out.output_path,
+        f"ChEMBL{args.chembl_version}_"
+        f"CTI_{args.limited_flag}_targets_w_more_than_one_tclass",
     )
     write_subsets.write_output(
         more_than_one_tclass,
         name_more_than_one_tclass,
-        write_to_csv,
-        write_to_excel,
-        delimiter,
+        out,
     )
 
     return df_combined, target_classes_level1, target_classes_level2
