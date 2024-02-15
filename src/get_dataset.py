@@ -12,6 +12,7 @@ import sanity_checks
 import write_subsets
 import get_stats
 from arguments import OutputArgs, CalculationArgs
+import add_filtering_columns
 
 
 def get_ct_pair_dataset(
@@ -102,16 +103,8 @@ def get_ct_pair_dataset(
         args.calculate_rdkit,
     )
 
-    logging.info("write_BF_to_file")
-    df_combined = write_subsets.write_bf_to_file(
-        df_combined,
-        df_sizes,
-        args,
-        out,
-    )
-
-    logging.info("write_B_to_file")
-    df_combined = write_subsets.write_b_to_file(
+    logging.info("add_filtering_columns")
+    add_filtering_columns.add_filtering_columns(
         df_combined,
         df_sizes,
         args,
