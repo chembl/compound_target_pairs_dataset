@@ -8,9 +8,12 @@ import get_stats
 import write_subsets
 
 
-def get_data_subsets(
-    data: pd.DataFrame, min_nof_cpds: int, desc: str
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def get_data_subsets(data: pd.DataFrame, min_nof_cpds: int, desc: str) -> tuple[
+    tuple[pd.DataFrame, str],
+    tuple[pd.DataFrame, str],
+    tuple[pd.DataFrame, str],
+    tuple[pd.DataFrame, str],
+]:
     """
     Calculate and return the different subsets of interest.
 
@@ -18,23 +21,27 @@ def get_data_subsets(
     :type data: pd.DataFrame
     :param min_nof_cpds: Miminum number of compounds per target
     :type min_nof_cpds: int
-    :param desc: Types of assays current_df contains information about. \
+    :param desc: Types of assays current_df contains information about.
         Options: "BF" (binding+functional), "B" (binding)
     :type desc: str
-    :return: 
-        - data: Pandas DataFrame with compound-target pairs 
-            without the annotations for the opposite desc, \
-            e.g. if desc = "BF", the average pchembl value based on 
+    :return: List of dataset subsets and the string describing them
+        - data: Pandas DataFrame with compound-target pairs
+            without filtering columns and without
+            the annotations for the opposite desc,
+            e.g. if desc = "BF", the average pchembl value based on
             binding data only is dropped
-        - df_enough_cpds: Pandas DataFrame with targets 
-            with at least <min_nof_cpds> compounds with a pchembl value, 
-        - df_c_dt_d_dt: As df_enough_cpds but with \
-            at least one compound-target pair labelled as 
-            'D_DT', 'C3_DT', 'C2_DT', 'C1_DT' or 'C0_DT' (i.e., known interaction), 
-        - df_d_dt: As df_enough_cpds but with \
-            at least one compound-target pair labelled as 
+        - df_enough_cpds: Pandas DataFrame with targets
+            with at least <min_nof_cpds> compounds with a pchembl value,
+        - df_c_dt_d_dt: As df_enough_cpds but with
+            at least one compound-target pair labelled as
+            'D_DT', 'C3_DT', 'C2_DT', 'C1_DT' or 'C0_DT' (i.e., known interaction),
+        - df_d_dt: As df_enough_cpds but with
+            at least one compound-target pair labelled as
             'D_DT' (i.e., known drug-target interaction)
-    :rtype: (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame)
+    :rtype: tuple[tuple[pd.DataFrame, str],
+           tuple[pd.DataFrame, str],
+           tuple[pd.DataFrame, str],
+           tuple[pd.DataFrame, str]]
     """
     if desc == "B":
         drop_desc = "BF"
@@ -90,7 +97,12 @@ def get_data_subsets(
     )
     df_d_dt = df_enough_cpds.query("tid_mutation in @d_dt_targets")
 
-    return data, df_enough_cpds, df_c_dt_d_dt, df_d_dt
+    return [
+        [data, f"{desc}"],
+        [df_enough_cpds, f"{desc}_{min_nof_cpds}"],
+        [df_c_dt_d_dt, f"{desc}_{min_nof_cpds}_c_dt_d_dt"],
+        [df_d_dt, f"{desc}_{min_nof_cpds}_d_dt"],
+    ]
 
 
 def add_subset_filtering_columns(
@@ -99,9 +111,8 @@ def add_subset_filtering_columns(
     desc: str,
     args: CalculationArgs,
     out: OutputArgs,
-    df_sizes,
+    df_sizes: list[list[int], list[int]],
 ) -> pd.DataFrame:
-    # TODO update documentation
     """
     Add filtering column for binding + functional vs binding
 
@@ -115,15 +126,14 @@ def add_subset_filtering_columns(
     :type desc: str
     :param args: Arguments related to how to calculate the dataset
     :type args: CalculationArgs
-    :return: List of calculated subsets
+    :param out: Arguments related to how to output the dataset
+    :type out: OutputArgs
+    :param df_sizes: List of intermediate sized of the dataset used for debugging.
+    :type df_sizes: list[list[int], list[int]]
+    :return: Pandas DataFrame with added filering columns
     :rtype: pd.DataFrame
     """
-    (
-        df_combined_subset,
-        df_combined_subset_enough_cpds,
-        df_combined_subset_c_dt_d_dt,
-        df_combined_subset_d_dt,
-    ) = get_data_subsets(
+    subsets = get_data_subsets(
         df_combined_subset,
         args.min_nof_cpds_bf if desc == "BF" else args.min_nof_cpds_b,
         desc,
@@ -131,20 +141,7 @@ def add_subset_filtering_columns(
 
     # write subsets if required
     if (desc == "BF" and out.write_bf) or (desc == "B" and out.write_b):
-        for df_subset, subset_desc in zip(
-            [
-                df_combined_subset,
-                df_combined_subset_enough_cpds,
-                df_combined_subset_c_dt_d_dt,
-                df_combined_subset_d_dt,
-            ],
-            [
-                f"{desc}",
-                f"{desc}_{args.min_nof_cpds_bf}",
-                f"{desc}_{args.min_nof_cpds_bf}_c_dt_d_dt",
-                f"{desc}_{args.min_nof_cpds_bf}_d_dt",
-            ],
-        ):
+        for [df_subset, subset_desc] in subsets:
             name_subset = os.path.join(
                 out.output_path,
                 f"ChEMBL{args.chembl_version}_"
@@ -160,18 +157,8 @@ def add_subset_filtering_columns(
             )
 
     # add filtering columns to df_combined
-    for df, col_name in zip(
-        [
-            df_combined_subset_enough_cpds,
-            df_combined_subset_c_dt_d_dt,
-            df_combined_subset_d_dt,
-        ],
-        [
-            f"{desc}_{args.min_nof_cpds_bf}",
-            f"{desc}_{args.min_nof_cpds_bf}_c_dt_d_dt",
-            f"{desc}_{args.min_nof_cpds_bf}_d_dt",
-        ],
-    ):
+    # do not add a filtering column for BF / B (-> [1:])
+    for [df, col_name] in subsets[1:]:
         df_combined[col_name] = False
         df_combined.loc[(df_combined.index.isin(df.index)), col_name] = True
         # check that filtering works
@@ -180,29 +167,32 @@ def add_subset_filtering_columns(
         ), f"Filtering is not accurate for {col_name}."
 
     if logging.DEBUG >= logging.root.level:
-        get_stats.add_dataset_sizes(
-            df_combined_subset, "binding + functional", df_sizes
-        )
-        get_stats.add_dataset_sizes(
-            df_combined_subset_enough_cpds, "BF, >= 100", df_sizes
-        )
-        get_stats.add_dataset_sizes(
-            df_combined_subset_c_dt_d_dt, "BF, >= 100, c_dt and d_dt", df_sizes
-        )
-        get_stats.add_dataset_sizes(
-            df_combined_subset_d_dt, "BF, >= 100, d_dt", df_sizes
-        )
+        for [df_subset, subset_desc] in subsets:
+            get_stats.add_dataset_sizes(df_subset, subset_desc, df_sizes)
 
     return df_combined
 
 
 def add_filtering_columns(
-    df_combined,
-    df_sizes,
-    args,
-    out,
-):
-    # TODO: documentation
+    df_combined: pd.DataFrame,
+    df_sizes: list[list[int], list[int]],
+    args: CalculationArgs,
+    out: OutputArgs,
+) -> pd.DataFrame:
+    """
+    Add filtering columns to main dataset and save subsets if required.
+
+    :param df_combined: Pandas DataFrame with compound-target pairs
+    :type df_combined: pd.DataFrame
+    :param df_sizes: List of intermediate sized of the dataset used for debugging.
+    :type df_sizes: list[list[int], list[int]]
+    :param args: Arguments related to how to calculate the dataset
+    :type args: CalculationArgs
+    :param out: Arguments related to how to output the dataset
+    :type out: OutputArgs
+    :return: Pandas DataFrame with added filering columns
+    :rtype: pd.DataFrame
+    """
     # consider binding and functional assays
     # assay description = binding+functional
     desc = "BF"
