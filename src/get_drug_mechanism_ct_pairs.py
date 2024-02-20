@@ -4,6 +4,7 @@ import sqlite3
 import pandas as pd
 
 from dataset import Dataset
+import sanity_checks
 
 
 ########### Extract Drug-Target Interactions From the drug_mechanism Table ###########
@@ -241,6 +242,51 @@ def get_drug_mechanism_ct_pairs(chembl_con: sqlite3.Connection) -> pd.DataFrame:
 
 
 ########### Add Compounds From the drug_mechanism Table to the Dataset ###########
+def add_dm_filtering_columns(dataset: Dataset):
+    """
+    Add filtering columns related to the drug_mechanism table.
+        - pair_mutation_in_dm_table: pair is in dm table (incl. mutations)
+        - pair_in_dm_table: pair is in dm table (excl. mutations)
+        - keep_for_binding: use to limit to binding assays
+
+    :param dataset: Pandas Dataframe with compound-target pairs based on ChEMBL activity data
+    :type dataset: Dataset
+    """
+    # Add a new column *pair_mutation_in_dm_table* which is set to True if the compound target pair
+    # (taking mutation annotations into account) is in the drug_mechanism table.
+    dataset.df_result["pair_mutation_in_dm_table"] = False
+    dataset.df_result.loc[
+        (
+            dataset.df_result["cpd_target_pair_mutation"].isin(
+                dataset.drug_mechanism_pairs_set
+            )
+        ),
+        "pair_mutation_in_dm_table",
+    ] = True
+
+    # Add a new column *pair_in_dm_table* which is set to True if the compound target pair
+    # (NOT taking mutation annotations into account) is in the drug_mechanism table.
+    dataset.df_result["pair_in_dm_table"] = False
+    dataset.df_result.loc[
+        (dataset.df_result["cpd_target_pair"].isin(dataset.drug_mechanism_pairs_set)),
+        "pair_in_dm_table",
+    ] = True
+
+    # Add a new column *keep_for_binding* which is set to True if the row should be kept
+    # if you want to limit the dataset to only data based on binding assays.
+    # Rows are kept if
+    # - there is a binding data-based pchembl value or
+    # - the compound-target pair (including mutation info) is in the drug_mechanism table
+    dataset.df_result["keep_for_binding"] = False
+    dataset.df_result.loc[
+        (
+            (dataset.df_result["pchembl_value_mean_B"].notnull())
+            | (dataset.df_result["pair_mutation_in_dm_table"])
+        ),
+        "keep_for_binding",
+    ] = True
+
+
 def add_drug_mechanism_ct_pairs(dataset: Dataset, chembl_con: sqlite3.Connection):
     """
     Add compound-target pairs from the drug_mechanism table
@@ -261,28 +307,7 @@ def add_drug_mechanism_ct_pairs(dataset: Dataset, chembl_con: sqlite3.Connection
         f"{a}_{b}"
         for a, b in zip(cpd_target_pairs["parent_molregno"], cpd_target_pairs["tid"])
     )
-
     dataset.drug_mechanism_targets_set = set(cpd_target_pairs["tid"])
-
-    # Add a new column *pair_mutation_in_dm_table* which is set to True if the compound target pair
-    # (taking mutation annotations into account) is in the drug_mechanism table.
-    dataset.df_result["pair_mutation_in_dm_table"] = False
-    dataset.df_result.loc[
-        (
-            dataset.df_result["cpd_target_pair_mutation"].isin(
-                dataset.drug_mechanism_pairs_set
-            )
-        ),
-        "pair_mutation_in_dm_table",
-    ] = True
-
-    # Add a new column *pair_in_dm_table* which is set to True if the compound target pair
-    # (NOT taking mutation annotations into account) is in the drug_mechanism table.
-    dataset.df_result["pair_in_dm_table"] = False
-    dataset.df_result.loc[
-        (dataset.df_result["cpd_target_pair"].isin(dataset.drug_mechanism_pairs_set)),
-        "pair_in_dm_table",
-    ] = True
 
     ##### Limit the drug_mechanism pairs to the ones that are not yet in the dataset. #####
     # Mutation annotations are taken into account.
@@ -305,16 +330,6 @@ def add_drug_mechanism_ct_pairs(dataset: Dataset, chembl_con: sqlite3.Connection
     # Combined data of existing query with new compound-target pairs.
     dataset.df_result = pd.concat([dataset.df_result, cpd_target_pairs])
 
-    # Add a new column *keep_for_binding* which is set to True if the row should be kept
-    # if you want to limit the dataset to only data based on binding assays.
-    # Rows are kept if
-    # - there is a binding data-based pchembl value or
-    # - the compound-target pair (including mutation info) is in the drug_mechanism table
-    dataset.df_result["keep_for_binding"] = False
-    dataset.df_result.loc[
-        (
-            (dataset.df_result["pchembl_value_mean_B"].notnull())
-            | (dataset.df_result["pair_mutation_in_dm_table"])
-        ),
-        "keep_for_binding",
-    ] = True
+    add_dm_filtering_columns(dataset)
+
+    sanity_checks.check_pairs_without_pchembl_are_in_drug_mechanisms(dataset.df_result)

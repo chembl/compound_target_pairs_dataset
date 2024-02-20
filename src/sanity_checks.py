@@ -3,38 +3,7 @@ import pandas as pd
 from dataset import Dataset
 
 
-########### Sanity checks for the dataset ###########
-def check_null_values(df_result: pd.DataFrame):
-    """
-    Check if any columns contain nan or null which aren't recognised as null values.
-    """
-    for col in df_result.columns:
-        col_as_str = set(df_result[df_result[col].notnull()][col].astype(str))
-        assert (
-            "nan" not in col_as_str
-        ), f"Problem with unrecognised nan value in column {col}"
-        assert (
-            "null" not in col_as_str
-        ), f"Problem with unrecognised null value in column {col}"
-
-
-def check_for_mixed_types(df_result: pd.DataFrame):
-    """
-    Check that there are no mixed types in columns with dtype=object.
-    """
-    for col, dtype in df_result.dtypes.to_dict().items():
-        if dtype == object:
-            col_original = set(df_result[df_result[col].notnull()][col])
-            col_as_str = set(df_result[df_result[col].notnull()][col].astype(str))
-            # is there a difference in the two sets (ignoring null values)
-            assert (
-                len(col_original - col_as_str) == 0
-            ), f"Mixed types in colum {col}: {col_original-col_as_str}"
-            assert (
-                len(col_as_str - col_original) == 0
-            ), f"Mixed types in colum {col}: {col_as_str-col_original}"
-
-
+########### Sanity checks during assignments ###########
 def check_pairs_without_pchembl_are_in_drug_mechanisms(df_result: pd.DataFrame):
     """
     Check that rows without a pchembl value based on binding+functional assays (pchembl_x_BF)
@@ -55,6 +24,36 @@ def check_pairs_without_pchembl_are_in_drug_mechanisms(df_result: pd.DataFrame):
                 & (df_result[pchembl_col].isnull())
             ]
         ), f"Missing pchembl value in column {pchembl_col}"
+
+
+def check_compound_props(df_result: pd.DataFrame, df_cpd_props: pd.DataFrame):
+    """
+    Check that compound props are only null if
+
+    - the property in the parent_molregno is not in df_cpd_props
+    - or if the value in the compound props table is null.
+    """
+    # missing values because the parent_molregno is not in the compound props table
+    no_cpd_prop_info = len(
+        df_result[
+            ~df_result["parent_molregno"].isin(set(df_cpd_props["parent_molregno"]))
+        ]
+    )
+
+    for col in df_cpd_props.columns:
+        if col != "parent_molregno":
+            # missing values because the compound props query returns null (exists but is null)
+            missing_values = len(
+                df_result[
+                    df_result["parent_molregno"].isin(
+                        set(df_cpd_props[df_cpd_props[col].isnull()]["parent_molregno"])
+                    )
+                ]
+            )
+            null_values = no_cpd_prop_info + missing_values
+            assert null_values == len(
+                df_result[df_result[col].isnull()]
+            ), f"Too many null values in {col}"
 
 
 def check_ligand_efficiency_metrics(df_result: pd.DataFrame):
@@ -97,69 +96,38 @@ def check_ligand_efficiency_metrics(df_result: pd.DataFrame):
         ), f"Missing LLE value in LLE_{suffix}"
 
 
-def check_compound_props(dataset: Dataset):
-    """
-    Check that compound props are only null if
-
-    - the property in the parent_molregno is not in df_cpd_props
-    - or if the value in the compound props table is null.
-    """
-    # missing values because the parent_molregno is not in the compound props table
-    no_cpd_prop_info = len(
-        dataset.df_result[
-            ~dataset.df_result["parent_molregno"].isin(
-                set(dataset.df_cpd_props["parent_molregno"])
-            )
-        ]
-    )
-
-    for col in dataset.df_cpd_props.columns:
-        if col != "parent_molregno":
-            # missing values because the compound props query returns null (exists but is null)
-            missing_values = len(
-                dataset.df_result[
-                    dataset.df_result["parent_molregno"].isin(
-                        set(
-                            dataset.df_cpd_props[dataset.df_cpd_props[col].isnull()][
-                                "parent_molregno"
-                            ]
-                        )
-                    )
-                ]
-            )
-            null_values = no_cpd_prop_info + missing_values
-            assert null_values == len(
-                dataset.df_result[dataset.df_result[col].isnull()]
-            ), f"Too many null values in {col}"
-
-
-def check_atc_and_target_classes(
-    dataset: Dataset,
+def check_atc(
+    df_result: pd.DataFrame,
+    atc_levels: pd.DataFrame,
 ):
     """
-    Check that atc_level1 and target class information is only null
-    if the parent_molregno / target id is not in the respective table.
+    Check that atc_level1 information is only null
+    if the parent_molregno is not in the respective table.
     """
-    assert dataset.df_result[(dataset.df_result["atc_level1"].isnull())].equals(
-        dataset.df_result[
-            ~dataset.df_result["parent_molregno"].isin(
-                set(dataset.atc_levels["parent_molregno"])
-            )
+    assert df_result[(df_result["atc_level1"].isnull())].equals(
+        df_result[
+            ~df_result["parent_molregno"].isin(set(atc_levels["parent_molregno"]))
         ]
     ), "Null values in atc_level1 are not exclusively \
         because the parent_molregno is not in the atc_classification table."
 
-    assert dataset.df_result[(dataset.df_result["target_class_l1"].isnull())].equals(
-        dataset.df_result[
-            ~dataset.df_result["tid"].isin(set(dataset.target_classes_level1["tid"]))
-        ]
+
+def check_target_classes(
+    df_result: pd.DataFrame,
+    target_classes_level1: pd.DataFrame,
+    target_classes_level2: pd.DataFrame,
+):
+    """
+    Check that target class information is only null
+    if the target id is not in the respective table.
+    """
+    assert df_result[(df_result["target_class_l1"].isnull())].equals(
+        df_result[~df_result["tid"].isin(set(target_classes_level1["tid"]))]
     ), "Null values in target_class_l1 are not exclusively \
         because the tid is not in the protein_classification table."
 
-    assert dataset.df_result[(dataset.df_result["target_class_l2"].isnull())].equals(
-        dataset.df_result[
-            ~dataset.df_result["tid"].isin(set(dataset.target_classes_level2["tid"]))
-        ]
+    assert df_result[(df_result["target_class_l2"].isnull())].equals(
+        df_result[~df_result["tid"].isin(set(target_classes_level2["tid"]))]
     ), "Null values in target_class_l2 are not exclusively \
         because the tid is not in the protein_classification table."
 
@@ -195,25 +163,46 @@ def check_rdkit_props(df_result: pd.DataFrame):
         ), f"Missing value in {col} despite a smiles being available."
 
 
+########### Final sanity checks for the dataset ###########
+def check_null_values(df_result: pd.DataFrame):
+    """
+    Check if any columns contain nan or null which aren't recognised as null values.
+    """
+    for col in df_result.columns:
+        col_as_str = set(df_result[df_result[col].notnull()][col].astype(str))
+        assert (
+            "nan" not in col_as_str
+        ), f"Problem with unrecognised nan value in column {col}"
+        assert (
+            "null" not in col_as_str
+        ), f"Problem with unrecognised null value in column {col}"
+
+
+def check_for_mixed_types(df_result: pd.DataFrame):
+    """
+    Check that there are no mixed types in columns with dtype=object.
+    """
+    for col, dtype in df_result.dtypes.to_dict().items():
+        if dtype == object:
+            col_original = set(df_result[df_result[col].notnull()][col])
+            col_as_str = set(df_result[df_result[col].notnull()][col].astype(str))
+            # is there a difference in the two sets (ignoring null values)
+            assert (
+                len(col_original - col_as_str) == 0
+            ), f"Mixed types in colum {col}: {col_original-col_as_str}"
+            assert (
+                len(col_as_str - col_original) == 0
+            ), f"Mixed types in colum {col}: {col_as_str-col_original}"
+
+
 def sanity_checks(
     dataset: Dataset,
-    calculate_rdkit: bool,
 ):
     """
     Check basic assumptions about the finished dataset, specifically:
 
     - no columns contain nan or null values which aren't recognised as null values
     - there are no mixed types in columns with dtype=object
-    - rows without a pchembl value based on binding+functional assays (pchembl_x_BF)
-        are in the drug_mechanism table
-    - ligand efficiency metrics are only null when at least one of the values
-        used to calculate them is null
-    - compound props are only null if the compound is not in df_cpd_props
-        or the value in that table is null
-    - atc_level1 and target class information is only null if
-        the parent_molregno / target id is not in the respective table
-    - columns set by the RDKit are only null if there is no canonical SMILES
-        for the molecule (excluding scaffolds)
 
     :param dataset: Dataset with compound-target pairs.
     :type dataset: Dataset
@@ -222,12 +211,6 @@ def sanity_checks(
     """
     check_null_values(dataset.df_result)
     check_for_mixed_types(dataset.df_result)
-    check_pairs_without_pchembl_are_in_drug_mechanisms(dataset.df_result)
-    check_ligand_efficiency_metrics(dataset.df_result)
-    check_compound_props(dataset)
-    check_atc_and_target_classes(dataset)
-    if calculate_rdkit:
-        check_rdkit_props(dataset.df_result)
 
 
 ########### Sanity checks for writing and reading a dataset ###########

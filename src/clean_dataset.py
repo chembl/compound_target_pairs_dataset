@@ -6,6 +6,7 @@ import pandas as pd
 from dataset import Dataset
 
 
+########### Remove Irrelevant Compounds ###########
 def remove_compounds_without_smiles_and_mixtures(
     dataset: Dataset, chembl_con: sqlite3.Connection
 ):
@@ -96,9 +97,8 @@ def remove_compounds_without_smiles_and_mixtures(
         )
     ]
 
-    return dataset.df_result
 
-
+########### General Cleaning Steps ###########
 def clean_none_values(dataset: Dataset):
     """
     Change nan values and empty strings to None for consistency.

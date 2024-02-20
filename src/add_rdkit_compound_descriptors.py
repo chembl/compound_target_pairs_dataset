@@ -4,6 +4,7 @@ from rdkit.Chem import PandasTools
 from tqdm import tqdm
 
 from dataset import Dataset
+import sanity_checks
 
 
 def add_built_in_descriptors(dataset: Dataset):
@@ -168,3 +169,4 @@ def add_rdkit_compound_descriptors(dataset: Dataset):
     """
     add_built_in_descriptors(dataset)
     add_aromaticity_descriptors(dataset)
+    sanity_checks.check_rdkit_props(dataset.df_result)

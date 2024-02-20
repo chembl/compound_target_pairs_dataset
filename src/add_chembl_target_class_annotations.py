@@ -7,6 +7,7 @@ import pandas as pd
 import write_subsets
 from arguments import OutputArgs, CalculationArgs
 from dataset import Dataset
+import sanity_checks
 
 
 ########### Add Target Class Annotations Based on ChEMBL Data ###########
@@ -80,44 +81,31 @@ def get_target_class_table(
     return df_target_classes
 
 
-def add_chembl_target_class_annotations(
+def get_aggregated_target_classes(
     dataset: Dataset,
     chembl_con: sqlite3.Connection,
-    args: CalculationArgs,
-    out: OutputArgs,
-):
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Add level 1 and 2 target class annotations.
-    Assignments for target IDs with more than one target class assignment per level
-    are summarised into one string with '|' as a separator
-    between the different target class annotations.
-
-    Targets with more than one level 1 / level 2 target class assignment are written to a file.
-    These could be reassigned by hand if a single target class is preferable.
+    Get mappings for target id to aggregated level 1 / level 2 target class.
 
     :param dataset: Dataset with compound-target pairs.
-        Will be updated to only include target class annotations.
-        dataset.target_classes_level1 will be set to
-            pandas DataFrame with mapping from target id to level 1 target class
-        dataset.target_classes_level2 will be set to
-            pandas DataFrame with mapping from target id to level 2 target class
     :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
-    :param args: Arguments related to how to calculate the dataset
-    :type args: CalculationArgs
-    :param out: Arguments related to how to output the dataset
-    :type out: OutputArgs
+    :return: [pandas DataFrame with mapping from target id to level 1 target class,
+        pandas DataFrame with mapping from target id to level 2 target class]
+    :rtype: tuple[pd.DataFrame, pd.DataFrame]
     """
     current_tids = set(dataset.df_result["tid"])
     df_target_classes = get_target_class_table(chembl_con, current_tids)
+
+    between_str_join = "|"
 
     # Summarise the information for a target id with
     # several assigned target classes of level 1 into one description.
     # If a target id has more than one assigned target class,
     # the target class 'Unclassified protein' is discarded.
     level = "l1"
-    between_str_join = "|"
     target_classes_level1 = df_target_classes[["tid", level]].drop_duplicates().dropna()
 
     # remove 'Unclassified protein' from targets with more than one target class, level 1
@@ -145,10 +133,6 @@ def add_chembl_target_class_annotations(
         ["tid", "target_class_l1"]
     ].drop_duplicates()
 
-    dataset.df_result = dataset.df_result.merge(
-        target_classes_level1, on="tid", how="left"
-    )
-
     # Repeat the summary step for target classes of level 2.
     level = "l2"
     target_classes_level2 = df_target_classes[["tid", level]].drop_duplicates().dropna()
@@ -159,11 +143,24 @@ def add_chembl_target_class_annotations(
         ["tid", "target_class_l2"]
     ].drop_duplicates()
 
-    dataset.df_result = dataset.df_result.merge(
-        target_classes_level2, on="tid", how="left"
-    )
+    return target_classes_level1, target_classes_level2
 
-    # Output targets have more than one target class assignment
+
+def output_ambiguous_target_classes(
+    dataset: Dataset,
+    args: CalculationArgs,
+    out: OutputArgs,
+):
+    """
+    Output targets have more than one target class assignment
+
+    :param dataset: Dataset with compound-target pairs.
+    :type dataset: Dataset
+    :param args: Arguments related to how to calculate the dataset
+    :type args: CalculationArgs
+    :param out: Arguments related to how to output the dataset
+    :type out: OutputArgs
+    """
     more_than_one_level_1 = dataset.df_result[
         (dataset.df_result["target_class_l1"].notnull())
         & (dataset.df_result["target_class_l1"].str.contains("|", regex=False))
@@ -203,5 +200,50 @@ def add_chembl_target_class_annotations(
         out,
     )
 
-    dataset.target_classes_level1 = target_classes_level1
-    dataset.target_classes_level2 = target_classes_level2
+
+def add_chembl_target_class_annotations(
+    dataset: Dataset,
+    chembl_con: sqlite3.Connection,
+    args: CalculationArgs,
+    out: OutputArgs,
+):
+    """
+    Add level 1 and 2 target class annotations.
+    Assignments for target IDs with more than one target class assignment per level
+    are summarised into one string with '|' as a separator
+    between the different target class annotations.
+
+    Targets with more than one level 1 / level 2 target class assignment are written to a file.
+    These could be reassigned by hand if a single target class is preferable.
+
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to only include target class annotations.
+        dataset.target_classes_level1 will be set to
+            pandas DataFrame with mapping from target id to level 1 target class
+        dataset.target_classes_level2 will be set to
+            pandas DataFrame with mapping from target id to level 2 target class
+    :type dataset: Dataset
+    :param chembl_con: Sqlite3 connection to ChEMBL database.
+    :type chembl_con: sqlite3.Connection
+    :param args: Arguments related to how to calculate the dataset
+    :type args: CalculationArgs
+    :param out: Arguments related to how to output the dataset
+    :type out: OutputArgs
+    """
+    target_classes_level1, target_classes_level2 = get_aggregated_target_classes(
+        dataset, chembl_con
+    )
+
+    dataset.df_result = dataset.df_result.merge(
+        target_classes_level1, on="tid", how="left"
+    )
+
+    dataset.df_result = dataset.df_result.merge(
+        target_classes_level2, on="tid", how="left"
+    )
+
+    sanity_checks.check_target_classes(
+        dataset.df_result, target_classes_level1, target_classes_level2
+    )
+
+    output_ambiguous_target_classes(dataset, args, out)

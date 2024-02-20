@@ -80,6 +80,7 @@ def add_dti_annotations(
         ),
         "DTI",
     ] = "D_DT"
+
     dataset.df_result.loc[
         (
             dataset.df_result["cpd_target_pair"].isin(dataset.drug_mechanism_pairs_set)
@@ -87,6 +88,7 @@ def add_dti_annotations(
         ),
         "DTI",
     ] = "C3_DT"
+
     dataset.df_result.loc[
         (
             dataset.df_result["cpd_target_pair"].isin(dataset.drug_mechanism_pairs_set)
@@ -94,6 +96,7 @@ def add_dti_annotations(
         ),
         "DTI",
     ] = "C2_DT"
+
     dataset.df_result.loc[
         (
             dataset.df_result["cpd_target_pair"].isin(dataset.drug_mechanism_pairs_set)
@@ -101,6 +104,7 @@ def add_dti_annotations(
         ),
         "DTI",
     ] = "C1_DT"
+
     # Compounds that are in the drug_mechanism table but don't have a known phase between 1-4:
     dataset.df_result.loc[
         (

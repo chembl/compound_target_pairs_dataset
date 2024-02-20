@@ -71,7 +71,7 @@ def get_ct_pair_dataset(
     get_stats.add_debugging_info(dataset, dataset.df_result, "clean df")
 
     logging.info("sanity_checks")
-    sanity_checks.sanity_checks(dataset, args.calculate_rdkit)
+    sanity_checks.sanity_checks(dataset)
 
     logging.info("add_filtering_columns")
     add_filtering_columns.add_filtering_columns(dataset, args, out)

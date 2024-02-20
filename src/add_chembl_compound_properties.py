@@ -3,12 +3,13 @@ import sqlite3
 import pandas as pd
 
 from dataset import Dataset
+import sanity_checks
 
 
 ########### Add Compound Properties Based on ChEMBL Data ###########
-def add_first_publication_date(
-    dataset: Dataset, chembl_con: sqlite3.Connection, limit_to_literature: bool
-):
+def get_first_publication_cpd_date(
+    chembl_con: sqlite3.Connection, limit_to_literature: bool
+) -> pd.DataFrame:
     """
     Query and calculate the first publication of a compound
     based on ChEMBL data (column name: first_publication_cpd).
@@ -16,13 +17,12 @@ def add_first_publication_date(
     of the compound in the literature according to ChEMBL.
     Otherwise this is the first appearance in any source in ChEMBL.
 
-    :param dataset: Dataset with compound-target pairs.
-        Will be updated to include first_publication_cpd
-    :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
     :param limit_to_literature: Base first_publication_cpd on literature sources only if True.
     :type limit_to_literature: bool
+    :return: Pandas DataFrame with parent_molregno and first_publication_cpd from ChEMBL.
+    :rtype: pd.DataFrame
     """
     # information about salts is aggregated in the parent
     sql = """
@@ -43,26 +43,21 @@ def add_first_publication_date(
     ].transform("min")
     df_docs = df_docs[["parent_molregno", "first_publication_cpd"]].drop_duplicates()
 
-    dataset.df_result = dataset.df_result.merge(
-        df_docs, on="parent_molregno", how="left"
-    )
+    return df_docs
 
 
-def add_chembl_properties_and_structures(
-    dataset: Dataset, chembl_con: sqlite3.Connection
-):
+def get_chembl_properties_and_structures(
+    chembl_con: sqlite3.Connection,
+) -> pd.DataFrame:
     """
-    Add compound properties from the compound_properties table
+    Get compound properties from the compound_properties table
     (e.g., alogp, #hydrogen bond acceptors / donors, etc.).
-    Add InChI, InChI key and canonical smiles.
+    Get InChI, InChI key and canonical smiles.
 
-    :param dataset: Dataset with compound-target pairs.
-        Will be updated to include compound properties and structures.
-        dataset.df_cpd_props will be set to
-        compound properties and structures for all compound ids in ChEMBL.
-    :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
+    :return: Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL
+    :rtype: pd.DataFrame
     """
     sql = """
     SELECT DISTINCT mh.parent_molregno, 
@@ -79,16 +74,13 @@ def add_chembl_properties_and_structures(
     """
 
     df_cpd_props = pd.read_sql_query(sql, con=chembl_con)
-    dataset.df_cpd_props = df_cpd_props
 
-    dataset.df_result = dataset.df_result.merge(
-        df_cpd_props, on="parent_molregno", how="left"
-    )
+    return df_cpd_props
 
 
-def add_ligand_efficiency_metrics(dataset: Dataset):
+def calculate_ligand_efficiency_metrics(dataset: Dataset):
     """
-    Calculate the ligand efficiency metrics for the compounds
+    Calculate and add the ligand efficiency metrics for the compounds
     based on the mean pchembl values for a compound-target pair and
     the following ligand efficiency (LE) formulas:
 
@@ -150,20 +142,18 @@ def add_ligand_efficiency_metrics(dataset: Dataset):
         )
 
 
-def add_atc_classification(dataset: Dataset, chembl_con: sqlite3.Connection):
+def get_atc_classification(chembl_con: sqlite3.Connection) -> pd.DataFrame:
     """
-    Query and add ATC classifications (level 1) from the atc_classification and
+    Query ATC classifications (level 1) from the atc_classification and
     molecule_atc_classification tables.
     ATC level annotations for the same parent_molregno are combined into one description
     that concatenates all descriptions sorted alphabetically
     into one string with ' | ' as a separator.
 
-    :param dataset: Dataset with compound-target pairs.
-        Will be updated to include ATC classifications.
-        dataset.atc_levels will be set to ATC annotations in ChEMBL.
-    :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
+    :return: Pandas DataFrame with ATC annotations in ChEMBL.
+    :rtype: pd.DataFrame
     """
     sql = """
     SELECT DISTINCT mh.parent_molregno, atc.level1, atc.level1_description
@@ -186,11 +176,7 @@ def add_atc_classification(dataset: Dataset, chembl_con: sqlite3.Connection):
     ].transform(lambda x: between_str_join.join(sorted(x)))
     atc_levels = atc_levels[["parent_molregno", "atc_level1"]].drop_duplicates()
 
-    dataset.atc_levels = atc_levels
-
-    dataset.df_result = dataset.df_result.merge(
-        atc_levels, on="parent_molregno", how="left"
-    )
+    return atc_levels
 
 
 def add_all_chembl_compound_properties(
@@ -214,10 +200,24 @@ def add_all_chembl_compound_properties(
         Base it on all available sources otherwise.
     :type limit_to_literature: bool
     """
-    add_first_publication_date(dataset, chembl_con, limit_to_literature)
+    df_docs = get_first_publication_cpd_date(chembl_con, limit_to_literature)
+    dataset.df_result = dataset.df_result.merge(
+        df_docs, on="parent_molregno", how="left"
+    )
 
-    add_chembl_properties_and_structures(dataset, chembl_con)
+    df_cpd_props = get_chembl_properties_and_structures(chembl_con)
+    dataset.df_cpd_props = df_cpd_props
+    dataset.df_result = dataset.df_result.merge(
+        df_cpd_props, on="parent_molregno", how="left"
+    )
+    sanity_checks.check_compound_props(dataset.df_result, df_cpd_props)
 
-    add_ligand_efficiency_metrics(dataset)
+    calculate_ligand_efficiency_metrics(dataset)
+    sanity_checks.check_ligand_efficiency_metrics(dataset.df_result)
 
-    add_atc_classification(dataset, chembl_con)
+    atc_levels = get_atc_classification(chembl_con)
+    dataset.atc_levels = atc_levels
+    dataset.df_result = dataset.df_result.merge(
+        atc_levels, on="parent_molregno", how="left"
+    )
+    sanity_checks.check_atc(dataset.df_result, atc_levels)
