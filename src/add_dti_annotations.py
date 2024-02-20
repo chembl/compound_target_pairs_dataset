@@ -118,7 +118,7 @@ def add_dti_annotations(
                     dataset.drug_mechanism_pairs_set
                 )
             )
-            & (dataset.df_result["therapeutic_target"] == True)
+            & (dataset.df_result["therapeutic_target"])
         ),
         "DTI",
     ] = "DT"
@@ -133,7 +133,7 @@ def add_dti_annotations(
                     dataset.drug_mechanism_pairs_set
                 )
             )
-            & (dataset.df_result["therapeutic_target"] == False)
+            & ~(dataset.df_result["therapeutic_target"])
         ),
         "DTI",
     ] = "NDT"

@@ -159,9 +159,9 @@ def add_subset_filtering_columns(
         dataset.df_result[col_name] = False
         dataset.df_result.loc[(dataset.df_result.index.isin(df.index)), col_name] = True
         # check that filtering works
-        assert dataset.df_result[dataset.df_result[col_name] == True][
-            df.columns
-        ].equals(df), f"Filtering is not accurate for {col_name}."
+        assert dataset.df_result[dataset.df_result[col_name]][df.columns].equals(
+            df
+        ), f"Filtering is not accurate for {col_name}."
 
     if logging.DEBUG >= logging.root.level:
         for [df_subset, subset_desc] in subsets:
@@ -200,9 +200,7 @@ def add_filtering_columns(
     # consider only binding assays
     # assay description = binding
     desc = "B"
-    df_combined_subset = dataset.df_result[
-        dataset.df_result["keep_for_binding"] == True
-    ].copy()
+    df_combined_subset = dataset.df_result[dataset.df_result["keep_for_binding"]].copy()
     add_subset_filtering_columns(
         df_combined_subset,
         dataset,

@@ -51,7 +51,7 @@ def check_pairs_without_pchembl_are_in_drug_mechanisms(df_result: pd.DataFrame):
     ]:
         assert df_result[(df_result[pchembl_col].isnull())].equals(
             df_result[
-                (df_result["pair_mutation_in_dm_table"] == True)
+                (df_result["pair_mutation_in_dm_table"])
                 & (df_result[pchembl_col].isnull())
             ]
         ), f"Missing pchembl value in column {pchembl_col}"

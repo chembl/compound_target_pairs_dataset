@@ -314,7 +314,7 @@ def add_drug_mechanism_ct_pairs(dataset: Dataset, chembl_con: sqlite3.Connection
     dataset.df_result.loc[
         (
             (dataset.df_result["pchembl_value_mean_B"].notnull())
-            | (dataset.df_result["pair_mutation_in_dm_table"] == True)
+            | (dataset.df_result["pair_mutation_in_dm_table"])
         ),
         "keep_for_binding",
     ] = True
