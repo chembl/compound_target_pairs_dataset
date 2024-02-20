@@ -2,11 +2,13 @@ import sqlite3
 
 import pandas as pd
 
+from dataset import Dataset
+
 
 ########### Add Compound Properties Based on ChEMBL Data ###########
 def add_first_publication_date(
-    df_combined: pd.DataFrame, chembl_con: sqlite3.Connection, limit_to_literature: bool
-) -> pd.DataFrame:
+    dataset: Dataset, chembl_con: sqlite3.Connection, limit_to_literature: bool
+):
     """
     Query and calculate the first publication of a compound
     based on ChEMBL data (column name: first_publication_cpd).
@@ -14,14 +16,13 @@ def add_first_publication_date(
     of the compound in the literature according to ChEMBL.
     Otherwise this is the first appearance in any source in ChEMBL.
 
-    :param df_combined: Pandas DataFrame with compound-target pairs
-    :type df_combined: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to include first_publication_cpd
+    :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
     :param limit_to_literature: Base first_publication_cpd on literature sources only if True.
     :type limit_to_literature: bool
-    :return: Pandas DataFrame with added first_publication_cpd.
-    :rtype: pd.DataFrame
     """
     # information about salts is aggregated in the parent
     sql = """
@@ -42,26 +43,26 @@ def add_first_publication_date(
     ].transform("min")
     df_docs = df_docs[["parent_molregno", "first_publication_cpd"]].drop_duplicates()
 
-    df_combined = df_combined.merge(df_docs, on="parent_molregno", how="left")
-
-    return df_combined
+    dataset.df_result = dataset.df_result.merge(
+        df_docs, on="parent_molregno", how="left"
+    )
 
 
 def add_chembl_properties_and_structures(
-    df_combined: pd.DataFrame, chembl_con: sqlite3.Connection
-) -> tuple[pd.DataFrame, pd.DataFrame]:
+    dataset: Dataset, chembl_con: sqlite3.Connection
+):
     """
-    Add compound properties from the compound_properties table 
+    Add compound properties from the compound_properties table
     (e.g., alogp, #hydrogen bond acceptors / donors, etc.).
-    Add InChI, InChI key and canonical smiles. 
+    Add InChI, InChI key and canonical smiles.
 
-    :param df_combined: Pandas DataFrame with compound-target pairs
-    :type df_combined: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to include compound properties and structures.
+        dataset.df_cpd_props will be set to
+        compound properties and structures for all compound ids in ChEMBL.
+    :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
-    :return: - Pandas DataFrame with added compound properties and structures. \\
-        - Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL.
-    :rtype: (pd.DataFrame, pd.DataFrame)
     """
     sql = """
     SELECT DISTINCT mh.parent_molregno, 
@@ -78,13 +79,14 @@ def add_chembl_properties_and_structures(
     """
 
     df_cpd_props = pd.read_sql_query(sql, con=chembl_con)
+    dataset.df_cpd_props = df_cpd_props
 
-    df_combined = df_combined.merge(df_cpd_props, on="parent_molregno", how="left")
+    dataset.df_result = dataset.df_result.merge(
+        df_cpd_props, on="parent_molregno", how="left"
+    )
 
-    return df_combined, df_cpd_props
 
-
-def add_ligand_efficiency_metrics(df_combined: pd.DataFrame) -> pd.DataFrame:
+def add_ligand_efficiency_metrics(dataset: Dataset):
     """
     Calculate the ligand efficiency metrics for the compounds
     based on the mean pchembl values for a compound-target pair and
@@ -108,33 +110,37 @@ def add_ligand_efficiency_metrics(df_combined: pd.DataFrame) -> pd.DataFrame:
     Once for the pchembl values based on binding + functional assays (BF)
     and once for the pchembl values based on binding assays only (B).
 
-    :param df_combined: Pandas DataFrame with compound-target pairs
-    :type df_combined: pd.DataFrame
-    :return: Pandas DataFrame with added ligand efficiency metrics
-    :rtype: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to include ligand efficiency metrics.
+    :type dataset: Dataset
     """
     for suffix in ["BF", "B"]:
-        df_combined.loc[df_combined["heavy_atoms"] != 0, f"LE_{suffix}"] = (
-            df_combined[f"pchembl_value_mean_{suffix}"]
-            / df_combined["heavy_atoms"]
+        dataset.df_result.loc[dataset.df_result["heavy_atoms"] != 0, f"LE_{suffix}"] = (
+            dataset.df_result[f"pchembl_value_mean_{suffix}"]
+            / dataset.df_result["heavy_atoms"]
             * (2.303 * 298 * 0.00199)
         )
 
-        df_combined.loc[df_combined["mw_freebase"] != 0, f"BEI_{suffix}"] = (
-            df_combined[f"pchembl_value_mean_{suffix}"]
+        dataset.df_result.loc[
+            dataset.df_result["mw_freebase"] != 0, f"BEI_{suffix}"
+        ] = (
+            dataset.df_result[f"pchembl_value_mean_{suffix}"]
             * 1000
-            / df_combined["mw_freebase"]
+            / dataset.df_result["mw_freebase"]
         )
 
-        df_combined.loc[df_combined["psa"] != 0, f"SEI_{suffix}"] = (
-            df_combined[f"pchembl_value_mean_{suffix}"] * 100 / df_combined["psa"]
+        dataset.df_result.loc[dataset.df_result["psa"] != 0, f"SEI_{suffix}"] = (
+            dataset.df_result[f"pchembl_value_mean_{suffix}"]
+            * 100
+            / dataset.df_result["psa"]
         )
 
-        df_combined[f"LLE_{suffix}"] = (
-            df_combined[f"pchembl_value_mean_{suffix}"] - df_combined["alogp"]
+        dataset.df_result[f"LLE_{suffix}"] = (
+            dataset.df_result[f"pchembl_value_mean_{suffix}"]
+            - dataset.df_result["alogp"]
         )
 
-        df_combined = df_combined.astype(
+        dataset.df_result = dataset.df_result.astype(
             {
                 f"LE_{suffix}": "float64",
                 f"BEI_{suffix}": "float64",
@@ -143,26 +149,21 @@ def add_ligand_efficiency_metrics(df_combined: pd.DataFrame) -> pd.DataFrame:
             }
         )
 
-    return df_combined
 
-
-def add_atc_classification(
-    df_combined: pd.DataFrame, chembl_con: sqlite3.Connection
-) -> tuple[pd.DataFrame, pd.DataFrame]:
+def add_atc_classification(dataset: Dataset, chembl_con: sqlite3.Connection):
     """
-    Query and add ATC classifications (level 1) from the atc_classification and 
+    Query and add ATC classifications (level 1) from the atc_classification and
     molecule_atc_classification tables.
-    ATC level annotations for the same parent_molregno are combined into one description 
-    that concatenates all descriptions sorted alphabetically 
+    ATC level annotations for the same parent_molregno are combined into one description
+    that concatenates all descriptions sorted alphabetically
     into one string with ' | ' as a separator.
 
-    :param df_combined: Pandas DataFrame with compound-target pairs
-    :type df_combined: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to include ATC classifications.
+        dataset.atc_levels will be set to ATC annotations in ChEMBL.
+    :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
-    :return: - Pandas DataFrame with added ATC classifications \\
-        - Pandas DataFrame with ATC annotations in ChEMBL
-    :rtype: (pd.DataFrame, pd.DataFrame)
     """
     sql = """
     SELECT DISTINCT mh.parent_molregno, atc.level1, atc.level1_description
@@ -185,14 +186,16 @@ def add_atc_classification(
     ].transform(lambda x: between_str_join.join(sorted(x)))
     atc_levels = atc_levels[["parent_molregno", "atc_level1"]].drop_duplicates()
 
-    df_combined = df_combined.merge(atc_levels, on="parent_molregno", how="left")
+    dataset.atc_levels = atc_levels
 
-    return df_combined, atc_levels
+    dataset.df_result = dataset.df_result.merge(
+        atc_levels, on="parent_molregno", how="left"
+    )
 
 
 def add_all_chembl_compound_properties(
-    df_combined: pd.DataFrame, chembl_con: sqlite3.Connection, limit_to_literature: bool
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    dataset: Dataset, chembl_con: sqlite3.Connection, limit_to_literature: bool
+):
     """
     Add ChEMBL-based compound properties to the given compound-target pairs, specifically:
 
@@ -202,24 +205,19 @@ def add_all_chembl_compound_properties(
     - ligand efficiency metrics
     - ATC classifications
 
-    :param df_combined: Pandas DataFrame with compound-target pairs
-    :type df_combined: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to include compound properties.
+    :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
-    :param limit_to_literature: Base first_publication_cpd on literature sources only if True. 
+    :param limit_to_literature: Base first_publication_cpd on literature sources only if True.
         Base it on all available sources otherwise.
     :type limit_to_literature: bool
-    :return: - Pandas DataFrame with added compound properties \\
-        - Pandas DataFrame with compound properties and structures for all compound ids in ChEMBL \\
-        - Pandas DataFrame with ATC annotations in ChEMBL
-    :rtype: (pd.DataFrame, pd.DataFrame, pd.DataFrame)
     """
-    df_combined = add_first_publication_date(
-        df_combined, chembl_con, limit_to_literature
-    )
-    df_combined, df_cpd_props = add_chembl_properties_and_structures(
-        df_combined, chembl_con
-    )
-    df_combined = add_ligand_efficiency_metrics(df_combined)
-    df_combined, atc_levels = add_atc_classification(df_combined, chembl_con)
-    return df_combined, df_cpd_props, atc_levels
+    add_first_publication_date(dataset, chembl_con, limit_to_literature)
+
+    add_chembl_properties_and_structures(dataset, chembl_con)
+
+    add_ligand_efficiency_metrics(dataset)
+
+    add_atc_classification(dataset, chembl_con)

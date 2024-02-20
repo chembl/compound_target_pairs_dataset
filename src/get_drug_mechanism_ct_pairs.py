@@ -3,6 +3,8 @@ import sqlite3
 
 import pandas as pd
 
+from dataset import Dataset
+
 
 ########### Extract Drug-Target Interactions From the drug_mechanism Table ###########
 def get_drug_mechanisms_interactions(chembl_con: sqlite3.Connection) -> pd.DataFrame:
@@ -151,7 +153,7 @@ def add_annotations_to_drug_mechanisms_cti(
     :return: Updated pandas DataFrame with the additional annotations.
     :rtype: pd.DataFrame
     """
-    ##### Set columns existing in the df_combined table. #####
+    ##### Set columns existing in the df_results table. #####
     # None of the targets from the drug mechanism table have any mutation annotation,
     # hence tid_mutation = tid
     cpd_target_pairs["tid_mutation"] = cpd_target_pairs["tid"].astype("str")
@@ -239,47 +241,46 @@ def get_drug_mechanism_ct_pairs(chembl_con: sqlite3.Connection) -> pd.DataFrame:
 
 
 ########### Add Compounds From the drug_mechanism Table to the Dataset ###########
-def add_drug_mechanism_ct_pairs(
-    df_combined: pd.DataFrame, chembl_con: sqlite3.Connection
-) -> tuple[pd.DataFrame, set, set]:
+def add_drug_mechanism_ct_pairs(dataset: Dataset, chembl_con: sqlite3.Connection):
     """
-    Add compound-target pairs from the drug_mechanism table 
+    Add compound-target pairs from the drug_mechanism table
     that are not in the dataset based on the initial ChEMBL query.
     These are compound-target pairs for which there is no associated pchembl value data.
-    Since the pairs are known interactions, 
+    Since the pairs are known interactions,
     they are added to the dataset despite not having a pchembl value.
+    Add the set of compound-target pairs in the drug_mechanism table and
+    the set of targets in the drug_mechanism table to the dataset.
 
-    :param df_combined: Pandas Dataframe with compound-target pairs based on ChEMBL activity data
-    :type df_combined: pd.DataFrame
+    :param dataset: Pandas Dataframe with compound-target pairs based on ChEMBL activity data
+    :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
-    :return: - Pandas DataFrame with compound-target pairs
-                based on activities AND drug_mechanism table \\
-        - set of compound-target pairs in the drug_mechanism table \\
-        - set of targets in the drug_mechanism table
-    :rtype: (pd.DataFrame, set, set)
     """
     cpd_target_pairs = get_drug_mechanism_ct_pairs(chembl_con)
-    drug_mechanism_pairs_set = set(
+    dataset.drug_mechanism_pairs_set = set(
         f"{a}_{b}"
         for a, b in zip(cpd_target_pairs["parent_molregno"], cpd_target_pairs["tid"])
     )
 
-    drug_mechanism_targets_set = set(cpd_target_pairs["tid"])
+    dataset.drug_mechanism_targets_set = set(cpd_target_pairs["tid"])
 
     # Add a new column *pair_mutation_in_dm_table* which is set to True if the compound target pair
     # (taking mutation annotations into account) is in the drug_mechanism table.
-    df_combined["pair_mutation_in_dm_table"] = False
-    df_combined.loc[
-        (df_combined["cpd_target_pair_mutation"].isin(drug_mechanism_pairs_set)),
+    dataset.df_result["pair_mutation_in_dm_table"] = False
+    dataset.df_result.loc[
+        (
+            dataset.df_result["cpd_target_pair_mutation"].isin(
+                dataset.drug_mechanism_pairs_set
+            )
+        ),
         "pair_mutation_in_dm_table",
     ] = True
 
     # Add a new column *pair_in_dm_table* which is set to True if the compound target pair
     # (NOT taking mutation annotations into account) is in the drug_mechanism table.
-    df_combined["pair_in_dm_table"] = False
-    df_combined.loc[
-        (df_combined["cpd_target_pair"].isin(drug_mechanism_pairs_set)),
+    dataset.df_result["pair_in_dm_table"] = False
+    dataset.df_result.loc[
+        (dataset.df_result["cpd_target_pair"].isin(dataset.drug_mechanism_pairs_set)),
         "pair_in_dm_table",
     ] = True
 
@@ -291,7 +292,7 @@ def add_drug_mechanism_ct_pairs(
     cpd_target_pairs = cpd_target_pairs[
         ~(
             cpd_target_pairs["cpd_target_pair_mutation"].isin(
-                set(df_combined["cpd_target_pair_mutation"])
+                set(dataset.df_result["cpd_target_pair_mutation"])
             )
         )
     ].copy()
@@ -302,20 +303,18 @@ def add_drug_mechanism_ct_pairs(
     )
 
     # Combined data of existing query with new compound-target pairs.
-    df_combined = pd.concat([df_combined, cpd_target_pairs])
+    dataset.df_result = pd.concat([dataset.df_result, cpd_target_pairs])
 
     # Add a new column *keep_for_binding* which is set to True if the row should be kept
     # if you want to limit the dataset to only data based on binding assays.
     # Rows are kept if
     # - there is a binding data-based pchembl value or
     # - the compound-target pair (including mutation info) is in the drug_mechanism table
-    df_combined["keep_for_binding"] = False
-    df_combined.loc[
+    dataset.df_result["keep_for_binding"] = False
+    dataset.df_result.loc[
         (
-            (df_combined["pchembl_value_mean_B"].notnull())
-            | (df_combined["pair_mutation_in_dm_table"] == True)
+            (dataset.df_result["pchembl_value_mean_B"].notnull())
+            | (dataset.df_result["pair_mutation_in_dm_table"] == True)
         ),
         "keep_for_binding",
     ] = True
-
-    return df_combined, drug_mechanism_pairs_set, drug_mechanism_targets_set

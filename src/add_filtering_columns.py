@@ -6,6 +6,7 @@ import pandas as pd
 from arguments import CalculationArgs, OutputArgs
 import get_stats
 import write_subsets
+from dataset import Dataset
 
 
 def get_data_subsets(data: pd.DataFrame, min_nof_cpds: int, desc: str) -> tuple[
@@ -107,20 +108,20 @@ def get_data_subsets(data: pd.DataFrame, min_nof_cpds: int, desc: str) -> tuple[
 
 def add_subset_filtering_columns(
     df_combined_subset: pd.DataFrame,
-    df_combined: pd.DataFrame,
+    dataset: Dataset,
     desc: str,
     args: CalculationArgs,
     out: OutputArgs,
-    df_sizes: list[list[int], list[int]],
-) -> pd.DataFrame:
+):
     """
     Add filtering column for binding + functional vs binding
 
     :param df_combined_subset: Subset with binding+functional (BF) or binding (B) assay-based data
         in df_combined
     :type df_combined_subset: pd.DataFrame
-    :param df_combined: Pandas DataFrame with compound-target pairs
-    :type df_combined: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to only include filtering columns.
+    :type dataset: Dataset
     :param desc: Assay description,
         either "BF" (binding+functional) or "B" (binding)
     :type desc: str
@@ -128,10 +129,6 @@ def add_subset_filtering_columns(
     :type args: CalculationArgs
     :param out: Arguments related to how to output the dataset
     :type out: OutputArgs
-    :param df_sizes: List of intermediate sized of the dataset used for debugging.
-    :type df_sizes: list[list[int], list[int]]
-    :return: Pandas DataFrame with added filering columns
-    :rtype: pd.DataFrame
     """
     subsets = get_data_subsets(
         df_combined_subset,
@@ -159,65 +156,57 @@ def add_subset_filtering_columns(
     # add filtering columns to df_combined
     # do not add a filtering column for BF / B (-> [1:])
     for [df, col_name] in subsets[1:]:
-        df_combined[col_name] = False
-        df_combined.loc[(df_combined.index.isin(df.index)), col_name] = True
+        dataset.df_result[col_name] = False
+        dataset.df_result.loc[(dataset.df_result.index.isin(df.index)), col_name] = True
         # check that filtering works
-        assert df_combined[df_combined[col_name] == True][df.columns].equals(
-            df
-        ), f"Filtering is not accurate for {col_name}."
+        assert dataset.df_result[dataset.df_result[col_name] == True][
+            df.columns
+        ].equals(df), f"Filtering is not accurate for {col_name}."
 
     if logging.DEBUG >= logging.root.level:
         for [df_subset, subset_desc] in subsets:
-            get_stats.add_dataset_sizes(df_subset, subset_desc, df_sizes)
-
-    return df_combined
+            get_stats.add_debugging_info(dataset, df_subset, subset_desc)
 
 
 def add_filtering_columns(
-    df_combined: pd.DataFrame,
-    df_sizes: list[list[int], list[int]],
+    dataset: Dataset,
     args: CalculationArgs,
     out: OutputArgs,
-) -> pd.DataFrame:
+):
     """
     Add filtering columns to main dataset and save subsets if required.
 
-    :param df_combined: Pandas DataFrame with compound-target pairs
-    :type df_combined: pd.DataFrame
-    :param df_sizes: List of intermediate sized of the dataset used for debugging.
-    :type df_sizes: list[list[int], list[int]]
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to only include filtering columns.
+    :type dataset: Dataset
     :param args: Arguments related to how to calculate the dataset
     :type args: CalculationArgs
     :param out: Arguments related to how to output the dataset
     :type out: OutputArgs
-    :return: Pandas DataFrame with added filering columns
-    :rtype: pd.DataFrame
     """
     # consider binding and functional assays
     # assay description = binding+functional
     desc = "BF"
     # df_combined without binding only data
-    df_combined_subset = df_combined.copy()
-    df_combined = add_subset_filtering_columns(
+    df_combined_subset = dataset.df_result.copy()
+    add_subset_filtering_columns(
         df_combined_subset,
-        df_combined,
+        dataset,
         desc,
         args,
         out,
-        df_sizes,
     )
 
     # consider only binding assays
     # assay description = binding
     desc = "B"
-    df_combined_subset = df_combined[df_combined["keep_for_binding"] == True].copy()
-    df_combined = add_subset_filtering_columns(
+    df_combined_subset = dataset.df_result[
+        dataset.df_result["keep_for_binding"] == True
+    ].copy()
+    add_subset_filtering_columns(
         df_combined_subset,
-        df_combined,
+        dataset,
         desc,
         args,
         out,
-        df_sizes,
     )
-
-    return df_combined

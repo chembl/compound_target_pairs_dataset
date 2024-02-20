@@ -3,10 +3,12 @@ import sqlite3
 
 import pandas as pd
 
+from dataset import Dataset
+
 
 def remove_compounds_without_smiles_and_mixtures(
-    df_combined: pd.DataFrame, chembl_con: sqlite3.Connection
-) -> pd.DataFrame:
+    dataset: Dataset, chembl_con: sqlite3.Connection
+):
     """
     Remove
 
@@ -16,12 +18,12 @@ def remove_compounds_without_smiles_and_mixtures(
     Since compound information is aggregated for the parents of salts,
     the number of smiles with a dot is relatively low.
 
-    :param df_combined: Pandas DataFrame with compound-target pairs
-    :type df_combined: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to only include
+        compound-target pairs with a smiles that does not contain a '.'
+    :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
-    :return: Pandas DataFrame with compound-target pairs with a smiles that does not contain a '.'
-    :rtype: pd.DataFrame
     """
     # Double-check that rows with a SMILES containing a '.' are the parent structures,
     # i.e., there was no error in using salt information instead of parent information.
@@ -31,9 +33,9 @@ def remove_compounds_without_smiles_and_mixtures(
     """
     df_hierarchy = pd.read_sql_query(sql, con=chembl_con)
 
-    smiles_with_dot = df_combined[
-        df_combined["canonical_smiles"].notnull()
-        & df_combined["canonical_smiles"].str.contains(".", regex=False)
+    smiles_with_dot = dataset.df_result[
+        dataset.df_result["canonical_smiles"].notnull()
+        & dataset.df_result["canonical_smiles"].str.contains(".", regex=False)
     ][["canonical_smiles", "parent_molregno"]].drop_duplicates()
 
     for parent_molregno in set(smiles_with_dot["parent_molregno"]):
@@ -72,42 +74,46 @@ def remove_compounds_without_smiles_and_mixtures(
                 the smiles for the compound in ChEMBL ({parent_smiles_in_chembl})."
 
     # Remove rows that contain a SMILES with a dot or that don't have a SMILES.
-    len_missing_smiles = len(df_combined[df_combined["canonical_smiles"].isnull()])
+    len_missing_smiles = len(
+        dataset.df_result[dataset.df_result["canonical_smiles"].isnull()]
+    )
     len_smiles_w_dot = len(
-        df_combined[
-            df_combined["parent_molregno"].isin(set(smiles_with_dot["parent_molregno"]))
+        dataset.df_result[
+            dataset.df_result["parent_molregno"].isin(
+                set(smiles_with_dot["parent_molregno"])
+            )
         ]
     )
     logging.debug("#Compounds without a SMILES: %s", len_missing_smiles)
     logging.debug("#SMILES with a dot: %s", len_smiles_w_dot)
 
-    df_combined = df_combined[
-        (df_combined["canonical_smiles"].notnull())
+    dataset.df_result = dataset.df_result[
+        (dataset.df_result["canonical_smiles"].notnull())
         & ~(
-            df_combined["parent_molregno"].isin(set(smiles_with_dot["parent_molregno"]))
+            dataset.df_result["parent_molregno"].isin(
+                set(smiles_with_dot["parent_molregno"])
+            )
         )
     ]
 
-    return df_combined
+    return dataset.df_result
 
 
-def clean_none_values(df_combined):
+def clean_none_values(dataset: Dataset):
     """
     Change nan values and empty strings to None for consistency.
     """
     # Change all None / nan values to None
-    df_combined = df_combined.where(pd.notnull(df_combined), None)
+    dataset.df_result = dataset.df_result.where(pd.notnull(dataset.df_result), None)
     # replace empty strings with None
-    df_combined = df_combined.replace("", None).reset_index(drop=True)
-
-    return df_combined
+    dataset.df_result = dataset.df_result.replace("", None).reset_index(drop=True)
 
 
-def set_types_to_int(df_combined, calculate_rdkit):
+def set_types_to_int(dataset, calculate_rdkit):
     """
     Set the type of relevant columns to Int64.
     """
-    df_combined = df_combined.astype(
+    dataset.df_result = dataset.df_result.astype(
         {
             "first_approval": "Int64",
             "usan_year": "Int64",
@@ -129,7 +135,7 @@ def set_types_to_int(df_combined, calculate_rdkit):
     )
 
     if calculate_rdkit:
-        df_combined = df_combined.astype(
+        dataset.df_result = dataset.df_result.astype(
             {
                 "num_aliphatic_carbocycles": "Int64",
                 "num_aliphatic_heterocycles": "Int64",
@@ -150,26 +156,26 @@ def set_types_to_int(df_combined, calculate_rdkit):
             }
         )
 
-    return df_combined
 
-
-def round_floats(df_combined, decimal_places=4):
+def round_floats(dataset, decimal_places=4):
     """
     Round float columns to <decimal_places> decimal places.
     This does not apply to max_phase.
     """
-    for _, (col, dtype) in enumerate(df_combined.dtypes.to_dict().items()):
+    for _, (col, dtype) in enumerate(dataset.df_result.dtypes.to_dict().items()):
         if (dtype in ("float64", "Float64")) and col != "max_phase":
-            df_combined[col] = df_combined[col].round(decimals=decimal_places)
+            dataset.df_result[col] = dataset.df_result[col].round(
+                decimals=decimal_places
+            )
 
-    return df_combined
+    return dataset.df_result
 
 
-def reorder_columns(df_combined, calculate_rdkit):
+def reorder_columns(dataset, calculate_rdkit):
     """
     Reorder the columns in the DataFrame.
     """
-    len_columns_before = len(df_combined.columns)
+    len_columns_before = len(dataset.df_result.columns)
 
     compound_target_pair_columns = [
         "parent_molregno",
@@ -283,7 +289,7 @@ def reorder_columns(df_combined, calculate_rdkit):
             + rdkit_columns
             + filtering_columns
         )
-        df_combined = df_combined[columns]
+        dataset.df_result = dataset.df_result[columns]
     else:
         columns = (
             compound_target_pair_columns
@@ -296,18 +302,16 @@ def reorder_columns(df_combined, calculate_rdkit):
             + chembl_target_annotations
             + filtering_columns
         )
-        df_combined = df_combined[columns]
+        dataset.df_result = dataset.df_result[columns]
 
-    len_columns_after = len(df_combined.columns)
+    len_columns_after = len(dataset.df_result.columns)
     assert (
         len_columns_before == len_columns_after
     ), f"Different number of columns after reordering \
         (before: {len_columns_before}, after: {len_columns_after})."
 
-    return df_combined
 
-
-def clean_dataset(df_combined: pd.DataFrame, calculate_rdkit: bool) -> pd.DataFrame:
+def clean_dataset(dataset: Dataset, calculate_rdkit: bool) -> pd.DataFrame:
     """
     Clean the dataset by
 
@@ -317,18 +321,16 @@ def clean_dataset(df_combined: pd.DataFrame, calculate_rdkit: bool) -> pd.DataFr
     - reordering columns
     - sorting rows by cpd_target_pair_mutation
 
-    :param df_combined: Pandas DataFrame with compound-target pairs
-    :type df_combined: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to clean version with the updates described above.
+    :type dataset: Dataset
     :param calculate_rdkit: True if the DataFrame contains RDKit-based compound properties
     :type calculate_rdkit: bool
-    :return: Cleaned pandas DataFrame with compound-target pairs
-    :rtype: pd.DataFrame
     """
-    df_combined = clean_none_values(df_combined)
-    df_combined = set_types_to_int(df_combined, calculate_rdkit)
-    df_combined = round_floats(df_combined, decimal_places=4)
-    df_combined = reorder_columns(df_combined, calculate_rdkit)
-    df_combined = df_combined.sort_values(by=["cpd_target_pair_mutation"]).reset_index(
-        drop=True
-    )
-    return df_combined
+    clean_none_values(dataset)
+    set_types_to_int(dataset, calculate_rdkit)
+    round_floats(dataset, decimal_places=4)
+    reorder_columns(dataset, calculate_rdkit)
+    dataset.df_result = dataset.df_result.sort_values(
+        by=["cpd_target_pair_mutation"]
+    ).reset_index(drop=True)

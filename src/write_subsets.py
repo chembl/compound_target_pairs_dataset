@@ -5,6 +5,7 @@ import sanity_checks
 
 import get_stats
 from arguments import OutputArgs, CalculationArgs
+from dataset import Dataset
 
 
 def write_output(
@@ -73,15 +74,15 @@ def write_and_check_output(
 
 
 def write_full_dataset_to_file(
-    df_combined: pd.DataFrame,
+    dataset: Dataset,
     args: CalculationArgs,
     out: OutputArgs,
 ):
     """
     If write_full_dataset, write df_combined with filtering columns to output_path.
 
-    :param df_combined: Pandas DataFrame with compound-target pairs and filtering columns
-    :type df_combined: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+    :type dataset: Dataset
     :param args: Arguments related to how to calculate the dataset
     :type args: CalculationArgs
     :param out: Arguments related to how to output the dataset
@@ -93,18 +94,18 @@ def write_full_dataset_to_file(
             out.output_path,
             f"ChEMBL{args.chembl_version}_CTI_{args.limited_flag}_full_dataset",
         )
-        write_and_check_output(df_combined, name_all, desc, args, out)
+        write_and_check_output(dataset.df_result, name_all, desc, args, out)
 
 
 def output_debug_sizes(
-    df_sizes: list[list[int], list[int]],
+    dataset: Dataset,
     out: OutputArgs,
 ):
     """
     Output counts at various points during calculating the final dataset for debugging.
 
-    :param df_sizes: List of intermediate sized of the dataset used for debugging.
-    :type df_sizes: list[list[int], list[int]]
+    :param dataset: Dataset with compound-target pairs and debugging sizes.
+    :type dataset: Dataset
     :param args: Arguments related to how to calculate the dataset
     :type args: CalculationArgs
     :param out: Arguments related to how to output the dataset
@@ -125,7 +126,7 @@ def output_debug_sizes(
     ]
 
     logging.debug("Size of full dataset at different points.")
-    full_df_sizes = pd.DataFrame(df_sizes[0], columns=column_names)
+    full_df_sizes = pd.DataFrame(dataset.df_sizes_all, columns=column_names)
     logging.debug(full_df_sizes)
     name_full_df_sizes = os.path.join(out.output_path, "debug_full_df_sizes")
     write_output(
@@ -139,7 +140,7 @@ def output_debug_sizes(
         "This includes data for which we only have pchembl data \
             for functional assays but not for binding assays."
     )
-    df_pchembl_sizes = pd.DataFrame(df_sizes[1], columns=column_names)
+    df_pchembl_sizes = pd.DataFrame(dataset.df_sizes_pchembl, columns=column_names)
     logging.debug(df_pchembl_sizes)
     name_pchembl_df_sizes = os.path.join(out.output_path, "debug_pchembl_df_sizes")
     write_output(
@@ -208,14 +209,12 @@ def output_stats(
     )
 
 
-def output_all_stats(
-    df_combined_annotated: pd.DataFrame, args: CalculationArgs, out: OutputArgs
-):
+def output_all_stats(dataset: Dataset, args: CalculationArgs, out: OutputArgs):
     """
     Output stats for all datasets and subsets calculated.
 
-    :param df_combined_annotated: Pandas DataFrame with additional filtering columns
-    :type df_combined_annotated: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+    :type dataset: Dataset
     :param args: Arguments related to how to calculate the dataset
     :type args: CalculationArgs
     :param out: Arguments related to how to output the dataset
@@ -226,7 +225,7 @@ def output_all_stats(
         f"ChEMBL{args.chembl_version}_CTI_{args.limited_flag}_full_dataset_stats",
     )
 
-    output_stats(df_combined_annotated, output_file, out)
+    output_stats(dataset.df_result, output_file, out)
 
     if out.write_bf:
         output_file = os.path.join(
@@ -236,7 +235,7 @@ def output_all_stats(
             f"BF_{args.min_nof_cpds_bf}_c_dt_d_dt_stats",
         )
         output_stats(
-            df_combined_annotated[df_combined_annotated["BF_100_c_dt_d_dt"]],
+            dataset.df_result[dataset.df_result["BF_100_c_dt_d_dt"]],
             output_file,
             out,
         )
@@ -249,7 +248,7 @@ def output_all_stats(
             f"B_{args.min_nof_cpds_b}_c_dt_d_dt_stats",
         )
         output_stats(
-            df_combined_annotated[df_combined_annotated["B_100_c_dt_d_dt"]],
+            dataset.df_result[dataset.df_result["B_100_c_dt_d_dt"]],
             output_file,
             out,
         )

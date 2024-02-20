@@ -1,4 +1,7 @@
+import logging
 import pandas as pd
+
+from dataset import Dataset
 
 
 ##### Debugging Stats #####
@@ -45,20 +48,22 @@ def calculate_dataset_sizes(df: pd.DataFrame) -> list[int]:
 
 
 def add_dataset_sizes(
-    df: pd.DataFrame, label: str, df_sizes: list[list[int], list[int]]
+    dataset: Dataset,
+    df: pd.DataFrame,
+    label: str,
 ):
     """
-    Count and add representative counts of df to the list df_sizes used for debugging.
+    Count and add representative counts of df used for debugging to the dataset.
 
+    :param dataset: Dataset with compound-target pairs and debugging sizes.
+    :type dataset: Dataset
     :param df: Pandas DataFrame with current compound-target pairs
     :type df: pd.DataFrame
     :param label: Description of pipeline step (e.g., initial query).
     :type label: str
-    :param df_sizes: List of intermediate sized of the dataset used for debugging.
-    :type df_sizes: list[list[int], list[int]]
     """
     df_copy = df.copy()
-    df_sizes[0].append([label] + calculate_dataset_sizes(df_copy))
+    dataset.df_sizes_all.append([label] + calculate_dataset_sizes(df_copy))
 
     # restrict to data with any pchembl value (any data with a pchembl,
     # even if it is based on only functional data)
@@ -68,7 +73,20 @@ def add_dataset_sizes(
     df_pchembl = df_copy.dropna(
         subset=[x for x in df_copy.columns if x.startswith("pchembl_value")], how="all"
     )
-    df_sizes[1].append([label] + calculate_dataset_sizes(df_pchembl))
+    dataset.df_sizes_pchembl.append([label] + calculate_dataset_sizes(df_pchembl))
+
+
+def add_debugging_info(
+    dataset: Dataset,
+    df: pd.DataFrame,
+    label: str,
+):
+    """
+    Wrapper for add_dataset_sizes.
+    Handles logging level.
+    """
+    if logging.DEBUG >= logging.root.level:
+        add_dataset_sizes(dataset, df, label)
 
 
 ##### Logging Stats #####

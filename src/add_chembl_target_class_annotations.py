@@ -6,6 +6,7 @@ import pandas as pd
 
 import write_subsets
 from arguments import OutputArgs, CalculationArgs
+from dataset import Dataset
 
 
 ########### Add Target Class Annotations Based on ChEMBL Data ###########
@@ -80,34 +81,35 @@ def get_target_class_table(
 
 
 def add_chembl_target_class_annotations(
-    df_combined: pd.DataFrame,
+    dataset: Dataset,
     chembl_con: sqlite3.Connection,
     args: CalculationArgs,
     out: OutputArgs,
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+):
     """
-    Add level 1 and 2 target class annotations. 
-    Assignments for target IDs with more than one target class assignment per level 
-    are summarised into one string with '|' as a separator 
+    Add level 1 and 2 target class annotations.
+    Assignments for target IDs with more than one target class assignment per level
+    are summarised into one string with '|' as a separator
     between the different target class annotations.
 
     Targets with more than one level 1 / level 2 target class assignment are written to a file.
     These could be reassigned by hand if a single target class is preferable.
 
-    :param df_combined: Pandas DataFrame with compound-target pairs
-    :type df_combined: pd.DataFrame
+    :param dataset: Dataset with compound-target pairs.
+        Will be updated to only include target class annotations.
+        dataset.target_classes_level1 will be set to
+            pandas DataFrame with mapping from target id to level 1 target class
+        dataset.target_classes_level2 will be set to
+            pandas DataFrame with mapping from target id to level 2 target class
+    :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection
     :param args: Arguments related to how to calculate the dataset
     :type args: CalculationArgs
     :param out: Arguments related to how to output the dataset
     :type out: OutputArgs
-    :return: - Pandas DataFrame with added target class annotations \\
-        - Pandas DataFrame with mapping from target id to level 1 target class \\
-        - Pandas DataFrame with mapping from target id to level 2 target class
-    :rtype: (pd.DataFrame, pd.DataFrame, pd.DataFrame)
     """
-    current_tids = set(df_combined["tid"])
+    current_tids = set(dataset.df_result["tid"])
     df_target_classes = get_target_class_table(chembl_con, current_tids)
 
     # Summarise the information for a target id with
@@ -143,7 +145,9 @@ def add_chembl_target_class_annotations(
         ["tid", "target_class_l1"]
     ].drop_duplicates()
 
-    df_combined = df_combined.merge(target_classes_level1, on="tid", how="left")
+    dataset.df_result = dataset.df_result.merge(
+        target_classes_level1, on="tid", how="left"
+    )
 
     # Repeat the summary step for target classes of level 2.
     level = "l2"
@@ -155,12 +159,14 @@ def add_chembl_target_class_annotations(
         ["tid", "target_class_l2"]
     ].drop_duplicates()
 
-    df_combined = df_combined.merge(target_classes_level2, on="tid", how="left")
+    dataset.df_result = dataset.df_result.merge(
+        target_classes_level2, on="tid", how="left"
+    )
 
     # Output targets have more than one target class assignment
-    more_than_one_level_1 = df_combined[
-        (df_combined["target_class_l1"].notnull())
-        & (df_combined["target_class_l1"].str.contains("|", regex=False))
+    more_than_one_level_1 = dataset.df_result[
+        (dataset.df_result["target_class_l1"].notnull())
+        & (dataset.df_result["target_class_l1"].str.contains("|", regex=False))
     ][
         ["tid", "target_pref_name", "target_type", "target_class_l1", "target_class_l2"]
     ].drop_duplicates()
@@ -168,9 +174,9 @@ def add_chembl_target_class_annotations(
         "Targets with more than one level 1 target class assignment: %s",
         len(more_than_one_level_1),
     )
-    more_than_one_level_2 = df_combined[
-        (df_combined["target_class_l2"].notnull())
-        & (df_combined["target_class_l2"].str.contains("|", regex=False))
+    more_than_one_level_2 = dataset.df_result[
+        (dataset.df_result["target_class_l2"].notnull())
+        & (dataset.df_result["target_class_l2"].str.contains("|", regex=False))
     ][
         ["tid", "target_pref_name", "target_type", "target_class_l1", "target_class_l2"]
     ].drop_duplicates()
@@ -197,4 +203,5 @@ def add_chembl_target_class_annotations(
         out,
     )
 
-    return df_combined, target_classes_level1, target_classes_level2
+    dataset.target_classes_level1 = target_classes_level1
+    dataset.target_classes_level2 = target_classes_level2

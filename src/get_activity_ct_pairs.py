@@ -3,6 +3,8 @@ import sqlite3
 import numpy as np
 import pandas as pd
 
+from dataset import Dataset
+
 
 ########### Get Initial Compound-Target Data From ChEMBL ###########
 def get_compound_target_pairs_with_pchembl(
@@ -164,7 +166,7 @@ def get_average_info(df: pd.DataFrame, suffix: str) -> pd.DataFrame:
 def get_aggregated_activity_ct_pairs(
     chembl_con: sqlite3.Connection,
     limit_to_literature: bool,
-) -> pd.DataFrame:
+) -> Dataset:
     """
     Get dataset of compound target-pairs with an associated pchembl value
     with pchembl and publication dates aggregated into one entry per pair.
@@ -184,9 +186,9 @@ def get_aggregated_activity_ct_pairs(
     :param limit_to_literature: Include only literature sources if True.
         Include all available sources otherwise.
     :type limit_to_literature: bool
-    :return: Pandas Dataframe with compound-target pairs based on ChEMBL activity data
-        aggregated into one entry per compound-target pair.
-    :rtype: pd.DataFrame
+    :return: Dataset with a pandas Dataframe with compound-target pairs
+        based on ChEMBL activity data aggregated into one entry per compound-target pair.
+    :rtype: Dataset
     """
     df_mols = get_compound_target_pairs_with_pchembl(
         chembl_con,
@@ -220,4 +222,15 @@ def get_aggregated_activity_ct_pairs(
         how="left",
     )
 
-    return df_combined
+    dataset = Dataset(
+        df_combined,
+        pd.DataFrame(),
+        pd.DataFrame(),
+        pd.DataFrame(),
+        pd.DataFrame(),
+        set(),
+        set(),
+        [],
+        [],
+    )
+    return dataset
