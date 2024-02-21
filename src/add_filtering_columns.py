@@ -22,27 +22,28 @@ def get_data_subsets(data: pd.DataFrame, min_nof_cpds: int, desc: str) -> tuple[
     """
     Calculate and return the different subsets of interest.
 
+    - data: Pandas DataFrame with compound-target pairs \
+            without filtering columns and without \
+            the annotations for the opposite desc, \
+            e.g. if desc = "BF", the average pchembl value based on \
+            binding data only is dropped
+    - df_enough_cpds: Pandas DataFrame with targets \
+            with at least <min_nof_cpds> compounds with a pchembl value,
+    - df_c_dt_d_dt: As df_enough_cpds but with \
+            at least one compound-target pair labelled as \
+            'D_DT', 'C3_DT', 'C2_DT', 'C1_DT' or 'C0_DT' (i.e., known interaction),
+    - df_d_dt: As df_enough_cpds but with \
+            at least one compound-target pair labelled as \
+            'D_DT' (i.e., known drug-target interaction)
+
     :param data: Pandas DataFrame with compound-target pairs
     :type data: pd.DataFrame
     :param min_nof_cpds: Miminum number of compounds per target
     :type min_nof_cpds: int
-    :param desc: Types of assays current_df contains information about.
+    :param desc: Types of assays current_df contains information about. \
         Options: "BF" (binding+functional), "B" (binding)
     :type desc: str
-    :return: List of dataset subsets and the string describing them
-        - data: Pandas DataFrame with compound-target pairs
-            without filtering columns and without
-            the annotations for the opposite desc,
-            e.g. if desc = "BF", the average pchembl value based on
-            binding data only is dropped
-        - df_enough_cpds: Pandas DataFrame with targets
-            with at least <min_nof_cpds> compounds with a pchembl value,
-        - df_c_dt_d_dt: As df_enough_cpds but with
-            at least one compound-target pair labelled as
-            'D_DT', 'C3_DT', 'C2_DT', 'C1_DT' or 'C0_DT' (i.e., known interaction),
-        - df_d_dt: As df_enough_cpds but with
-            at least one compound-target pair labelled as
-            'D_DT' (i.e., known drug-target interaction)
+    :return: List of dataset subsets and the string describing them.
     :rtype: tuple[tuple[pd.DataFrame, str],
            tuple[pd.DataFrame, str],
            tuple[pd.DataFrame, str],
@@ -120,13 +121,14 @@ def add_subset_filtering_columns(
     """
     Add filtering column for binding + functional vs binding
 
-    :param df_combined_subset: Subset with binding+functional (BF) or binding (B) assay-based data
+    :param df_combined_subset: Subset with binding+functional (BF) \
+        or binding (B) assay-based data \
         in df_combined
     :type df_combined_subset: pd.DataFrame
-    :param dataset: Dataset with compound-target pairs.
+    :param dataset: Dataset with compound-target pairs. \
         Will be updated to only include filtering columns.
     :type dataset: Dataset
-    :param desc: Assay description,
+    :param desc: Assay description, \
         either "BF" (binding+functional) or "B" (binding)
     :type desc: str
     :param args: Arguments related to how to calculate the dataset
@@ -180,7 +182,7 @@ def add_filtering_columns(
     """
     Add filtering columns to main dataset and save subsets if required.
 
-    :param dataset: Dataset with compound-target pairs.
+    :param dataset: Dataset with compound-target pairs. \
         Will be updated to only include filtering columns.
     :type dataset: Dataset
     :param args: Arguments related to how to calculate the dataset

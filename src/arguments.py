@@ -13,12 +13,12 @@ class CalculationArgs:
     """
     Collection of arguments related to how to calculate the dataset.
 
-    chembl_version:         Version of ChEMBL for output file names
-    calculate_rdkit:        True if RDKit-based compound properties should be calculated
-    limit_to_literature:    Include only literature sources if True
-    limited_flag:           String version of limit_to_literature used in file names
-    min_nof_cpds_bf:        Minimum number of compounds per target for the BF subset
-    min_nof_cpds_b:         Minimum number of compounds per target for the B subset
+    - chembl_version:         Version of ChEMBL for output file names
+    - calculate_rdkit:        True if RDKit-based compound properties should be calculated
+    - limit_to_literature:    Include only literature sources if True
+    - limited_flag:           String version of limit_to_literature used in file names
+    - min_nof_cpds_bf:        Minimum number of compounds per target for the BF subset
+    - min_nof_cpds_b:         Minimum number of compounds per target for the B subset
     """
 
     chembl_version: str
@@ -34,13 +34,13 @@ class OutputArgs:
     """
     Collection of arguments related to how to output the dataset.
 
-    output_path:        Path to write output files to
-    delimiter:          Delimiter in csv-output
-    write_to_csv:       True if output should be written to csv
-    write_to_excel:     True if output should be written to excel
-    write_full_dataset: True if the full dataset should be written to output
-    write_bf:           True if subsets based on binding+functional data should be written to output
-    write_b:            True if subsets based on binding data only should be written to output
+    - output_path:        Path to write output files to
+    - delimiter:          Delimiter in csv-output
+    - write_to_csv:       True if output should be written to csv
+    - write_to_excel:     True if output should be written to excel
+    - write_full_dataset: True if the full dataset should be written to output
+    - write_bf:           True if subsets based on binding+functional data should be written to output
+    - write_b:            True if subsets based on binding data only should be written to output
     """
 
     output_path: str

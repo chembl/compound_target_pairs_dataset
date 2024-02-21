@@ -11,15 +11,17 @@ import pandas as pd
 @dataclass
 class Dataset:
     """
-    df_result:                  Pandas DataFrame with the full dataset
-    drug_mechanism_pairs_set:   Set of compound-target pairs in the drug_mechanism table,
+    Calculated compound-target pairs dataset (df_results) and related data.
+    
+    - df_result:                  Pandas DataFrame with the full dataset
+    - drug_mechanism_pairs_set:   Set of compound-target pairs in the drug_mechanism table, \
                                 used for DTI assignments
-    drug_mechanism_targets_set: Set of targets in the drug_mechanism table,
+    - drug_mechanism_targets_set: Set of targets in the drug_mechanism table, \
                                 used for DTI assigments
-    df_sizes_all:               Pandas DataFrame of intermediate sizes of the dataset,
+    - df_sizes_all:               Pandas DataFrame of intermediate sizes of the dataset, \
                                 used for debugging
-    df_sizes_pchembl:           Pandas DataFrame of intermediate sizes of the dataset,
-                                restricted to entries with a pchembl value,
+    - df_sizes_pchembl:           Pandas DataFrame of intermediate sizes of the dataset, \
+                                restricted to entries with a pchembl value, \
                                 used for debugging
     """
 

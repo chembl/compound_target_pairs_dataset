@@ -222,10 +222,10 @@ def add_chembl_target_class_annotations(
 
     :param dataset: Dataset with compound-target pairs.
         Will be updated to only include target class annotations.
-        dataset.target_classes_level1 will be set to
+        dataset.target_classes_level1 will be set to \
             pandas DataFrame with mapping from target id to level 1 target class
-        dataset.target_classes_level2 will be set to
-            pandas DataFrame with mapping from target id to level 2 target class
+        dataset.target_classes_level2 will be set to \
+            pandas DataFrame with mapping from target id to level 2 target class 
     :type dataset: Dataset
     :param chembl_con: Sqlite3 connection to ChEMBL database.
     :type chembl_con: sqlite3.Connection

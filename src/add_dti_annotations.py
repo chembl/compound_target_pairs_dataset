@@ -14,7 +14,7 @@ def add_dti_annotations(
 
     The assignment is based on three questions:
 
-    - Is the compound-target pair in the drug_mechanisms table? = 
+    - Is the compound-target pair in the drug_mechanisms table? = \
         Is it a known relevant compound-target interaction?
     - What is the max_phase of the compound? = Is it a drug / clinical compound?
     - Is the target in the drug_mechanisms table = Is it a therapeutic target?
@@ -47,23 +47,23 @@ def add_dti_annotations(
 
     .. [#] C0_DT groups together all compounds with a max_phase not between 1 and 4. 
     
-    Since ChEMBL32 there are three possible annotations in ChEMBL 
+    Since ChEMBL32 there are three possible annotations in ChEMBL \
     with a max_phase value not between 1 and 4:
 
     - 0.5 = early phase 1 clinical trials  
-    - -1 = clinical phase unknown for drug or clinical candidate drug, 
+    - -1 = clinical phase unknown for drug or clinical candidate drug, \
             i.e., where ChEMBL cannot assign a clinical phase
     - NULL = preclinical compounds with bioactivity data
 
     All three are grouped together into the annotation C0_DT.
 
-    Compound-target pairs that were annotated with NDT, 
-    i.e., compound-target pairs that are not in the drug_mechanisms table 
-    and for which the target was also not in the drug_mechanisms table 
+    Compound-target pairs that were annotated with NDT, \
+    i.e., compound-target pairs that are not in the drug_mechanisms table \
+    and for which the target was also not in the drug_mechanisms table \
     (not a comparator compound), are discarded.
 
     :param dataset: Dataset with all relevant information:
-        - Pandas DataFrame with compound-target pairs
+        - Pandas DataFrame with compound-target pairs \
             based on activities AND drug_mechanism table
         - set of compound-target pairs in the drug_mechanism table
         - set of targets in the drug_mechanism table
