@@ -1,3 +1,7 @@
+"""
+Add ChEMBL compound properties to the dataset.
+"""
+
 import sqlite3
 
 import pandas as pd

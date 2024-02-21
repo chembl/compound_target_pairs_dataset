@@ -1,7 +1,11 @@
+"""
+Add DTI (Drug-Target Interaction) Annotations to the dataset.
+"""
+
 from dataset import Dataset
 
 
-########### CTI (Compound-Target Interaction) Annotations ###########
+########### DTI (Drug-Target Interaction) Annotations ###########
 def add_dti_annotations(
     dataset: Dataset,
 ):

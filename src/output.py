@@ -1,11 +1,16 @@
+"""
+Write the dataset, subsets and related statistics to files 
+and to the command line.
+"""
+
 import logging
 import os
 import pandas as pd
 import sanity_checks
 
-import get_stats
 from arguments import OutputArgs, CalculationArgs
 from dataset import Dataset
+import get_stats
 
 
 ##### Writing Output #####

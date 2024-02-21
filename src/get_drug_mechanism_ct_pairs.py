@@ -1,3 +1,8 @@
+"""
+Get and add compound-target pairs based on information 
+in the drug_mechanism table.
+"""
+
 import logging
 import sqlite3
 

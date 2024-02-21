@@ -1,3 +1,7 @@
+"""
+Get statistics of dataset for final results and debugging.
+"""
+
 import logging
 import pandas as pd
 

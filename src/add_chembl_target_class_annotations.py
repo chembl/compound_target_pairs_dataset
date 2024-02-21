@@ -1,12 +1,16 @@
+"""
+Add target class annotations based on ChEMBL data to the dataset.
+"""
+
 import logging
 import os
 import sqlite3
 
 import pandas as pd
 
-import write_subsets
 from arguments import OutputArgs, CalculationArgs
 from dataset import Dataset
+import output
 import sanity_checks
 
 
@@ -194,7 +198,7 @@ def output_ambiguous_target_classes(
         f"ChEMBL{args.chembl_version}_"
         f"CTI_{args.limited_flag}_targets_w_more_than_one_tclass",
     )
-    write_subsets.write_output(
+    output.write_output(
         more_than_one_tclass,
         name_more_than_one_tclass,
         out,

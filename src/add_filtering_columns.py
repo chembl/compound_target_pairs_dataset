@@ -1,12 +1,16 @@
+"""
+Add filtering columns for obtaining the different subsets to the dataset.
+"""
+
 import logging
 import os
 
 import pandas as pd
 
 from arguments import CalculationArgs, OutputArgs
-import get_stats
-import write_subsets
 from dataset import Dataset
+import get_stats
+import output
 
 
 def get_data_subsets(data: pd.DataFrame, min_nof_cpds: int, desc: str) -> tuple[
@@ -145,7 +149,7 @@ def add_subset_filtering_columns(
                 f"CTI_{args.limited_flag}_"
                 f"{subset_desc}",
             )
-            write_subsets.write_and_check_output(
+            output.write_and_check_output(
                 df_subset,
                 name_subset,
                 desc,

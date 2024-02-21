@@ -1,4 +1,10 @@
+"""
+Dataclasses related to handling arguments, 
+specifically arguments related to how to calculate or output the dataset. 
+"""
+
 import argparse
+
 from dataclasses import dataclass
 
 

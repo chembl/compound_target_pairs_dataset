@@ -1,3 +1,7 @@
+"""
+Methods related to cleaning the dataset.
+"""
+
 import logging
 import sqlite3
 

@@ -1,3 +1,7 @@
+"""
+Add RDKit-based compound properties to the dataset.
+"""
+
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.Chem import PandasTools

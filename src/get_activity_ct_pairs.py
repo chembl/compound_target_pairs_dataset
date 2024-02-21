@@ -1,3 +1,8 @@
+"""
+Get initial set of compound-target pairs with an associated activity
+for the dataset.
+"""
+
 import sqlite3
 
 import numpy as np

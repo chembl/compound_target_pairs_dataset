@@ -1,18 +1,22 @@
+"""
+Main workflow to calculate the compound-target pairs dataset.
+"""
+
 import logging
 import sqlite3
 
-import get_activity_ct_pairs
-import get_drug_mechanism_ct_pairs
-import add_dti_annotations
-import add_chembl_compound_properties
-import clean_dataset
-import add_chembl_target_class_annotations
-import add_rdkit_compound_descriptors
-import sanity_checks
-import write_subsets
-import get_stats
 from arguments import OutputArgs, CalculationArgs
 import add_filtering_columns
+import get_activity_ct_pairs
+import add_chembl_compound_properties
+import add_chembl_target_class_annotations
+import get_drug_mechanism_ct_pairs
+import add_dti_annotations
+import add_rdkit_compound_descriptors
+import clean_dataset
+import get_stats
+import output
+import sanity_checks
 
 
 def get_ct_pair_dataset(
@@ -77,10 +81,10 @@ def get_ct_pair_dataset(
     add_filtering_columns.add_filtering_columns(dataset, args, out)
 
     logging.info("write_full_dataset_to_file")
-    write_subsets.write_full_dataset_to_file(dataset, args, out)
+    output.write_full_dataset_to_file(dataset, args, out)
 
     logging.info("output_stats")
-    write_subsets.output_all_stats(dataset, args, out)
+    output.output_all_stats(dataset, args, out)
 
     if logging.DEBUG >= logging.root.level:
-        write_subsets.write_debug_sizes(dataset, out)
+        output.write_debug_sizes(dataset, out)

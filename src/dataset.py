@@ -1,3 +1,8 @@
+"""
+Dataclass for handling the calculated compound-target pair dataset 
+and related data.
+"""
+
 from dataclasses import dataclass
 
 import pandas as pd

@@ -1,3 +1,7 @@
+"""
+Get the compound-target pairs dataset from ChEMBL using the given arguments.
+"""
+
 import logging
 import sqlite3
 
