@@ -8,6 +8,7 @@ from arguments import OutputArgs, CalculationArgs
 from dataset import Dataset
 
 
+##### Writing Output #####
 def write_output(
     df: pd.DataFrame,
     filename: str,
@@ -73,6 +74,7 @@ def write_and_check_output(
     )
 
 
+##### Output Specific Results #####
 def write_full_dataset_to_file(
     dataset: Dataset,
     args: CalculationArgs,
@@ -97,59 +99,6 @@ def write_full_dataset_to_file(
         write_and_check_output(dataset.df_result, name_all, desc, args, out)
 
 
-def output_debug_sizes(
-    dataset: Dataset,
-    out: OutputArgs,
-):
-    """
-    Output counts at various points during calculating the final dataset for debugging.
-
-    :param dataset: Dataset with compound-target pairs and debugging sizes.
-    :type dataset: Dataset
-    :param args: Arguments related to how to calculate the dataset
-    :type args: CalculationArgs
-    :param out: Arguments related to how to output the dataset
-    :type out: OutputArgs
-    """
-    column_names = [
-        "type",
-        "#mols",
-        "#drugs",
-        "#targets",
-        "#drug_ targets",
-        "#targets_ mutation",
-        "#drug_ targets_mutation",
-        "#cpd_tid_ pairs",
-        "#drug_tid_ pairs",
-        "#cpd_ tid_mutation_ pairs",
-        "#drug_ tid_mutation_ pairs",
-    ]
-
-    logging.debug("Size of full dataset at different points.")
-    full_df_sizes = pd.DataFrame(dataset.df_sizes_all, columns=column_names)
-    logging.debug(full_df_sizes)
-    name_full_df_sizes = os.path.join(out.output_path, "debug_full_df_sizes")
-    write_output(
-        full_df_sizes,
-        name_full_df_sizes,
-        out,
-    )
-
-    logging.debug("Size of dataset with any pchembl values at different points.")
-    logging.debug(
-        "This includes data for which we only have pchembl data \
-            for functional assays but not for binding assays."
-    )
-    df_pchembl_sizes = pd.DataFrame(dataset.df_sizes_pchembl, columns=column_names)
-    logging.debug(df_pchembl_sizes)
-    name_pchembl_df_sizes = os.path.join(out.output_path, "debug_pchembl_df_sizes")
-    write_output(
-        full_df_sizes,
-        name_pchembl_df_sizes,
-        out,
-    )
-
-
 def output_stats(
     df: pd.DataFrame,
     output_file: str,
@@ -171,33 +120,15 @@ def output_stats(
     :param out: Arguments related to how to output the dataset
     :type out: OutputArgs
     """
-    df_columns = [
-        "parent_molregno",
-        "tid",
-        "tid_mutation",
-        "cpd_target_pair",
-        "cpd_target_pair_mutation",
-    ]
-    columns_descs = [
-        "compound ID",
-        "target ID",
-        "target ID with mutation annotations",
-        "compound-target pair",
-        "compound-target pair with mutation annotations",
-    ]
-
     logging.debug("Stats for %s", output_file)
     stats = []
+    df_columns, columns_descs = get_stats.get_stats_columns()
     for column, columns_desc in zip(df_columns, columns_descs):
         logging.debug("Stats for column %s:", column)
         column_stats = get_stats.get_stats_for_column(df, column, columns_desc)
         stats += column_stats
         for colum_stat in column_stats:
-            logging.debug(
-                "%20s %s",
-                colum_stat[2],
-                colum_stat[3],
-            )
+            logging.debug("%20s %s", colum_stat[2], colum_stat[3])
 
     df_stats = pd.DataFrame(
         stats, columns=["column", "column_description", "subset_type", "counts"]
@@ -252,3 +183,36 @@ def output_all_stats(dataset: Dataset, args: CalculationArgs, out: OutputArgs):
             output_file,
             out,
         )
+
+
+def write_debug_sizes(
+    dataset: Dataset,
+    out: OutputArgs,
+):
+    """
+    Output counts at various points during calculating the final dataset for debugging.
+
+    :param dataset: Dataset with compound-target pairs and debugging sizes.
+    :type dataset: Dataset
+    :param args: Arguments related to how to calculate the dataset
+    :type args: CalculationArgs
+    :param out: Arguments related to how to output the dataset
+    :type out: OutputArgs
+    """
+    # Size of full dataset at different points.
+    name_full_df_sizes = os.path.join(out.output_path, "debug_full_df_sizes")
+    write_output(
+        dataset.df_sizes_all,
+        name_full_df_sizes,
+        out,
+    )
+
+    # Size of dataset with any pchembl values at different points.
+    # This includes data for which we only have pchembl data
+    # for functional assays but not for binding assays.
+    name_pchembl_df_sizes = os.path.join(out.output_path, "debug_pchembl_df_sizes")
+    write_output(
+        dataset.df_sizes_pchembl,
+        name_pchembl_df_sizes,
+        out,
+    )

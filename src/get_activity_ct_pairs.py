@@ -250,7 +250,7 @@ def get_aggregated_activity_ct_pairs(
         df_result,
         set(),
         set(),
-        [],
-        [],
+        pd.DataFrame(),
+        pd.DataFrame(),
     )
     return dataset

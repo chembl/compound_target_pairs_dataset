@@ -83,4 +83,4 @@ def get_ct_pair_dataset(
     write_subsets.output_all_stats(dataset, args, out)
 
     if logging.DEBUG >= logging.root.level:
-        write_subsets.output_debug_sizes(dataset, out)
+        write_subsets.write_debug_sizes(dataset, out)
