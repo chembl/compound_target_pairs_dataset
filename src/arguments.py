@@ -39,7 +39,8 @@ class OutputArgs:
     - write_to_csv:       True if output should be written to csv
     - write_to_excel:     True if output should be written to excel
     - write_full_dataset: True if the full dataset should be written to output
-    - write_bf:           True if subsets based on binding+functional data should be written to output
+    - write_bf:           True if subsets based on binding+functional data \
+                            should be written to output
     - write_b:            True if subsets based on binding data only should be written to output
     """
 
