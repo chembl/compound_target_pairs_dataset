@@ -49,61 +49,6 @@ def write_output(
     return file_type_list
 
 
-def write_and_check_output(
-    df: pd.DataFrame,
-    filename: str,
-    assay_type: str,
-    args: CalculationArgs,
-    out: OutputArgs,
-):
-    """
-    Write df to file and check that writing was successful.
-
-    :param df: Pandas Dataframe to write to output file.
-    :type df: pd.DataFrame
-    :param filename: Filename to write the output to
-    :type filename: bool
-    :param assay_type: Types of assays current_df contains information about. \
-        Options: "BF" (binding+functional), 
-        "B" (binding), 
-        "all" (contains both BF and B information)
-    :type assay_type: str
-    :param args: Arguments related to how to calculate the dataset
-    :type args: CalculationArgs
-    :param out: Arguments related to how to output the dataset
-    :type out: OutputArgs
-    """
-    file_type_list = write_output(df, filename, out)
-    sanity_checks.test_equality(
-        df, filename, assay_type, file_type_list, args.calculate_rdkit
-    )
-
-
-##### Output Specific Results #####
-def write_full_dataset_to_file(
-    dataset: Dataset,
-    args: CalculationArgs,
-    out: OutputArgs,
-):
-    """
-    If write_full_dataset, write df_combined with filtering columns to output_path.
-
-    :param dataset: Dataset with compound-target pairs.
-    :type dataset: Dataset
-    :param args: Arguments related to how to calculate the dataset
-    :type args: CalculationArgs
-    :param out: Arguments related to how to output the dataset
-    :type out: OutputArgs
-    """
-    desc = "all"
-    if out.write_full_dataset:
-        name_all = os.path.join(
-            out.output_path,
-            f"ChEMBL{args.chembl_version}_CTI_{args.limited_flag}_full_dataset",
-        )
-        write_and_check_output(dataset.df_result, name_all, desc, args, out)
-
-
 def output_stats(
     df: pd.DataFrame,
     output_file: str,
@@ -145,9 +90,45 @@ def output_stats(
     )
 
 
-def output_all_stats(dataset: Dataset, args: CalculationArgs, out: OutputArgs):
+def write_and_check_output(
+    df: pd.DataFrame,
+    filename: str,
+    assay_type: str,
+    args: CalculationArgs,
+    out: OutputArgs,
+):
     """
-    Output stats for all datasets and subsets calculated.
+    Write df to file and check that writing was successful.
+
+    :param df: Pandas Dataframe to write to output file.
+    :type df: pd.DataFrame
+    :param filename: Filename to write the output to (should not include the file extension)
+    :type filename: bool
+    :param assay_type: Types of assays current_df contains information about. \
+        Options: "BF" (binding+functional), 
+        "B" (binding), 
+        "all" (contains both BF and B information)
+    :type assay_type: str
+    :param args: Arguments related to how to calculate the dataset
+    :type args: CalculationArgs
+    :param out: Arguments related to how to output the dataset
+    :type out: OutputArgs
+    """
+    file_type_list = write_output(df, filename, out)
+    sanity_checks.test_equality(
+        df, filename, assay_type, file_type_list, args.calculate_rdkit
+    )
+    output_stats(df, f"{filename}_stats", out)
+
+
+##### Output Specific Results #####
+def write_full_dataset_to_file(
+    dataset: Dataset,
+    args: CalculationArgs,
+    out: OutputArgs,
+):
+    """
+    If write_full_dataset, write df_combined with filtering columns to output_path.
 
     :param dataset: Dataset with compound-target pairs.
     :type dataset: Dataset
@@ -156,38 +137,13 @@ def output_all_stats(dataset: Dataset, args: CalculationArgs, out: OutputArgs):
     :param out: Arguments related to how to output the dataset
     :type out: OutputArgs
     """
-    output_file = os.path.join(
-        out.output_path,
-        f"ChEMBL{args.chembl_version}_CTI_{args.limited_flag}_full_dataset_stats",
-    )
-
-    output_stats(dataset.df_result, output_file, out)
-
-    if out.write_bf:
-        output_file = os.path.join(
+    desc = "all"
+    if out.write_full_dataset:
+        name_all = os.path.join(
             out.output_path,
-            f"ChEMBL{args.chembl_version}_"
-            f"CTI_{args.limited_flag}_"
-            f"BF_{args.min_nof_cpds_bf}_c_dt_d_dt_stats",
+            f"ChEMBL{args.chembl_version}_CTI_{args.limited_flag}_full_dataset",
         )
-        output_stats(
-            dataset.df_result[dataset.df_result["BF_100_c_dt_d_dt"]],
-            output_file,
-            out,
-        )
-
-    if out.write_b:
-        output_file = os.path.join(
-            out.output_path,
-            f"ChEMBL{args.chembl_version}_"
-            f"CTI_{args.limited_flag}_"
-            f"B_{args.min_nof_cpds_b}_c_dt_d_dt_stats",
-        )
-        output_stats(
-            dataset.df_result[dataset.df_result["B_100_c_dt_d_dt"]],
-            output_file,
-            out,
-        )
+        write_and_check_output(dataset.df_result, name_all, desc, args, out)
 
 
 def write_debug_sizes(

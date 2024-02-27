@@ -83,8 +83,5 @@ def get_ct_pair_dataset(
     logging.info("write_full_dataset_to_file")
     output.write_full_dataset_to_file(dataset, args, out)
 
-    logging.info("output_stats")
-    output.output_all_stats(dataset, args, out)
-
     if logging.DEBUG >= logging.root.level:
         output.write_debug_sizes(dataset, out)
