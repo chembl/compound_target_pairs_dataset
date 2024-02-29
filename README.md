@@ -1,3 +1,13 @@
+<h1 align="center">
+    Dataset of Interacting Compound-Target Pairs in ChEMBL
+</h1>
+
+<p align="center">
+    <a href="https://zenodo.org/doi/10.5281/zenodo.10723114"><img src="https://zenodo.org/badge/550876229.svg" alt="DOI"></a>
+    <a href="https://doi.org/10.5281/zenodo.10721939"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.10721939.svg" alt="DOI"></a>
+
+</p>
+
 # Introduction
 This code extract a dataset of compound-target pairs from the open-source bioactivity database [ChEMBL](https://www.ebi.ac.uk/chembl/) [Zdrazil2023]. 
 
@@ -17,6 +27,8 @@ This code can generate an extended version of the previous dataset for every ChE
 [Leeson2021]: Leeson et al., "Target-Based Evaluation of “Drug-Like” Properties and Ligand Efficiencies", 
     Journal of Medicinal Chemistry, 64(11), 7210-7230, 2021, https://doi.org/10.1021/acs.jmedchem.1c00416
 
+# Dataset
+The dataset for different ChEMBL versions from ChEMBL 26 onwards is available [here](https://zenodo.org/doi/10.5281/zenodo.10721939).
 
 # Quick Start
 ## Dependencies
