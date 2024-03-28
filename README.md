@@ -5,15 +5,14 @@
 <p align="center">
     <a href="https://zenodo.org/doi/10.5281/zenodo.10723114"><img src="https://zenodo.org/badge/550876229.svg" alt="DOI"></a>
     <a href="https://doi.org/10.5281/zenodo.10721939"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.10721939.svg" alt="DOI"></a>
-
 </p>
 
 # Introduction
-This code extract a dataset of compound-target pairs from the open-source bioactivity database [ChEMBL](https://www.ebi.ac.uk/chembl/) [Zdrazil2023]. 
+This code extracts a dataset of compound-target pairs from the open-source bioactivity database [ChEMBL](https://www.ebi.ac.uk/chembl/) [Zdrazil2023]. 
 
 The compound-target pairs are known to interact because 
 
-- they have at least one corresponding measured activitiy values in ChEMBL or 
+- they have at least one corresponding measured activity value in ChEMBL or 
 - they are part of a set of manually curated known interactions in ChEMBL.
 
 Furthermore, the dataset contains a number of compound and target annotations to enable future analyses. 
@@ -37,7 +36,7 @@ Install the required dependencies with
 pip install .
 ```
 
-Note: Using pandas version 2.2 will lead to warnings regarding the RDKit PandasTools when running the code. 
+Note: Using Pandas version 2.2 will lead to warnings regarding the RDKit PandasTools when running the code. 
 However, the final dataset is not impacted. 
 
 
@@ -55,3 +54,5 @@ python main.py --help
 
 ## Documentation
 The full documentation is available [here](https://chembl.github.io/compound_target_pairs_dataset/).
+
+The corresponding preprint is available [here](https://doi.org/10.26434/chemrxiv-2024-vj70m-v2).
