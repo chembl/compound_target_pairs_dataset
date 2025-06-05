@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
-    <a href="https://zenodo.org/doi/10.5281/zenodo.10723114"><img src="https://zenodo.org/badge/550876229.svg" alt="DOI"></a>
-    <a href="https://doi.org/10.5281/zenodo.10721939"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.10721939.svg" alt="DOI"></a>
+    <a href="https://zenodo.org/doi/10.5281/zenodo.10723114"><img src="https://zenodo.org/badge/550876229.svg" alt="Code DOI"></a>
+    <a href="https://doi.org/10.5281/zenodo.10721939"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.10721939.svg" alt="Dataset DOI"></a>
 </p>
 
 # Introduction
@@ -27,7 +27,7 @@ This code can generate an extended version of the previous dataset for every ChE
     Journal of Medicinal Chemistry, 64(11), 7210-7230, 2021, https://doi.org/10.1021/acs.jmedchem.1c00416
 
 # Dataset
-The dataset for different ChEMBL versions from ChEMBL 26 onwards is available [here](https://zenodo.org/doi/10.5281/zenodo.10721939).
+The dataset for different ChEMBL versions from ChEMBL 26 onwards is available [here](https://ftp.ebi.ac.uk/pub/databases/chembl/Drug_Target_dataset/).
 
 # Quick Start
 ## Dependencies
@@ -55,4 +55,4 @@ python main.py --help
 ## Documentation
 The full documentation is available [here](https://chembl.github.io/compound_target_pairs_dataset/).
 
-The corresponding preprint is available [here](https://doi.org/10.26434/chemrxiv-2024-vj70m-v2).
+The corresponding article is available [here](https://doi.org/10.1038/s41597-024-03582-9).
