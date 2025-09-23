@@ -66,9 +66,8 @@ def get_chembl_properties_and_structures(
     sql = """
     SELECT DISTINCT mh.parent_molregno, 
         cp.mw_freebase, cp.alogp, cp.hba, cp.hbd, cp.psa, cp.rtb, cp.ro3_pass, cp.num_ro5_violations, 
-        cp.cx_most_apka, cp.cx_most_bpka, cp.cx_logp, cp.cx_logd, cp.molecular_species, cp.full_mwt, 
-        cp.aromatic_rings, cp.heavy_atoms, cp.qed_weighted, cp.mw_monoisotopic, cp.full_molformula, 
-        cp.hba_lipinski, cp.hbd_lipinski, cp.num_lipinski_ro5_violations, 
+        cp.full_mwt, 
+        cp.aromatic_rings, cp.heavy_atoms, cp.qed_weighted, cp.full_molformula, 
         struct.standard_inchi, struct.standard_inchi_key, struct.canonical_smiles
     FROM compound_properties cp
     INNER JOIN molecule_hierarchy mh
