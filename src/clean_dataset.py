@@ -132,9 +132,6 @@ def set_types_to_int(dataset, calculate_rdkit):
             "num_ro5_violations": "Int64",
             "aromatic_rings": "Int64",
             "heavy_atoms": "Int64",
-            "hba_lipinski": "Int64",
-            "hbd_lipinski": "Int64",
-            "num_lipinski_ro5_violations": "Int64",
         }
     )
 
@@ -226,20 +223,11 @@ def reorder_columns(dataset, calculate_rdkit):
         "rtb",
         "ro3_pass",
         "num_ro5_violations",
-        "cx_most_apka",
-        "cx_most_bpka",
-        "cx_logp",
-        "cx_logd",
-        "molecular_species",
         "full_mwt",
         "aromatic_rings",
         "heavy_atoms",
         "qed_weighted",
-        "mw_monoisotopic",
         "full_molformula",
-        "hba_lipinski",
-        "hbd_lipinski",
-        "num_lipinski_ro5_violations",
     ]
     chembl_structures = ["standard_inchi", "standard_inchi_key", "canonical_smiles"]
     ligand_efficieny_metrics = [
