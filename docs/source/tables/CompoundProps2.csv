@@ -7,17 +7,8 @@ psa,Float,Compound,"""",Polar surface area
 rtb,Int,Compound,"""",Number rotatable bonds
 ro3_pass,String,Compound,"""","Indicates whether the compound passes the rule-of-three (mw < 300, logP < 3 etc)"
 num_ro5_violations,Int,Compound,"""","Number of violations of Lipinski's rule-of-five, using HBA and HBD definitions"
-cx_most_apka,Float,Compound,"""",The most acidic pKa calculated using ChemAxon
-cx_most_bpka,Float,Compound,"""",The most basic pKa calculated using ChemAxon
-cx_logp,Float,Compound,"""",The calculated octanol/water partition coefficient using ChemAxon
-cx_logd,Float,Compound,"""",The calculated octanol/water distribution coefficient at pH7.4 using ChemAxon
-molecular_species,String,Compound,"""",Indicates whether the compound is an acid/base/neutral
 full_mwt,Float,Compound,"""",Molecular weight of the full compound including any salts
 aromatic_rings,Int,Compound,"""",Number of aromatic rings
 heavy_atoms,Int,Compound,"""",Number of heavy (non-hydrogen) atoms
 qed_weighted,Float,Compound,"""","Weighted quantitative estimate of drug likeness (as defined by Bickerton et al., Nature Chem 2012)"
-mw_monoisotopic,Float,Compound,"""",Monoisotopic parent molecular weight
 full_molformula,String,Compound,"""",Molecular formula for the full compound (including any salt)
-hba_lipinski,Int,Compound,"""","Number of hydrogen bond acceptors calculated according to Lipinski's original rules (i.e., N + O count))"
-hbd_lipinski,Int,Compound,"""","Number of hydrogen bond donors calculated according to Lipinski's original rules (i.e., NH + OH count)"
-num_lipinski\_ ro5_violations,Int,Compound,"""",Number of violations of Lipinski's rule of five using HBA_LIPINSKI and HBD_LIPINSKI counts
