@@ -301,9 +301,6 @@ def test_equality(
                 "num_ro5_violations": "Int64",
                 "aromatic_rings": "Int64",
                 "heavy_atoms": "Int64",
-                "hba_lipinski": "Int64",
-                "hbd_lipinski": "Int64",
-                "num_lipinski_ro5_violations": "Int64",
             }
         )
         if calculate_rdkit:
